@@ -232,7 +232,7 @@ export const createTechear = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   "admin/login",
   async ({ email, password }: { email: string; password: string }) => {
-    const response = await fetch("/api/auth/login", {
+    const response = await fetch("http://localhost:3000/api/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
       headers: {
@@ -256,15 +256,15 @@ export const createCompteUser = createAsyncThunk(
   async ({
     email,
     password,
-    phone,
+    name,
   }: {
     email: string;
     password: string;
-    phone: string;
+    name: string;
   }) => {
-    const response = await fetch("/api/auth/signup", {
+    const response = await fetch("http://localhost:3000/api/auth/signup", {
       method: "POST",
-      body: JSON.stringify({ email, password, phone }),
+      body: JSON.stringify({ email, password, name }),
       headers: {
         "Content-Type": "application/json",
       },
