@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/redux/Store";
 import { createCompteUser, loginUser } from "../../redux/adminSlice";
 import { FormData } from "../../interfaces/FormData";
+import { signUpArgsSchema } from "../../zod-model/auth";
 
 const SignupPage: React.FC = ({}) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,6 +25,10 @@ const SignupPage: React.FC = ({}) => {
   } = useForm<FormData>();
   // this is not finnished yet just wanted to test creating a user and logging him in
   const onSubmit: SubmitHandler<FormData> = async (data) => {
+    const body = signUpArgsSchema.safeParse(data);
+    if (!body.success) {
+      alert("Error validating fields");
+    }
     const userResponse = await dispatch(
       createCompteUser({
         email: data.email,
