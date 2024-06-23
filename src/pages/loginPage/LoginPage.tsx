@@ -119,7 +119,7 @@ const LogingPage: React.FC = ({}) => {
                       {isSubmitting ? (
                         <CircularProgress size={24} />
                       ) : (
-                        "Sign Up"
+                        "Login"
                       )}
                     </Button>
                   </Grid>
