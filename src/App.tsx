@@ -10,11 +10,14 @@ import {
 } from "react-router-dom";
 import SignupPage from "./pages/signupPage/SignupPage";
 import LogingPage from "./pages/loginPage/LoginPage";
+import Header from "./components/header/Header";
 
 function App() {
   return (
     <>
       <Router>
+        <Header></Header>
+
         <Routes>
           <Route path="/" element={<Navigate to="/signup" />} />
           <Route path="/signup" element={<SignupPage />} />

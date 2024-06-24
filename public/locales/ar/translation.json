@@ -1,0 +1,16 @@
+{
+  "txt_english": "الإنجليزية",
+  "txt_french": "الفرنسية",
+  "txt_arabic": "العربية",
+  "txt_signup": "تسجيل",
+  "txt_signup_account": "تسجيل حساب",
+  "txt_name": "الاسم",
+  "txt_name_validation_message": "الاسم مطلوب",
+  "txt_email": "البريد الإلكتروني",
+  "txt_email_validation_message": "البريد الإلكتروني مطلوب",
+  "txt_email_format_validation_message": "عنوان البريد الإلكتروني غير صحيح",
+  "txt_password": "كلمة المرور",
+  "txt_password_validation_message": "كلمة المرور مطلوبة",
+  "txt_login_account": "تسجيل الدخول إلى حسابك",
+  "txt_login": "تسجيل الدخول"
+}

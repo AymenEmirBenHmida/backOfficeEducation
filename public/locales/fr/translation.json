@@ -1,0 +1,16 @@
+{
+  "txt_english": "Anglais",
+  "txt_french": "Français",
+  "txt_arabic": "Arabe",
+  "txt_signup": "S'inscrire",
+  "txt_signup_account": "Inscrivez-vous à votre compte",
+  "txt_name": "Nom",
+  "txt_name_validation_message": "Le nom est requis",
+  "txt_email": "Email",
+  "txt_email_validation_message": "L'email est requis",
+  "txt_email_format_validation_message": "Adresse email invalide",
+  "txt_password": "Mot de passe",
+  "txt_password_validation_message": "Le mot de passe est requis",
+  "txt_login_account": "Connectez-vous à votre compte",
+  "txt_login": "Se connecter"
+}

@@ -6,16 +6,17 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
-import logoSvg from "/images/school-svgrepo-com.svg";
-
+import schoolSvg from "/images/school-svgrepo-com.svg";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/redux/Store";
 import { createCompteUser, loginUser } from "../../redux/adminSlice";
 import { FormData } from "../../interfaces/FormData";
 import { signUpArgsSchema } from "../../zod-model/auth";
+import { useTranslation } from "react-i18next";
 
 const SignupPage: React.FC = ({}) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   // library that help with handeling forms
   const {
@@ -28,6 +29,7 @@ const SignupPage: React.FC = ({}) => {
     const body = signUpArgsSchema.safeParse(data);
     if (!body.success) {
       alert("Error validating fields");
+      return;
     }
     const userResponse = await dispatch(
       createCompteUser({
@@ -45,7 +47,7 @@ const SignupPage: React.FC = ({}) => {
   };
   return (
     <>
-      <div className="bg-[#fffff] h-full w-full absolute flex items-center justify-center">
+      <div className="bg-[#ffff] w-full h-[90vh] relative flex items-center justify-center">
         <div className="max-w-[900px] w-full">
           <Card
             sx={{ backgroundColor: "#eeee", padding: "2em" }}
@@ -53,7 +55,7 @@ const SignupPage: React.FC = ({}) => {
           >
             {" "}
             <h1 className="m-0 text-2xl font-semibold leading-1.3 pb-15">
-              Signup to your account
+              {t("txt_signup_account")}
             </h1>
             <CardContent>
               <Grid container rowSpacing={1} spacing={2}>
@@ -67,18 +69,18 @@ const SignupPage: React.FC = ({}) => {
                   }}
                 >
                   <Grid item>
-                    <h2 className="mb-[5px] font-bold">Name</h2>
+                    <h2 className="mb-[5px] font-bold">{t("txt_name")}</h2>
                     <Controller
                       name="name"
                       control={control}
                       defaultValue=""
-                      rules={{ required: "Name is required" }}
+                      rules={{ required: t("txt_name_validation_message") }}
                       render={({ field }) => (
                         <TextField
                           {...field}
                           fullWidth
                           id="outlined-basic"
-                          label="Name"
+                          label={t("txt_name")}
                           variant="outlined"
                           sx={{ backgroundColor: "white" }}
                           error={!!errors.name}
@@ -87,16 +89,16 @@ const SignupPage: React.FC = ({}) => {
                       )}
                     ></Controller>
 
-                    <h2 className="mb-[5px] font-bold">Email</h2>
+                    <h2 className="mb-[5px] font-bold">{t("txt_email")}</h2>
                     <Controller
                       name="email"
                       control={control}
                       defaultValue=""
                       rules={{
-                        required: "Email is required",
+                        required: t("txt_email_validation_message"),
                         pattern: {
                           value: /^\S+@\S+$/i,
-                          message: "Invalid email address",
+                          message: t("txt_email_format_validation_message"),
                         },
                       }}
                       render={({ field }) => (
@@ -104,7 +106,7 @@ const SignupPage: React.FC = ({}) => {
                           {...field}
                           fullWidth
                           id="outlined-basic"
-                          label="Email"
+                          label={t("txt_email")}
                           variant="outlined"
                           sx={{ backgroundColor: "white" }}
                           error={!!errors.name}
@@ -113,19 +115,19 @@ const SignupPage: React.FC = ({}) => {
                       )}
                     ></Controller>
 
-                    <h2 className="mb-[5px] font-bold">Password</h2>
+                    <h2 className="mb-[5px] font-bold">{t("txt_password")}</h2>
                     <Controller
                       name="password"
                       control={control}
                       defaultValue=""
-                      rules={{ required: "Password is required" }}
+                      rules={{ required: t("txt_password_validation_message") }}
                       render={({ field }) => (
                         <TextField
                           {...field}
                           fullWidth
                           type="password"
                           id="outlined-basic"
-                          label="Password"
+                          label={t("txt_password")}
                           variant="outlined"
                           sx={{ backgroundColor: "white" }}
                           error={!!errors.name}
@@ -152,13 +154,13 @@ const SignupPage: React.FC = ({}) => {
                       {isSubmitting ? (
                         <CircularProgress size={24} />
                       ) : (
-                        "Sign Up"
+                        t("txt_signup")
                       )}
                     </Button>
                   </Grid>
                 </form>
                 <Grid item xs={6} className="flex justify-center align-center">
-                  <img src={logoSvg} alt="Logo" className="w-1/2" />
+                  <img src={schoolSvg} alt="Logo" className="w-1/2" />
                 </Grid>
               </Grid>
             </CardContent>
