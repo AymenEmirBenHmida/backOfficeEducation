@@ -2,7 +2,7 @@
   "txt_english": "English",
   "txt_french": "French",
   "txt_arabic": "Arabic",
-  "txt_signup":"Sign Up",
+  "txt_signup": "Sign Up",
   "txt_signup_account": "Signup to your account",
   "txt_name": "Name",
   "txt_name_validation_message": "Name is required",
@@ -11,6 +11,13 @@
   "txt_email_format_validation_message": "Invalid email address",
   "txt_password": "Password",
   "txt_password_validation_message": "Password is required",
-  "txt_login_account":"Login to your account",
-  "txt_login":"Login"
+  "txt_login_account": "Login to your account",
+  "txt_login": "Login",
+  "txt_phone": "Phone",
+  "txt_phone_validation_message": "Phone number is required",
+  "txt_phone_format_validation_message": "Invalid phone number",
+  "txt_message_error_logging": "There was an error logging you in",
+  "txt_message_error_signup": "There was an error signing you up",
+  "txt_want_login":"Want to login?",
+  "txt_want_signup":"Want to signup?"
 }

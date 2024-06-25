@@ -29,6 +29,7 @@ const LanguageChanger: React.FC = () => {
   ];
   //the first language taht's selected is teh default language sat up in 18n
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
+
   //when we change a language the local storage representing the language
   //and the language used in 18n is changed to it using it's code
   const handleChange = (event: SelectChangeEvent<string>) => {

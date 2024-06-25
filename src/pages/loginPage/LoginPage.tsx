@@ -5,6 +5,8 @@ import {
   Grid,
   TextField,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import logoSvg from "/images/school-svgrepo-com.svg";
 
@@ -15,11 +17,21 @@ import { loginUser } from "../../redux/adminSlice";
 import { FormData } from "../../interfaces/FormData";
 import { logInArgsSchema } from "../../zod-model/auth";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import SnackAlert from "../../components/snackAlert/SnackAlert";
+import { Link } from "react-router-dom";
 
 const LogingPage: React.FC = ({}) => {
   //use for translation
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  //variables used to open and close the snack bar message
+  const [open, setOpen] = useState(false);
+
+  //function used to open and close the snack bar message
+  const handleErreur = () => {
+    setOpen(!open);
+  };
   // library that help with handeling forms
   const {
     handleSubmit,
@@ -36,9 +48,21 @@ const LogingPage: React.FC = ({}) => {
     const loginResponse = await dispatch(
       loginUser({ email: data.email, password: data.password })
     );
+    if (loginResponse.payload.status !== "OK") {
+      handleErreur();
+      return;
+    }
+    //saving refresh token
+    localStorage.setItem(
+      "refreshToken",
+      loginResponse.payload.data.refreshToken
+    );
+    //saving accessToken
+    localStorage.setItem("accessToken", loginResponse.payload.data.accessToken);
     console.log(data);
     console.log("login response " + loginResponse);
   };
+
   return (
     <>
       <div className="bg-[#fffff] h-[90vh] w-full relative flex items-center justify-center">
@@ -131,6 +155,11 @@ const LogingPage: React.FC = ({}) => {
                         t("txt_login")
                       )}
                     </Button>
+                    <Link to={"/signup"}>
+                      <h3 className="p-[5px] pl-[0px] pb-[0px] underline">
+                        {t("txt_want_signup")}
+                      </h3>
+                    </Link>
                   </Grid>
                 </form>
                 <Grid item xs={6} className="flex justify-center align-center">
@@ -139,6 +168,12 @@ const LogingPage: React.FC = ({}) => {
               </Grid>
             </CardContent>
           </Card>
+          <SnackAlert
+            handleErreur={handleErreur}
+            message={t("txt_message_error_logging")}
+            open={open}
+            severity="error"
+          />
         </div>
       </div>
     </>

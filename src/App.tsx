@@ -11,18 +11,19 @@ import {
 import SignupPage from "./pages/signupPage/SignupPage";
 import LogingPage from "./pages/loginPage/LoginPage";
 import Header from "./components/header/Header";
+import Layout from "./components/layout/Layout";
 
 function App() {
   return (
     <>
       <Router>
-        <Header></Header>
-
-        <Routes>
-          <Route path="/" element={<Navigate to="/signup" />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/login" element={<LogingPage />} />
-        </Routes>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Navigate to="/signup" />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login" element={<LogingPage />} />
+          </Routes>
+        </Layout>
       </Router>
     </>
   );

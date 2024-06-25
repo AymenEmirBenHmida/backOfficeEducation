@@ -256,26 +256,34 @@ export const createCompteUser = createAsyncThunk(
   async ({
     email,
     password,
-    name,
+    phone,
   }: {
     email: string;
     password: string;
-    name: string;
+    phone: string;
   }) => {
-    const response = await fetch("http://localhost:3000/api/auth/signup", {
-      method: "POST",
-      body: JSON.stringify({ email, password, name }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
-      throw new Error("Failed to create user");
+    try {
+
+      const response = await fetch("http://localhost:3000/api/auth/signup", {
+        method: "POST",
+        body: JSON.stringify({ email, password, phone }), // Include IP address in request body
+        headers: {
+          "Content-Type": "application/json",
+        },
+        
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create user");
+      }
+
+      return response.json(); // Assure that the response contains an object with a payload property
+    } catch (error) {
+      console.error("Error creating user:", error);
+      throw error; // Rethrow the error to handle it in Redux thunk dispatch
     }
-    return response.json(); // Assurez-vous que la réponse contient un objet avec une propriété payload
   }
 );
-
 export const updateAdmin = createAsyncThunk(
   "admin/updateAdmin",
   async (updatedAdminData: any) => {

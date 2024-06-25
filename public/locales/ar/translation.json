@@ -12,5 +12,12 @@
   "txt_password": "كلمة المرور",
   "txt_password_validation_message": "كلمة المرور مطلوبة",
   "txt_login_account": "تسجيل الدخول إلى حسابك",
-  "txt_login": "تسجيل الدخول"
+  "txt_login": "تسجيل الدخول",
+  "txt_phone": "الهاتف",
+  "txt_phone_validation_message": "رقم الهاتف مطلوب",
+  "txt_phone_format_validation_message": "رقم الهاتف غير صالح",
+  "txt_message_error_logging": "حدث خطأ أثناء تسجيل الدخول",
+  "txt_message_error_signup": "حدث خطأ أثناء تسجيلك",
+  "txt_want_login": "هل ترغب في تسجيل الدخول؟",
+  "txt_want_signup": "هل ترغب في التسجيل؟"
 }
