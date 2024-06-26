@@ -231,10 +231,21 @@ export const createTechear = createAsyncThunk(
 );
 export const loginUser = createAsyncThunk(
   "admin/login",
-  async ({ email, password }: { email: string; password: string }) => {
+  async ({
+    identifier,
+    password,
+  }: {
+    identifier: string;
+    password: string;
+  }) => {
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
     const response = await fetch("http://localhost:3000/api/auth/login", {
       method: "POST",
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify(
+        isEmail
+          ? { email: identifier, password }
+          : { phone: identifier, password }
+      ),
       headers: {
         "Content-Type": "application/json",
       },
@@ -263,14 +274,12 @@ export const createCompteUser = createAsyncThunk(
     phone: string;
   }) => {
     try {
-
       const response = await fetch("http://localhost:3000/api/auth/signup", {
         method: "POST",
         body: JSON.stringify({ email, password, phone }), // Include IP address in request body
         headers: {
           "Content-Type": "application/json",
         },
-        
       });
 
       if (!response.ok) {

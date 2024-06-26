@@ -19,5 +19,7 @@
   "txt_message_error_logging": "There was an error logging you in",
   "txt_message_error_signup": "There was an error signing you up",
   "txt_want_login":"Want to login?",
-  "txt_want_signup":"Want to signup?"
+  "txt_want_signup":"Want to signup?",
+  "txt_login_credential_email_phone":"Email or Phone number",
+  "txt_login_credential_email_phone_validation_message":"Invalid input"
 }

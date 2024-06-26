@@ -19,5 +19,7 @@
   "txt_message_error_logging": "حدث خطأ أثناء تسجيل الدخول",
   "txt_message_error_signup": "حدث خطأ أثناء تسجيلك",
   "txt_want_login": "هل ترغب في تسجيل الدخول؟",
-  "txt_want_signup": "هل ترغب في التسجيل؟"
+  "txt_want_signup": "هل ترغب في التسجيل؟",
+  "txt_login_credential_email_phone": "البريد الإلكتروني أو رقم الهاتف",
+  "txt_login_credential_email_phone_validation_message": "إدخال غير صالح"
 }

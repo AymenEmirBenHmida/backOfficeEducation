@@ -32,6 +32,16 @@ const LogingPage: React.FC = ({}) => {
   const handleErreur = () => {
     setOpen(!open);
   };
+  //figure out wether the value is email or password
+  const validateIdentifier = (value: string | undefined) => {
+    if (typeof value !== "string")
+      return t("txt_login_credential_email_phone_validation_message");
+
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    const isPhone = /^\d{8}$/.test(value);
+    if (isEmail || isPhone) return true;
+    return t("txt_login_credential_email_phone_validation_message");
+  };
   // library that help with handeling forms
   const {
     handleSubmit,
@@ -40,25 +50,38 @@ const LogingPage: React.FC = ({}) => {
   } = useForm<FormData>();
   // login the user
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    const body = logInArgsSchema.safeParse(data);
-    if (!body.success) {
-      alert("Error validating fields");
+    //const body = logInArgsSchema.safeParse(data);
+    // if (!body.success) {
+    //   alert("Error validating fields");
+    //   return;
+    // }
+    if (!data.identifier) {
+      alert("Identifier (email or phone) is required.");
       return;
     }
-    const loginResponse = await dispatch(
-      loginUser({ email: data.email, password: data.password })
-    );
-    if (loginResponse.payload.status !== "OK") {
+    const requestBody = {
+      identifier: data.identifier,
+      password: data.password,
+    };
+    const loginResponse = await dispatch(loginUser(requestBody));
+    console.log(loginResponse.payload);
+
+    if (loginResponse.payload?.status === "OK") {
+      //saving refresh token
+      localStorage.setItem(
+        "refreshToken",
+        loginResponse.payload.data.refreshToken
+      );
+      //saving accessToken
+      localStorage.setItem(
+        "accessToken",
+        loginResponse.payload.data.accessToken
+      );
+    } else {
       handleErreur();
       return;
     }
-    //saving refresh token
-    localStorage.setItem(
-      "refreshToken",
-      loginResponse.payload.data.refreshToken
-    );
-    //saving accessToken
-    localStorage.setItem("accessToken", loginResponse.payload.data.accessToken);
+
     console.log(data);
     console.log("login response " + loginResponse);
   };
@@ -87,28 +110,31 @@ const LogingPage: React.FC = ({}) => {
                   }}
                 >
                   <Grid item>
-                    <h2 className="mb-[5px] font-bold">{t("txt_email")}</h2>
+                    <h2 className="mb-[5px] font-bold">
+                      {t("txt_login_credential_email_phone")}
+                    </h2>
                     <Controller
-                      name="email"
+                      name="identifier"
                       control={control}
                       defaultValue=""
                       rules={{
-                        required: t("txt_email_validation_message"),
-                        pattern: {
-                          value: /^\S+@\S+$/i,
-                          message: t("txt_email_format_validation_message"),
-                        },
+                        required: t(
+                          "txt_login_credential_email_phone_validation_message"
+                        ),
+                        validate: validateIdentifier,
                       }}
                       render={({ field }) => (
                         <TextField
                           {...field}
                           fullWidth
                           id="outlined-basic"
-                          label={t("txt_email")}
+                          label={t("txt_login_credential_email_phone")}
                           variant="outlined"
                           sx={{ backgroundColor: "white" }}
                           error={!!errors.name}
-                          helperText={errors.email ? errors.email.message : ""}
+                          helperText={
+                            errors.identifier ? errors.identifier.message : ""
+                          }
                         />
                       )}
                     ></Controller>

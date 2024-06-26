@@ -37,26 +37,43 @@ const SignupPage: React.FC = ({}) => {
   } = useForm<FormData>();
   // this is not finnished yet just wanted to test creating a user and logging him in
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    handleErreur();
     const body = signUpArgsSchema.safeParse(data);
     if (!body.success) {
       alert("Error validating fields");
       return;
     }
-    const userResponse = await dispatch(
-      createCompteUser({
-        email: data.email,
+    try {
+      const userResponse = await dispatch(
+        createCompteUser({
+          email: data.email,
 
-        password: data.password,
-        phone: data.phone,
-      })
-    );
-    const loginResponse = await dispatch(
-      loginUser({ email: data.email, password: data.password })
-    );
-    console.log(data);
-    console.log("user response " + userResponse);
-    console.log("login response " + loginResponse);
+          password: data.password,
+          phone: data.phone,
+        })
+      );
+      userResponse.payload = undefined;
+      // Check if the user creation response is valid and the status is OK
+      if (userResponse.payload?.status === "OK") {
+        // Attempt to log the user in
+        const loginResponse = await dispatch(
+          loginUser({ identifier: data.email, password: data.password })
+        );
+
+        // Check if the login response is valid and the status is OK
+        if (loginResponse.payload?.status === "OK") {
+          console.log(data);
+          console.log("user response ", userResponse);
+          console.log("login response ", loginResponse);
+        } else {
+          handleErreur();
+        }
+      } else {
+        handleErreur();
+      }
+    } catch (error) {
+      console.error(error);
+      handleErreur();
+    }
   };
   return (
     <>
@@ -89,7 +106,7 @@ const SignupPage: React.FC = ({}) => {
                       rules={{
                         required: t("txt_phone_validation_message"),
                         pattern: {
-                          value: /^\+?[1-9]\d{1,14}$/, // This regex allows for international phone numbers starting with a "+" and up to 15 digits
+                          value: /^\d{8}$/, // This regex allows for international phone numbers starting with a "+" and up to 15 digits
                           message: t("txt_phone_format_validation_message"), // Custom validation message
                         },
                       }}
@@ -115,7 +132,7 @@ const SignupPage: React.FC = ({}) => {
                       rules={{
                         required: t("txt_email_validation_message"),
                         pattern: {
-                          value: /^\S+@\S+$/i,
+                          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/i,
                           message: t("txt_email_format_validation_message"),
                         },
                       }}

@@ -19,5 +19,7 @@
   "txt_message_error_logging": "Une erreur s'est produite lors de votre connexion",
   "txt_message_error_signup": "Une erreur s'est produite lors de votre inscription",
   "txt_want_login": "Souhaitez vous connecter ?",
-  "txt_want_signup": "Souhaitez vous inscrire ?"
+  "txt_want_signup": "Souhaitez vous inscrire ?",
+  "txt_login_credential_email_phone": "Email ou numéro de téléphone",
+  "txt_login_credential_email_phone_validation_message": "Entrée invalide"  
 }
