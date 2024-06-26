@@ -19,9 +19,11 @@ import { logInArgsSchema } from "../../zod-model/auth";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import SnackAlert from "../../components/snackAlert/SnackAlert";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LogingPage: React.FC = ({}) => {
+  //to navigate
+  const navigate = useNavigate();
   //use for translation
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
@@ -77,6 +79,7 @@ const LogingPage: React.FC = ({}) => {
         "accessToken",
         loginResponse.payload.data.accessToken
       );
+      navigate("/teacher/exercises");
     } else {
       handleErreur();
       return;

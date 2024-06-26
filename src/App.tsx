@@ -12,6 +12,7 @@ import SignupPage from "./pages/signupPage/SignupPage";
 import LogingPage from "./pages/loginPage/LoginPage";
 import Header from "./components/header/Header";
 import Layout from "./components/layout/Layout";
+import Exercises from "./pages/Teacher/exercises/Exercises";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/" element={<Navigate to="/signup" />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LogingPage />} />
+            <Route path="/teacher/exercises" element={<Exercises />} />
           </Routes>
         </Layout>
       </Router>

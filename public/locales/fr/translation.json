@@ -21,5 +21,13 @@
   "txt_want_login": "Souhaitez vous connecter ?",
   "txt_want_signup": "Souhaitez vous inscrire ?",
   "txt_login_credential_email_phone": "Email ou numéro de téléphone",
-  "txt_login_credential_email_phone_validation_message": "Entrée invalide"  
+  "txt_login_credential_email_phone_validation_message": "Entrée invalide",
+  "txt_dashboard": "Tableau de bord",
+  "txt_profile": "Profil",
+  "txt_manage_exercises": "Gérer les exercices",
+  "txt_manage_lessons": "Gérer les leçons",
+  "txt_manage_subjects": "Gérer les matières",
+  "txt_manage_chapters": "Gérer les chapitres",
+  "txt_manage_trimesters": "Gérer les trimestres",
+  "txt_menu": "Menu"
 }

@@ -2,8 +2,14 @@ import React from "react";
 import { AppBar, Toolbar, Box, Typography } from "@mui/material";
 
 import LanguageChanger from "../languageChanger/LanguageChanger";
+import SideDrawer from "../drawer/SideDrawer";
+import { useLocation } from "react-router-dom";
 
 const Header: React.FC = () => {
+  const location = useLocation();
+  const shouldShowSideDrawer =
+    location.pathname !== "/login" && location.pathname !== "/signup";
+
   return (
     <AppBar
       position="static"
@@ -15,8 +21,8 @@ const Header: React.FC = () => {
       }
     >
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {/* for the future in case we want to add something like a logo */}
+        <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
+          {shouldShowSideDrawer ? <SideDrawer /> : <></>}
         </Typography>
         <LanguageChanger></LanguageChanger>
       </Toolbar>

@@ -21,5 +21,13 @@
   "txt_want_login":"Want to login?",
   "txt_want_signup":"Want to signup?",
   "txt_login_credential_email_phone":"Email or Phone number",
-  "txt_login_credential_email_phone_validation_message":"Invalid input"
+  "txt_login_credential_email_phone_validation_message":"Invalid input",
+  "txt_dashboard":"Dashboard",
+  "txt_profile":"Profile",
+  "txt_manage_exercises":"Manage Exercises",
+  "txt_manage_lessons":"Manage Lessons",
+  "txt_manage_subjects":"Manage Subjects",
+  "txt_manage_chapters":"Manage Chapters",
+  "txt_manage_trimesters":"Manage Year Quarters",
+  "txt_menu":"Menu"
 }

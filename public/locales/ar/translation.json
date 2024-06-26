@@ -21,5 +21,13 @@
   "txt_want_login": "هل ترغب في تسجيل الدخول؟",
   "txt_want_signup": "هل ترغب في التسجيل؟",
   "txt_login_credential_email_phone": "البريد الإلكتروني أو رقم الهاتف",
-  "txt_login_credential_email_phone_validation_message": "إدخال غير صالح"
+  "txt_login_credential_email_phone_validation_message": "إدخال غير صالح",
+  "txt_dashboard": "لوحة التحكم",
+  "txt_profile": "الملف الشخصي",
+  "txt_manage_exercises": "إدارة التمارين",
+  "txt_manage_lessons": "إدارة الدروس",
+  "txt_manage_subjects": "إدارة المواد",
+  "txt_manage_chapters": "إدارة الفصول",
+  "txt_manage_trimesters": "إدارة الفصول السنوية",
+  "txt_menu": "القائمة"
 }
