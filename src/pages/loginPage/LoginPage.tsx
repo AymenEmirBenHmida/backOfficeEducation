@@ -101,10 +101,10 @@ const LogingPage: React.FC = ({}) => {
             <CardContent>
               <Grid container rowSpacing={1} spacing={2}>
                 <form
+                  className="xs:w-full sm:w-full md:w-1/2"
                   onSubmit={handleSubmit(onSubmit)}
                   noValidate
                   style={{
-                    width: "50%",
                     display: "flex",
                     flexDirection: "column",
                   }}
@@ -188,7 +188,11 @@ const LogingPage: React.FC = ({}) => {
                     </Link>
                   </Grid>
                 </form>
-                <Grid item xs={6} className="flex justify-center align-center">
+                <Grid
+                  item
+                  xs={6}
+                  className="xs:hidden flex justify-center align-center"
+                >
                   <img src={logoSvg} alt="Logo" className="w-1/2" />
                 </Grid>
               </Grid>

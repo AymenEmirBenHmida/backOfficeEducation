@@ -17,8 +17,11 @@ import { useTranslation } from "react-i18next";
 import SnackAlert from "../../components/snackAlert/SnackAlert";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTheme, useMediaQuery } from "@mui/material";
 
 const SignupPage: React.FC = ({}) => {
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.down("xs"));
   //variable used for translating
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
@@ -101,8 +104,8 @@ const SignupPage: React.FC = ({}) => {
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   noValidate
+                  className="xs:w-full sm:w-full md:w-1/2"
                   style={{
-                    width: "50%",
                     display: "flex",
                     flexDirection: "column",
                   }}
@@ -116,7 +119,7 @@ const SignupPage: React.FC = ({}) => {
                       rules={{
                         required: t("txt_phone_validation_message"),
                         pattern: {
-                          value: /^\d{8}$/, // This regex allows for international phone numbers starting with a "+" and up to 15 digits
+                          value: /^\d{8}$/, // This regex allows numbers that precisely 8 digits
                           message: t("txt_phone_format_validation_message"), // Custom validation message
                         },
                       }}
@@ -209,7 +212,12 @@ const SignupPage: React.FC = ({}) => {
                     </Link>
                   </Grid>
                 </form>
-                <Grid item xs={6} className="flex justify-center align-center">
+
+                <Grid
+                  item
+                  xs={6}
+                  className="xs:hidden flex justify-center align-center"
+                >
                   <img src={schoolSvg} alt="Logo" className="w-1/2" />
                 </Grid>
               </Grid>
