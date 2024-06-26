@@ -61,6 +61,16 @@ const SignupPage: React.FC = ({}) => {
 
         // Check if the login response is valid and the status is OK
         if (loginResponse.payload?.status === "OK") {
+          //saving refresh token
+          localStorage.setItem(
+            "refreshToken",
+            loginResponse.payload.data.refreshToken
+          );
+          //saving accessToken
+          localStorage.setItem(
+            "accessToken",
+            loginResponse.payload.data.accessToken
+          );
           console.log(data);
           console.log("user response ", userResponse);
           console.log("login response ", loginResponse);
