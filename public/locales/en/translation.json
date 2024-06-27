@@ -29,5 +29,6 @@
   "txt_manage_subjects":"Manage Subjects",
   "txt_manage_chapters":"Manage Chapters",
   "txt_manage_trimesters":"Manage Year Quarters",
-  "txt_menu":"Menu"
+  "txt_menu":"Menu",
+  "txt_logout":"Logout"
 }

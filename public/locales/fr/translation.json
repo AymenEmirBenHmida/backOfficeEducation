@@ -29,5 +29,6 @@
   "txt_manage_subjects": "Gérer les matières",
   "txt_manage_chapters": "Gérer les chapitres",
   "txt_manage_trimesters": "Gérer les trimestres",
-  "txt_menu": "Menu"
+  "txt_menu": "Menu",
+  "txt_logout": "Déconnexion"
 }

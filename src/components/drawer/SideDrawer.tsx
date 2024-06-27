@@ -38,15 +38,32 @@ const SideDrawer: React.FC = () => {
             backgroundColor: "#1556A0",
             color: "#fff",
             minWidth: "250px",
+            display: "flex",
+            justifyContent: "center",
           },
         }}
         onClose={() => {
           toggleDrawer(false);
         }}
       >
-        <div className="general-tabs pt-[60px]">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            margin: "0px",
+            flexDirection: "column",
+          }}
+        >
+          <Avatar
+            alt="Dan Abrahmov"
+            src="https://bit.ly/dan-abramov"
+            sx={{ width: 90, height: 90 }}
+          />
+          <div className="mt-[10px]">Profile</div>
+        </div>
+        <div className="flex flex-col items-start mr-10 ml-[20px]">
           <Button
-            variant="outlined"
+            ////variant="outlined"
             className="tab "
             aria-label="Home"
             startIcon={<FaHome />}
@@ -57,7 +74,7 @@ const SideDrawer: React.FC = () => {
             {t("txt_dashboard")}
           </Button>
           <Button
-            variant="outlined"
+            ////variant="outlined"
             className="tab"
             aria-label="students"
             startIcon={<FaUser />}
@@ -69,7 +86,7 @@ const SideDrawer: React.FC = () => {
           </Button>
 
           <Button
-            variant="outlined"
+            ////variant="outlined"
             className="tab"
             aria-label="Home"
             startIcon={<FaBook />}
@@ -81,7 +98,7 @@ const SideDrawer: React.FC = () => {
           </Button>
 
           <Button
-            variant="outlined"
+            ////variant="outlined"
             className="tab"
             aria-label="teachers"
             startIcon={<IoDocumentText />}
@@ -89,7 +106,7 @@ const SideDrawer: React.FC = () => {
             {t("txt_manage_lessons")}
           </Button>
           <Button
-            variant="outlined"
+            //variant="outlined"
             className="tab"
             aria-label="teachers"
             startIcon={<GiBookCover />}
@@ -101,7 +118,7 @@ const SideDrawer: React.FC = () => {
           </Button>
 
           <Button
-            variant="outlined"
+            //variant="outlined"
             className="tab"
             aria-label="absence"
             startIcon={<MdMenuBook />}
@@ -109,7 +126,7 @@ const SideDrawer: React.FC = () => {
             {t("txt_manage_chapters")}
           </Button>
           <Button
-            variant="outlined"
+            //variant="outlined"
             className="tab"
             aria-label="matieres"
             startIcon={<GrScorecard />}
@@ -119,33 +136,16 @@ const SideDrawer: React.FC = () => {
           >
             {t("txt_manage_trimesters")}
           </Button>
-          <div className="spacing">
-            <div className="profile-tab">
-              <div
-                style={{ display: "flex", alignItems: "center", margin: "0px" }}
+          <div className="w-full mt-[15px]">
+            <div className="flex justify-center items-center">
+              <Button
+                variant="contained"
+                className="!bg-accent !normal-case  "
+                sx={{ color: "black" }}
+                endIcon={<IoLogOutOutline />}
               >
-                <Avatar
-                  alt="Dan Abrahmov"
-                  src="https://bit.ly/dan-abramov"
-                  sx={{ width: 40, height: 40 }}
-                />
-                <div style={{ marginLeft: "10px" }}>Profile</div>
-              </div>
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <IconButton
-                  aria-label="notifications"
-                  sx={{ padding: 0, margin: 0, color: "white" }}
-                >
-                  <FaBell />
-                </IconButton>
-                <IconButton
-                  aria-label="logout"
-                  // onClick={logOut}
-                  sx={{ padding: 0, margin: 0, color: "white" }}
-                >
-                  <IoLogOutOutline />
-                </IconButton>
-              </div>
+                {t("txt_logout")}
+              </Button>
             </div>
           </div>
         </div>

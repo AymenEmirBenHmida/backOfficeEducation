@@ -1,3 +1,6 @@
+import { Commercial } from "./Commercial";
+import { Teacher } from "./Teacher";
+
 export interface Admin {
   id: string;
   token: string;
@@ -8,3 +11,4 @@ export interface Admin {
   role: String;
   password: String;
 }
+

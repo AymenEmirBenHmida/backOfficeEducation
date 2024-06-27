@@ -3,26 +3,13 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Commercial } from "../interfaces/Commercial";
 import { Teacher } from "../interfaces/Teacher";
 import { Admin } from "../interfaces/Admin";
+import { AdminState } from "../interfaces/AdminState";
+import CryptoJS from "crypto-js"; // Import crypto-js library
 
 interface FetchUsersResponse {
   totalUsers: number;
   commercial: Commercial[];
   teacher: Teacher[];
-}
-
-interface adminState {
-  isLoading: boolean;
-  error: string | null;
-  data: any;
-  totalPercentage: Record<string, number> | null;
-  chapitreId: string; // Ajouter la propriété chapitreId
-  totalHours: number | null; // Ajouter la propriété totalHours
-  commercial: Commercial[];
-  teacher: Teacher[];
-  admin: Admin[];
-  loading: boolean; // Ajoutez la propriété `loading` ici
-  status: "idle" | "loading" | "succeeded" | "failed";
-  totalUsers: number;
 }
 
 export const getAllCommercial = createAsyncThunk(
@@ -254,11 +241,12 @@ export const loginUser = createAsyncThunk(
       throw new Error("Failed to login");
     }
     const data = await response.json();
-
+    console.log(data);
     // Stocker le token dans le localStorage après la connexion réussie
-    localStorage.setItem("TokenCommercial", data.data.accessToken);
-
-    return data; // Assurez-vous que la réponse contient un objet avec une propriété payload
+    const role = data.data?.user?.user_metadata?.role || "guest";
+    localStorage.setItem("accessToken", data.data.accessToken);
+    localStorage.setItem("refreshToken", data.data.refreshToken);
+    return { ...data, role }; // Assurez-vous que la réponse contient un objet avec une propriété payload
   }
 );
 
@@ -319,10 +307,22 @@ export const updateAdmin = createAsyncThunk(
   }
 );
 
+const decryptRole = (): string => {
+  const bytes = CryptoJS.AES.decrypt(
+    localStorage.getItem("encryptedRole")!,
+    process.env.REACT_APP_SECRET_KEY!
+  );
+  const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+  return decrypted;
+};
+
 // Définir le slice Redux pour gérer l'état
 const adminState = createSlice({
   name: "admin",
   initialState: {
+    user: null,
+    role: decryptRole() || null, // Get encrypted role from localStorage
+
     chapitreId: "",
     totalHours: null,
     totalPercentage: null,
@@ -335,7 +335,7 @@ const adminState = createSlice({
     loading: false,
     status: "idle",
     totalUsers: 0,
-  } as adminState,
+  } as AdminState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -524,6 +524,13 @@ const adminState = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.user = action.payload.data.user;
+        state.role = action.payload.role;
+        const encryptedRole = CryptoJS.AES.encrypt(
+          action.payload.role,
+          process.env.REACT_APP_SECRET_KEY!
+        ).toString();
+        localStorage.setItem("role", encryptedRole);
         localStorage.setItem(
           "TokenCommercial",
           action.payload.data.accessToken
@@ -556,3 +563,5 @@ const adminState = createSlice({
 });
 
 export default adminState.reducer;
+export const selectUserRole = (state: { admin: AdminState }) =>
+  state.admin.role; // Sélecteur pour accéder au rôle

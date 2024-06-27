@@ -74,9 +74,7 @@ const SignupPage: React.FC = ({}) => {
             "accessToken",
             loginResponse.payload.data.accessToken
           );
-          console.log(data);
-          console.log("user response ", userResponse);
-          console.log("login response ", loginResponse);
+          
         } else {
           handleErreur();
         }

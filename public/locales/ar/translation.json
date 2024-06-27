@@ -29,5 +29,6 @@
   "txt_manage_subjects": "إدارة المواد",
   "txt_manage_chapters": "إدارة الفصول",
   "txt_manage_trimesters": "إدارة الفصول السنوية",
-  "txt_menu": "القائمة"
+  "txt_menu": "القائمة",
+  "txt_logout": "تسجيل الخروج"
 }

@@ -11,15 +11,16 @@ import {
 import logoSvg from "/images/school-svgrepo-com.svg";
 
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/src/redux/Store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../redux/Store";
 import { loginUser } from "../../redux/adminSlice";
 import { FormData } from "../../interfaces/FormData";
 import { logInArgsSchema } from "../../zod-model/auth";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SnackAlert from "../../components/snackAlert/SnackAlert";
 import { Link, useNavigate } from "react-router-dom";
+import { selectUserRole } from "../../redux/adminSlice";
 
 const LogingPage: React.FC = ({}) => {
   //to navigate
@@ -27,6 +28,8 @@ const LogingPage: React.FC = ({}) => {
   //use for translation
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  const userRole = useSelector(selectUserRole);
+
   //variables used to open and close the snack bar message
   const [open, setOpen] = useState(false);
 
@@ -66,7 +69,6 @@ const LogingPage: React.FC = ({}) => {
       password: data.password,
     };
     const loginResponse = await dispatch(loginUser(requestBody));
-    console.log(loginResponse.payload);
 
     if (loginResponse.payload?.status === "OK") {
       //saving refresh token
@@ -79,15 +81,14 @@ const LogingPage: React.FC = ({}) => {
         "accessToken",
         loginResponse.payload.data.accessToken
       );
-      navigate("/teacher/exercises");
     } else {
       handleErreur();
       return;
     }
-
-    console.log(data);
-    console.log("login response " + loginResponse);
   };
+  useEffect(() => {
+    if (userRole === "Teacher") navigate("/teacher/exercises");
+  }, [userRole]);
 
   return (
     <>
@@ -97,7 +98,6 @@ const LogingPage: React.FC = ({}) => {
             sx={{ backgroundColor: "#eeee", padding: "2em" }}
             variant="outlined"
           >
-            {" "}
             <h1 className="m-0 text-2xl font-semibold leading-1.3 pb-15">
               {t("txt_login_account")}
             </h1>
