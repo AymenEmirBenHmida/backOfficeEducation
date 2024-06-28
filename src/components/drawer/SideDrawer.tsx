@@ -8,6 +8,7 @@ import { CiMenuBurger, CiViewList } from "react-icons/ci";
 import { GiBookCover } from "react-icons/gi";
 import { MdMenuBook } from "react-icons/md";
 import { GrScorecard } from "react-icons/gr";
+import profile from "/images/profile.svg";
 import "./SideDrawer.css";
 
 import { useTranslation } from "react-i18next";
@@ -56,10 +57,10 @@ const SideDrawer: React.FC = () => {
         >
           <Avatar
             alt="Dan Abrahmov"
-            src="https://bit.ly/dan-abramov"
+            src={profile}
             sx={{ width: 90, height: 90 }}
           />
-          <div className="mt-[10px]">Profile</div>
+          <div className="mt-[10px]">{t("txt_profile")}</div>
         </div>
         <div className="flex flex-col items-start mr-10 ml-[20px]">
           <Button

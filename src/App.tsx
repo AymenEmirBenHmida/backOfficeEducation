@@ -35,6 +35,7 @@ const routes: RouteConfig[] = [
 function App() {
   //get current role
   const role = useSelector(selectUserRole);
+  console.log(role);
   //Function to check if user allowed to route
   const isRouteAllowed = (route: RouteConfig): boolean => {
     if (route.requiredRoles.length === 0) {

@@ -6,6 +6,11 @@ import { Admin } from "../interfaces/Admin";
 import { AdminState } from "../interfaces/AdminState";
 import CryptoJS from "crypto-js"; // Import crypto-js library
 
+const key = import.meta.env.VITE_SECRET_KEY;
+if (!key) {
+  throw new Error("secret key is undefined");
+}
+
 interface FetchUsersResponse {
   totalUsers: number;
   commercial: Commercial[];
@@ -308,12 +313,19 @@ export const updateAdmin = createAsyncThunk(
 );
 
 const decryptRole = (): string => {
-  const bytes = CryptoJS.AES.decrypt(
-    localStorage.getItem("encryptedRole")!,
-    process.env.REACT_APP_SECRET_KEY!
-  );
-  const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-  return decrypted;
+  try {
+    const role = localStorage.getItem("role");
+    console.log("key ", key);
+    if (role !== null) {
+      const bytes = CryptoJS.AES.decrypt(role, key);
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+      console.log("decrypted role ", decrypted);
+      return decrypted;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+  return "guest";
 };
 
 // Définir le slice Redux pour gérer l'état
@@ -528,7 +540,7 @@ const adminState = createSlice({
         state.role = action.payload.role;
         const encryptedRole = CryptoJS.AES.encrypt(
           action.payload.role,
-          process.env.REACT_APP_SECRET_KEY!
+          key
         ).toString();
         localStorage.setItem("role", encryptedRole);
         localStorage.setItem(
