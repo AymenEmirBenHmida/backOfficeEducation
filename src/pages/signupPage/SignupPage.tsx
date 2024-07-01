@@ -8,20 +8,26 @@ import {
 } from "@mui/material";
 import schoolSvg from "/images/school-svgrepo-com.svg";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/src/redux/Store";
-import { createCompteUser, loginUser } from "../../redux/adminSlice";
+import {
+  createCompteUser,
+  loginUser,
+  selectUserRole,
+} from "../../redux/adminSlice";
 import { FormData } from "../../interfaces/FormData";
 import { signUpArgsSchema } from "../../zod-model/auth";
 import { useTranslation } from "react-i18next";
 import SnackAlert from "../../components/snackAlert/SnackAlert";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTheme, useMediaQuery } from "@mui/material";
 
 const SignupPage: React.FC = ({}) => {
+  const userRole = useSelector(selectUserRole);
+  //to navigate
+  const navigate = useNavigate();
   const theme = useTheme();
-  const isXs = useMediaQuery(theme.breakpoints.down("xs"));
   //variable used for translating
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
@@ -74,7 +80,6 @@ const SignupPage: React.FC = ({}) => {
             "accessToken",
             loginResponse.payload.data.accessToken
           );
-          
         } else {
           handleErreur();
         }
@@ -86,6 +91,10 @@ const SignupPage: React.FC = ({}) => {
       handleErreur();
     }
   };
+
+  useEffect(() => {
+    if (userRole === "Teacher") navigate("/teacher/exercises");
+  }, [userRole]);
   return (
     <>
       <div className="bg-[#ffff] w-full h-[90vh] relative flex items-center justify-center">

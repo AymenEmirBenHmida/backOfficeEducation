@@ -1,6 +1,3 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -10,7 +7,6 @@ import {
 } from "react-router-dom";
 import SignupPage from "./pages/signupPage/SignupPage";
 import LogingPage from "./pages/loginPage/LoginPage";
-import Header from "./components/header/Header";
 import Layout from "./components/layout/Layout";
 import Exercises from "./pages/Teacher/exercises/Exercises";
 import { useSelector } from "react-redux";
@@ -19,12 +15,12 @@ import { selectUserRole } from "./redux/adminSlice";
 type RouteConfig = {
   path: string;
   component: React.ReactNode;
-  requiredRoles: string[];
+  requiredRoles?: string[];
 };
 
 const routes: RouteConfig[] = [
-  { path: "/signup", component: <SignupPage />, requiredRoles: [] },
-  { path: "/login", component: <LogingPage />, requiredRoles: [] },
+  { path: "/signup", component: <SignupPage /> },
+  { path: "/login", component: <LogingPage /> },
   {
     path: "/teacher/exercises",
     component: <Exercises />,
@@ -35,11 +31,14 @@ const routes: RouteConfig[] = [
 function App() {
   //get current role
   const role = useSelector(selectUserRole);
-  console.log(role);
+
   //Function to check if user allowed to route
   const isRouteAllowed = (route: RouteConfig): boolean => {
-    if (route.requiredRoles.length === 0) {
-      return true; // No role required for this route
+    var currentdate = new Date();
+
+    if (!route.requiredRoles || route.requiredRoles.length === 0) {
+      console.log("protected route no roles");
+      return true;
     }
     console.log(
       "resposne from route is protected ",

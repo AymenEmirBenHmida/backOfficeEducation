@@ -5,16 +5,14 @@ import { Teacher } from "../interfaces/Teacher";
 import { Admin } from "../interfaces/Admin";
 import { AdminState } from "../interfaces/AdminState";
 import CryptoJS from "crypto-js"; // Import crypto-js library
+import { jwtDecode } from "jwt-decode";
+import { access } from "fs";
+import { AccessToken } from "../interfaces/AcessToken";
 
+// variable secret key used for encrypting and decrypting role
 const key = import.meta.env.VITE_SECRET_KEY;
 if (!key) {
   throw new Error("secret key is undefined");
-}
-
-interface FetchUsersResponse {
-  totalUsers: number;
-  commercial: Commercial[];
-  teacher: Teacher[];
 }
 
 export const getAllCommercial = createAsyncThunk(
@@ -274,11 +272,9 @@ export const createCompteUser = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-
       if (!response.ok) {
         throw new Error("Failed to create user");
       }
-
       return response.json(); // Assure that the response contains an object with a payload property
     } catch (error) {
       console.error("Error creating user:", error);
@@ -311,16 +307,15 @@ export const updateAdmin = createAsyncThunk(
     }
   }
 );
-
+//decrypt the role
 const decryptRole = (): string => {
   try {
-    const role = localStorage.getItem("role");
-    console.log("key ", key);
-    if (role !== null) {
-      const bytes = CryptoJS.AES.decrypt(role, key);
-      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-      console.log("decrypted role ", decrypted);
-      return decrypted;
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken !== null) {
+      const accessTokenObject: AccessToken = jwtDecode(accessToken);
+
+      const decrypted = accessTokenObject.user_metadata!.role;
+      return decrypted!;
     }
   } catch (error) {
     console.error(error);
@@ -333,7 +328,7 @@ const adminState = createSlice({
   name: "admin",
   initialState: {
     user: null,
-    role: decryptRole() || null, // Get encrypted role from localStorage
+    role: decryptRole() || "guest", // Get encrypted role from localStorage
 
     chapitreId: "",
     totalHours: null,
@@ -348,7 +343,11 @@ const adminState = createSlice({
     status: "idle",
     totalUsers: 0,
   } as AdminState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.role = "guest";
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllCommercial.pending, (state) => {
@@ -538,11 +537,11 @@ const adminState = createSlice({
         state.isLoading = false;
         state.user = action.payload.data.user;
         state.role = action.payload.role;
-        const encryptedRole = CryptoJS.AES.encrypt(
-          action.payload.role,
-          key
-        ).toString();
-        localStorage.setItem("role", encryptedRole);
+        // const encryptedRole = CryptoJS.AES.encrypt(
+        //   action.payload.role,
+        //   key
+        // ).toString();
+        // localStorage.setItem("role", encryptedRole);
         localStorage.setItem(
           "TokenCommercial",
           action.payload.data.accessToken
@@ -575,5 +574,6 @@ const adminState = createSlice({
 });
 
 export default adminState.reducer;
+export const { logout } = adminState.actions;
 export const selectUserRole = (state: { admin: AdminState }) =>
   state.admin.role; // Sélecteur pour accéder au rôle

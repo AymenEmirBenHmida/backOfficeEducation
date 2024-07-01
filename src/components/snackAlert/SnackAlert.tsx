@@ -1,4 +1,3 @@
-import { LayoutProps } from "@/src/interfaces/LayoutProps";
 import { SnackAlertProps } from "@/src/interfaces/SnackAlertProps";
 import { Alert, Snackbar } from "@mui/material";
 import React from "react";

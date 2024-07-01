@@ -15,7 +15,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../redux/Store";
 import { loginUser } from "../../redux/adminSlice";
 import { FormData } from "../../interfaces/FormData";
-import { logInArgsSchema } from "../../zod-model/auth";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import SnackAlert from "../../components/snackAlert/SnackAlert";
@@ -55,11 +54,6 @@ const LogingPage: React.FC = ({}) => {
   } = useForm<FormData>();
   // login the user
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    //const body = logInArgsSchema.safeParse(data);
-    // if (!body.success) {
-    //   alert("Error validating fields");
-    //   return;
-    // }
     if (!data.identifier) {
       alert("Identifier (email or phone) is required.");
       return;
@@ -89,7 +83,6 @@ const LogingPage: React.FC = ({}) => {
   useEffect(() => {
     if (userRole === "Teacher") navigate("/teacher/exercises");
   }, [userRole]);
-
   return (
     <>
       <div className="bg-[#fffff] h-[90vh] w-full relative flex items-center justify-center">
@@ -98,6 +91,7 @@ const LogingPage: React.FC = ({}) => {
             sx={{ backgroundColor: "#eeee", padding: "2em" }}
             variant="outlined"
           >
+            <div></div>
             <h1 className="m-0 text-2xl font-semibold leading-1.3 pb-15">
               {t("txt_login_account")}
             </h1>
