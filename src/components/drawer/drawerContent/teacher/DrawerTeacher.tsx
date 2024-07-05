@@ -73,7 +73,7 @@ const SideDrawer: React.FC = () => {
           aria-label="Home"
           startIcon={<FaBook />}
           onClick={() => {
-            // router.push("/departements");
+            navigate("/teacher/exercises");
           }}
         >
           {t("txt_manage_exercises")}
@@ -84,6 +84,9 @@ const SideDrawer: React.FC = () => {
           className="tab"
           aria-label="teachers"
           startIcon={<IoDocumentText />}
+          onClick={() => {
+            navigate("/teacher/lessons");
+          }}
         >
           {t("txt_manage_lessons")}
         </Button>

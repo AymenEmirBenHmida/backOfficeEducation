@@ -8,9 +8,11 @@ import {
 import SignupPage from "./pages/signupPage/SignupPage";
 import LogingPage from "./pages/loginPage/LoginPage";
 import Layout from "./components/layout/Layout";
-import Exercises from "./pages/Teacher/exercises/Exercises";
+import Exercises from "./pages/Teacher/exercises/ExercisesPage";
 import { useSelector } from "react-redux";
 import { selectUserRole } from "./redux/adminSlice";
+import LessonsPage from "./pages/Teacher/lessons/LessonsPage";
+import PhoneValidationPage from "./pages/phoneValidationPage/PhoneValidationPage";
 
 type RouteConfig = {
   path: string;
@@ -21,9 +23,16 @@ type RouteConfig = {
 const routes: RouteConfig[] = [
   { path: "/signup", component: <SignupPage /> },
   { path: "/login", component: <LogingPage /> },
+  { path: "/validate-phone", component: <PhoneValidationPage /> },
+
   {
     path: "/teacher/exercises",
     component: <Exercises />,
+    requiredRoles: ["Teacher"],
+  },
+  {
+    path: "/teacher/lessons",
+    component: <LessonsPage />,
     requiredRoles: ["Teacher"],
   },
 ];
@@ -49,10 +58,10 @@ function App() {
   return (
     <>
       <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Navigate to="/signup" />} />
+        <Routes>
+          <Route path="/" element={<Navigate to="/signup" />} />
 
+          <Route path="/" element={<Layout />}>
             {routes.map((route, index) => (
               <Route
                 key={index}
@@ -66,8 +75,8 @@ function App() {
                 }
               />
             ))}
-          </Routes>
-        </Layout>
+          </Route>
+        </Routes>
       </Router>
     </>
   );

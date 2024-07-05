@@ -14,6 +14,7 @@ import {
   createCompteUser,
   loginUser,
   selectUserRole,
+  sendActivationCode,
 } from "../../redux/adminSlice";
 import { FormData } from "../../interfaces/FormData";
 import { signUpArgsSchema } from "../../zod-model/auth";
@@ -22,6 +23,7 @@ import SnackAlert from "../../components/snackAlert/SnackAlert";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTheme, useMediaQuery } from "@mui/material";
+import { TFunction } from "i18next";
 
 const SignupPage: React.FC = ({}) => {
   const userRole = useSelector(selectUserRole);
@@ -33,10 +35,12 @@ const SignupPage: React.FC = ({}) => {
   const dispatch = useDispatch<AppDispatch>();
   //variables used to open and close the snack bar message
   const [open, setOpen] = useState(false);
+  //error message
+  const [errorMessage, setErrorMessage] = useState("");
 
   //function used to open and close the snack bar message
-  const handleErreur = () => {
-    setOpen(!open);
+  const handleErreur = (open: boolean) => {
+    setOpen(open);
   };
   // library that help with handeling forms
   const {
@@ -60,9 +64,40 @@ const SignupPage: React.FC = ({}) => {
           phone: data.phone,
         })
       );
-      userResponse.payload = undefined;
-      // Check if the user creation response is valid and the status is OK
-      if (userResponse.payload?.status === "OK") {
+      console.log(userResponse.payload);
+
+      if (createCompteUser.fulfilled.match(userResponse)) {
+        if (userResponse.payload.data.message) {
+          const error = userResponse.payload as {
+            message: string;
+            status?: string;
+          };
+          if (error.status === "EMAIL_ALREADY_EXIST") {
+            setErrorMessage("txt_email_already");
+            console.log("1", errorMessage);
+
+            handleErreur(true);
+            return;
+          } else if (error.status === "PHONE_ALREADY_EXIST") {
+            setErrorMessage("txt_phone_already");
+            console.log("2", errorMessage);
+            handleErreur(true);
+            return;
+          }
+        }
+      }
+
+      if (userResponse.payload?.data.status === "OK") {
+        if (!userResponse.payload.data.data.app_metadata.phone_confirm) {
+          const response = await dispatch(
+            sendActivationCode({
+              phone: data.phone,
+              password: data.password,
+            })
+          );
+          navigate("/validate-phone");
+          return;
+        }
         // Attempt to log the user in
         const loginResponse = await dispatch(
           loginUser({ identifier: data.email, password: data.password })
@@ -81,14 +116,16 @@ const SignupPage: React.FC = ({}) => {
             loginResponse.payload.data.accessToken
           );
         } else {
-          handleErreur();
+          handleErreur(true);
+          setErrorMessage(t("txt_message_error_signup"));
         }
       } else {
-        handleErreur();
+        handleErreur(true);
+        setErrorMessage(t("txt_message_error_signup"));
       }
     } catch (error) {
       console.error(error);
-      handleErreur();
+      handleErreur(true);
     }
   };
 
@@ -231,8 +268,10 @@ const SignupPage: React.FC = ({}) => {
             </CardContent>
           </Card>
           <SnackAlert
-            handleErreur={handleErreur}
-            message={t("txt_message_error_signup")}
+            handleErreur={() => {
+              handleErreur(false);
+            }}
+            message={t(errorMessage)}
             open={open}
             severity="error"
           />

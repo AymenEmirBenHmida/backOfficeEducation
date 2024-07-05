@@ -7,18 +7,17 @@ import CryptoJS from "crypto-js"; // Import crypto-js library
 import { jwtDecode } from "jwt-decode";
 import { access } from "fs";
 import { AccessToken } from "../interfaces/AcessToken";
-import { CoursInterface } from "../interfaces/LessonInterface";
+import { LessonInterface } from "../interfaces/LessonInterface";
 import axios from "../config/axiosConfig";
 
-
-export const getAllLessons = createAsyncThunk(
+export const getAllLessons = createAsyncThunk<LessonInterface[]>(
   "courses/getAll", // Utilisez le bon nom pour l'action
   async () => {
     try {
-      const response = await axios.get<{ data: CoursInterface[] }>(
+      const response = await axios.get<{ data: LessonInterface[] }>(
         "/api/cours/getAll"
       );
-      return response;
+      return response.data.data;
     } catch (error) {
       throw error;
     }

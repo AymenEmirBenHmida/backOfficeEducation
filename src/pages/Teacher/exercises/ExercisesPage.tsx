@@ -7,34 +7,23 @@ import {
   CardActions,
   CardContent,
   CardMedia,
-  Modal,
   Pagination,
-  TextField,
   Typography,
 } from "@mui/material";
-
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { UseDispatch, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/redux/Store";
+import { LessonInterface } from "@/src/interfaces/LessonInterface";
+import ModalExerciceAdd from "../../../components/modalExerciceAdd/ModalExerciceAdd";
 const Exercises: React.FC = () => {
   const questionTypes = QuestionTypes();
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedTypeImage, setSelectedTypeImage] = useState("");
   const [selectedTypeId, setSelectedTypeId] = useState("");
-  const style = {
-    position: "absolute" as "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "90%", // Default to 90% of the screen width
-    maxWidth: 600, // Maximum width for larger screens
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
+  const [lessons, setLessons] = useState<LessonInterface[]>([]);
+
   const itemPerpage = 6;
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(itemPerpage);
@@ -64,15 +53,16 @@ const Exercises: React.FC = () => {
   const handleClose = () => setOpen(false);
 
   const getLessons = async () => {
-    const data = await dispatch(getAllLessons());
-    console.log(data.payload.data.data);
+    const result = await dispatch(getAllLessons());
+    if (getAllLessons.fulfilled.match(result)) {
+      setLessons(result.payload as LessonInterface[]);
+    } else {
+      console.error("Failed to fetch lessons");
+    }
   };
 
   useEffect(() => {
-    // getLessons();
-    // getLessons();
-
-    console.log("get lessons");
+    getLessons();
   }, []);
 
   return (
@@ -82,13 +72,7 @@ const Exercises: React.FC = () => {
         display={"flex"}
         justifyContent={"end"}
       >
-        <Button
-          variant="contained"
-          sx={{ marginRight: "10px" }}
-          onClick={async () => {
-            await getLessons();
-          }}
-        >
+        <Button variant="contained" sx={{ marginRight: "10px" }}>
           {t("txt_add_an_exercise")}
         </Button>
 
@@ -130,30 +114,24 @@ const Exercises: React.FC = () => {
           );
         })}
       </Box>
-      <Modal
+      <ModalExerciceAdd
+        handleClose={handleClose}
+        lessons={lessons}
         open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <form>
-            <img src={selectedTypeImage} alt="" />
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              {selectedTypeId}
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              <TextField placeholder="name"></TextField>
-            </Typography>
-          </form>{" "}
-        </Box>
-      </Modal>
+        selectedTypeId={selectedTypeId}
+        selectedTypeImage={selectedTypeImage}
+      ></ModalExerciceAdd>
       <Pagination
         count={Math.ceil(questionTypes.length / itemPerpage)}
         page={page}
         onChange={handlePageChange}
         color="primary"
-        style={{ marginTop: "20px", display: "flex", justifyContent: "center" }}
+        style={{
+          paddingTop: "40px",
+          paddingBottom: "40px",
+          display: "flex",
+          justifyContent: "center",
+        }}
       />
     </>
   );

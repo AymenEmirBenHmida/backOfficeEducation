@@ -8,18 +8,12 @@ const Header: React.FC = () => {
   const location = useLocation();
   //show side drawer everywhere except lofin or signup page
   const shouldShowSideDrawer =
-    location.pathname !== "/login" && location.pathname !== "/signup";
+    location.pathname !== "/login" &&
+    location.pathname !== "/signup" &&
+    location.pathname !== "/validate-phone";
 
   return (
-    <AppBar
-      position="static"
-      sx={
-        {
-          // backgroundColor: "white",
-          // boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2) important!",
-        }
-      }
-    >
+    <AppBar position="static">
       <Toolbar>
         <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
           {shouldShowSideDrawer ? <SideDrawer /> : <></>}

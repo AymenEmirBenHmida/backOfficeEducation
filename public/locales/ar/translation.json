@@ -56,5 +56,12 @@
   "txt_consult_an_exercise": "استشارة تمرين",
   "txt_add_an_exercise": "إضافة تمرين",
   "txt_add": "إضافة",
-  "txt_details": "تفاصيل"
+  "txt_details": "تفاصيل",
+  "txt_lessons": "دروس",
+  "txt_lesson": "درس",
+  "txt_email_already": "البريد الإلكتروني مستخدم بالفعل.",
+  "txt_phone_already": "رقم الهاتف مستخدم بالفعل.",
+  "txt_code": "كود",
+  "txt_verify": "تحقق",
+  "txt_phone_verification": "التحقق من الهاتف"
 }

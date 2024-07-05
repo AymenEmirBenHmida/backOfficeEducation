@@ -8,7 +8,10 @@ import CryptoJS from "crypto-js"; // Import crypto-js library
 import { jwtDecode } from "jwt-decode";
 import { access } from "fs";
 import { AccessToken } from "../interfaces/AcessToken";
-
+import {
+  activateUserService,
+  sendActivationService,
+} from "./../services/authService";
 // variable secret key used for encrypting and decrypting role
 const key = import.meta.env.VITE_SECRET_KEY;
 if (!key) {
@@ -253,6 +256,39 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const sendActivationCode = createAsyncThunk(
+  "user/activation-code",
+  async ({ phone, password }: { phone: string; password: string }) => {
+    try {
+      const response = await sendActivationService(phone, password);
+      return response;
+    } catch (error) {}
+  }
+);
+
+export const activateUser = createAsyncThunk(
+  "user/activation-code",
+  async ({
+    phone,
+    password,
+    email,
+    verificationCode,
+  }: {
+    phone: string;
+    password: string;
+    email: string;
+    verificationCode: string;
+  }) => {
+    try {
+      const response = await activateUserService({
+        email: email,
+        password: password,
+        verificationCode: verificationCode,
+      });
+      return response;
+    } catch (error) {}
+  }
+);
 export const createCompteUser = createAsyncThunk(
   "admin/createCompteUser",
   async ({
@@ -272,10 +308,12 @@ export const createCompteUser = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-      if (!response.ok) {
-        throw new Error("Failed to create user");
+      console.log(response);
+      const data = await response.json();
+      if (data.status === "OK") {
+        return { data, email, password, phone };
       }
-      return response.json(); // Assure that the response contains an object with a payload property
+      return data; // Assure that the response contains an object with a payload property
     } catch (error) {
       console.error("Error creating user:", error);
       throw error; // Rethrow the error to handle it in Redux thunk dispatch
@@ -508,10 +546,23 @@ const adminState = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(createCompteUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        console.log("Utilisateur créé avec succès:", action.payload);
-      })
+      .addCase(
+        createCompteUser.fulfilled,
+        (
+          state,
+          action: PayloadAction<{
+            email: string;
+            password: string;
+            phone: string;
+          }>
+        ) => {
+          state.isLoading = false;
+          state.userInfo!.password = action.payload.password;
+          state.userInfo!.email = action.payload.email;
+          state.userInfo!.phone = action.payload.phone;
+          console.log("Utilisateur créé avec succès:", action.payload);
+        }
+      )
       .addCase(createCompteUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message as string;
@@ -577,3 +628,5 @@ export default adminState.reducer;
 export const { logout } = adminState.actions;
 export const selectUserRole = (state: { admin: AdminState }) =>
   state.admin.role; // Sélecteur pour accéder au rôle
+export const selectUserInfo = (state: { admin: AdminState }) =>
+  state.admin.userInfo!; // Sélecteur pour accéder au rôle

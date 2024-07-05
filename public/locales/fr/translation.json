@@ -57,5 +57,12 @@
   "txt_consult_an_exercise": "Consulter un exercice",
   "txt_add_an_exercise": "Ajouter un exercice",
   "txt_add": "Ajouter",
-  "txt_details": "Détails"
+  "txt_details": "Détails",
+  "txt_lessons": "Leçons",
+  "txt_lesson": "Leçon",
+  "txt_email_already": "L'email est déjà utilisé.",
+  "txt_phone_already": "Le numéro de téléphone est déjà utilisé.",
+  "txt_code": "Code",
+  "txt_verify": "Vérifier",
+  "txt_phone_verification": "Vérification du téléphone"
 }

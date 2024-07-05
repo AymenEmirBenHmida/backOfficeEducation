@@ -56,5 +56,12 @@
   "txt_consult_an_exercise": "Consult an Exercise",
   "txt_add_an_exercise": "Add an Exercise",
   "txt_add": "Add",
-  "txt_details": "Details"
+  "txt_details": "Details",
+  "txt_lessons": "Lessons",
+  "txt_lesson": "Lesson",
+  "txt_email_already": "Email is already in use.",
+  "txt_phone_already": "Phone number is already in use.",
+  "txt_code": "Code",
+  "txt_verify": "Verify",
+  "txt_phone_verification": "Phone Verification"
 }

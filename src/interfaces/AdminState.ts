@@ -3,6 +3,11 @@ import { Commercial } from "./Commercial";
 import { Teacher } from "./Teacher";
 
 export interface AdminState {
+  userInfo?: {
+    password?: string;
+    email?: string;
+    phone?: string;
+  };
   isLoading: boolean;
   error: string | null;
   data: any;
