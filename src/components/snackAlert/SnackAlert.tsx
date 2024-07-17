@@ -1,4 +1,4 @@
-import { SnackAlertProps } from "@/src/interfaces/SnackAlertProps";
+import { SnackAlertProps } from "@/interfaces/SnackAlertProps";
 import { Alert, Snackbar } from "@mui/material";
 import React from "react";
 

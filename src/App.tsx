@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { selectUserRole } from "./redux/adminSlice";
 import LessonsPage from "./pages/Teacher/lessons/LessonsPage";
 import PhoneValidationPage from "./pages/phoneValidationPage/PhoneValidationPage";
+import AuthWrapper from "./components/authWrapper/AuthWrapper";
 
 type RouteConfig = {
   path: string;
@@ -67,11 +68,9 @@ function App() {
                 key={index}
                 path={route.path}
                 element={
-                  isRouteAllowed(route) ? (
-                    route.component
-                  ) : (
-                    <Navigate to="/login" />
-                  )
+                  <AuthWrapper requiredRoles={route.requiredRoles}>
+                    {route.component}
+                  </AuthWrapper>
                 }
               />
             ))}

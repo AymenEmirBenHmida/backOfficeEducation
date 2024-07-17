@@ -13,9 +13,10 @@ import {
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/src/redux/Store";
-import { LessonInterface } from "@/src/interfaces/LessonInterface";
 import ModalExerciceAdd from "../../../components/modalExerciceAdd/ModalExerciceAdd";
+import { LessonInterface } from "@/interfaces/LessonInterface";
+import { AppDispatch } from "@/redux/Store";
+import { refreshTokenService } from "@/services/authService";
 const Exercises: React.FC = () => {
   const questionTypes = QuestionTypes();
   const { t } = useTranslation();
@@ -60,9 +61,15 @@ const Exercises: React.FC = () => {
       console.error("Failed to fetch lessons");
     }
   };
+  const getRefreshToken = async () => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    const response = await refreshTokenService({ refreshToken: refreshToken! });
+    console.log(response);
+  };
 
   useEffect(() => {
     getLessons();
+   // getRefreshToken();
   }, []);
 
   return (

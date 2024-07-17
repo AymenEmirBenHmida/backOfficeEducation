@@ -1,17 +1,15 @@
-import axios from "axios";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Commercial } from "../interfaces/Commercial";
 import { Teacher } from "../interfaces/Teacher";
 import { Admin } from "../interfaces/Admin";
 import { AdminState } from "../interfaces/AdminState";
-import CryptoJS from "crypto-js"; // Import crypto-js library
 import { jwtDecode } from "jwt-decode";
-import { access } from "fs";
 import { AccessToken } from "../interfaces/AcessToken";
 import {
   activateUserService,
   sendActivationService,
 } from "./../services/authService";
+import axios from "@/config/axiosConfig";
 // variable secret key used for encrypting and decrypting role
 const key = import.meta.env.VITE_SECRET_KEY;
 if (!key) {
@@ -222,6 +220,7 @@ export const createTechear = createAsyncThunk(
     }
   }
 );
+
 export const loginUser = createAsyncThunk(
   "admin/login",
   async ({
@@ -232,27 +231,33 @@ export const loginUser = createAsyncThunk(
     password: string;
   }) => {
     const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
-    const response = await fetch("http://localhost:3000/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify(
-        isEmail
-          ? { email: identifier, password }
-          : { phone: identifier, password }
-      ),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/login",
+        {
+          email: isEmail ? identifier : undefined,
+          phone: !isEmail ? identifier : undefined,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = response.data;
+
+      // Store tokens and role in localStorage
+      const role = data.data?.user?.user_metadata?.role || "guest";
+      localStorage.setItem("accessToken", data.data.accessToken);
+      localStorage.setItem("refreshToken", data.data.refreshToken);
+
+      return { ...data, role }; // Ensure the response contains an object with a property payload
+    } catch (error) {
       throw new Error("Failed to login");
     }
-    const data = await response.json();
-    console.log(data);
-    // Stocker le token dans le localStorage après la connexion réussie
-    const role = data.data?.user?.user_metadata?.role || "guest";
-    localStorage.setItem("accessToken", data.data.accessToken);
-    localStorage.setItem("refreshToken", data.data.refreshToken);
-    return { ...data, role }; // Assurez-vous que la réponse contient un objet avec une propriété payload
   }
 );
 
@@ -301,19 +306,22 @@ export const createCompteUser = createAsyncThunk(
     phone: string;
   }) => {
     try {
-      const response = await fetch("http://localhost:3000/api/auth/signup", {
-        method: "POST",
-        body: JSON.stringify({ email, password, phone }), // Include IP address in request body
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log(response);
-      const data = await response.json();
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/signup",
+        { email, password, phone },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = response.data;
+
       if (data.status === "OK") {
         return { data, email, password, phone };
       }
-      return data; // Assure that the response contains an object with a payload property
+      return data; // Ensure the response contains an object with a payload property
     } catch (error) {
       console.error("Error creating user:", error);
       throw error; // Rethrow the error to handle it in Redux thunk dispatch
@@ -384,6 +392,9 @@ const adminState = createSlice({
   reducers: {
     logout: (state) => {
       state.role = "guest";
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("TokenCommercial");
     },
   },
   extraReducers: (builder) => {

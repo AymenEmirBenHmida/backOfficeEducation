@@ -12,7 +12,8 @@ import qcmMultiAnswerPhraseSmallImage from "/images/QCM_MULTI_ANSWER_PHRASE_SMAL
 import arrowSoundImage from "/images/ARROW_SOUND.png";
 import { useTranslation } from "react-i18next";
 
-const QuestionTypes = () => {
+const 
+QuestionTypes = () => {
   interface QuestionType {
     id: string;
     name: string;

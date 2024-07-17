@@ -9,7 +9,6 @@ import {
 import schoolSvg from "/images/school-svgrepo-com.svg";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "@/src/redux/Store";
 import {
   createCompteUser,
   loginUser,
@@ -22,8 +21,8 @@ import { useTranslation } from "react-i18next";
 import SnackAlert from "../../components/snackAlert/SnackAlert";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useTheme, useMediaQuery } from "@mui/material";
-import { TFunction } from "i18next";
+import { useTheme } from "@mui/material";
+import { AppDispatch } from "@/redux/Store";
 
 const SignupPage: React.FC = ({}) => {
   const userRole = useSelector(selectUserRole);

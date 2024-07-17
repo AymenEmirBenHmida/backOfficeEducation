@@ -1,12 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { Commercial } from "../interfaces/Commercial";
-import { Teacher } from "../interfaces/Teacher";
-import { Admin } from "../interfaces/Admin";
 import { AdminState } from "../interfaces/AdminState";
-import CryptoJS from "crypto-js"; // Import crypto-js library
-import { jwtDecode } from "jwt-decode";
-import { access } from "fs";
-import { AccessToken } from "../interfaces/AcessToken";
 import { LessonInterface } from "../interfaces/LessonInterface";
 import axios from "../config/axiosConfig";
 

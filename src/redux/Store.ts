@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import adminReducer from "./adminSlice";
 import lessonReducer from "./lessonSlice";
+import exerciceSlice from "./exerciceSlice";
 const store = configureStore({
   reducer: {
     admin: adminReducer,
-    lesson:lessonReducer
+    lesson: lessonReducer,
+    exercice: exerciceSlice,
   },
 });
 

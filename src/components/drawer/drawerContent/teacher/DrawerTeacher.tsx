@@ -20,11 +20,9 @@ const SideDrawer: React.FC = () => {
   const dispatch = useDispatch();
   //logout
   const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("TokenCommercial");
+    
     dispatch(logoutRedux());
-    navigate("/login");
+    // navigate("/login");
   };
   return (
     <>
