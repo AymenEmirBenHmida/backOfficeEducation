@@ -103,19 +103,19 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
       {formData.content.options.map((option: any, index: number) => (
         <Box key={index} className="!mt-[15px]">
           <TextField
-            label={`${t("txt_option_image")} ${index + 1}`}
+            label={`${t("txt_text")} ${index + 1}`}
             value={option.text}
             onChange={(e) => handleOptionChange(index, "text", e.target.value)}
             fullWidth
           />
           <TextField
-            label={`image ${index + 1}`}
+            label={`${t("txt_image")} ${index + 1}`}
             value={option.image}
             onChange={(e) => handleOptionChange(index, "image", e.target.value)}
             fullWidth
           />
           <FormControlLabel
-            label={"isCorrect"}
+            label={t("txt_is_correct")}
             control={
               <Checkbox
                 checked={option.isCorrect}
@@ -126,7 +126,9 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
               />
             }
           />
-          <IconButton onClick={() => removeOption(index)}>remove</IconButton>
+          <IconButton onClick={() => removeOption(index)}>
+            {t("txt_remove")}
+          </IconButton>
         </Box>
       ))}
       <FormControlLabel
@@ -138,11 +140,10 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
             onChange={(e) => handleFormChange("isLocked", e.target.checked)}
           />
         }
-        label="Locked"
+        label={t("txt_locked")}
       />
       <Button onClick={addOption} className="!mt-[15px]">
-        {/* <AddIcon /> {t("txt_add_option")} */}
-        add
+        {t("txt_add")}
       </Button>
       <Button
         className="!mt-[15px]"

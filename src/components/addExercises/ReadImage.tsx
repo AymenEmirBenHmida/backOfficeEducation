@@ -73,7 +73,7 @@ const ReadImage: React.FC<ExerciceCreationProps> = ({
             onChange={(e) => handleFormChange("isLocked", e.target.checked)}
           />
         }
-        label="Locked"
+        label={t("txt_locked")}
       />
       <Button
         onClick={async () => {

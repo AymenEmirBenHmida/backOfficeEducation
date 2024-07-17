@@ -111,7 +111,7 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
         >
           <TextField
             className="!mr-[5px]"
-            label={`${t("txt_text1")} ${index + 1}`}
+            label={`1.${t("txt_text")} ${index + 1}`}
             value={tuple.text1}
             onChange={(e) =>
               handleTupleChange(index, "text1", e.target.value, "text1")
@@ -120,7 +120,7 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
           />
           <TextField
             className="!mr-[5px]"
-            label={`${t("txt_order1")} ${index + 1}`}
+            label={`1.${t("txt_order")} ${index + 1}`}
             value={tuple.order1}
             onChange={(e) =>
               handleTupleChange(index, "order1", e.target.value, "order1")
@@ -129,7 +129,7 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
           />
           <TextField
             className="!mr-[5px]"
-            label={`${t("txt_text2")} ${index + 1}`}
+            label={`2.${t("txt_text")} ${index + 1}`}
             value={tuple.text2}
             onChange={(e) =>
               handleTupleChange(index, "text2", e.target.value, "text2")
@@ -138,7 +138,7 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
           />
           <TextField
             className="!mr-[5px]"
-            label={`${t("txt_order2")} ${index + 1}`}
+            label={`2.${t("txt_order")} ${index + 1}`}
             value={tuple.order2}
             onChange={(e) =>
               handleTupleChange(index, "order2", e.target.value, "order2")
@@ -159,7 +159,7 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
             onChange={(e) => handleFormChange("isLocked", e.target.checked)}
           />
         }
-        label="Locked"
+        label={t("txt_add")}
       />
       <Button onClick={addTuple} className="!mt-[15px]">
         {t("txt_add_tuple")}

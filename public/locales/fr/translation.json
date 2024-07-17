@@ -64,5 +64,21 @@
   "txt_phone_already": "Le numéro de téléphone est déjà utilisé.",
   "txt_code": "Code",
   "txt_verify": "Vérifier",
-  "txt_phone_verification": "Vérification du téléphone"
+  "txt_phone_verification": "Vérification du téléphone",
+  "txt_submit": "Soumettre",
+  "txt_locked": "Verrouillé",
+  "txt_link": "Lien",
+  "txt_text": "Texte",
+  "txt_option_imag": "Image",
+  "txt_background": "Arrière-plan",
+  "txt_image": "Image",
+  "txt_is_correct": "Correct",
+  "txt_add_column": "Ajouter une colonne",
+  "txt_remove": "Supprimer",
+  "txt_order": "Ordre",
+  "txt_correct_order": "Ordre correct",
+  "txt_add_word": "Ajouter un mot",
+  "txt_column_index": "Index de colonne",
+  "txt_sound": "Son",
+  "txt_sound_order": "Ordre du son"
 }

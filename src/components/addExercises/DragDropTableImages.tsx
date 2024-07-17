@@ -115,13 +115,13 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
         <Box key={index} className="!mt-[15px]">
           <TextField
             value={option.text}
-            label={`${t("txt_option_image")} ${index + 1}`}
+            label={`${t("txt_text")} ${index + 1}`}
             onChange={(e) => handleColumnsChange(index, "text", e.target.value)}
             fullWidth
           />
           <TextField
             value={option.background}
-            label={`background ${index + 1}`}
+            label={`${t("txt_background")} ${index + 1}`}
             onChange={(e) =>
               handleColumnsChange(index, "background", e.target.value)
             }
@@ -129,7 +129,7 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
           />
           <TextField
             value={option.image}
-            label={`image ${index + 1}`}
+            label={`${t("txt_image")} ${index + 1}`}
             onChange={(e) =>
               handleColumnsChange(index, "image", e.target.value)
             }
@@ -137,7 +137,7 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
           />
           <TextField
             value={option.columnIndex}
-            label={`columnIndex ${index + 1}`}
+            label={`${t("txt_column_index")} ${index + 1}`}
             type="number"
             onChange={(e) =>
               handleColumnsChange(index, "columnIndex", e.target.value)
@@ -145,7 +145,9 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
             fullWidth
           />
 
-          <IconButton onClick={() => removeOption(index)}>remove</IconButton>
+          <IconButton onClick={() => removeOption(index)}>
+            {t("txt_remove")}
+          </IconButton>
         </Box>
       ))}
       <FormControlLabel
@@ -157,10 +159,10 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
             onChange={(e) => handleFormChange("isLocked", e.target.checked)}
           />
         }
-        label="Locked"
+        label={t("txt_locked")}
       />
       <Button onClick={addOption} className="!mt-[15px]">
-        add
+        {t("txt_locked")}
       </Button>
       <Button
         className="!mt-[15px]"

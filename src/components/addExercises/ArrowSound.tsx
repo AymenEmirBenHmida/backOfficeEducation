@@ -113,7 +113,7 @@ const ArrowSound: React.FC<ExerciceCreationProps> = ({
           />
           <TextField
             className="!mr-[5px]"
-            label={`${t("txt_text_order")} ${index + 1}`}
+            label={`${t("txt_order")} ${index + 1}`}
             value={tuple.textOrder}
             onChange={(e) =>
               handleTupleChange(index, "textOrder", e.target.value)
@@ -150,10 +150,10 @@ const ArrowSound: React.FC<ExerciceCreationProps> = ({
             onChange={(e) => handleFormChange("isLocked", e.target.checked)}
           />
         }
-        label="Locked"
+        label={t("txt_locked")}
       />
       <Button onClick={addTuple} className="!mt-[15px]">
-        {t("txt_add_tuple")}
+        {t("txt_add")}
       </Button>
       <Button
         className="!mt-[15px]"

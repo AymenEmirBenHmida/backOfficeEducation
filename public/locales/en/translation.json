@@ -63,5 +63,21 @@
   "txt_phone_already": "Phone number is already in use.",
   "txt_code": "Code",
   "txt_verify": "Verify",
-  "txt_phone_verification": "Phone Verification"
+  "txt_phone_verification": "Phone Verification",
+  "txt_submit": "Submit",
+  "txt_locked": "Locked",
+  "txt_link": "Link",
+  "txt_text": "Text",
+  "txt_option_imag": "Image",
+  "txt_background": "Background",
+  "txt_image": "Image",
+  "txt_is_correct": "Correct",
+  "txt_add_column": "Add Column",
+  "txt_remove": "Remove",
+  "txt_order": "Order",
+  "txt_correct_order": "Correct order",
+  "txt_add_word": "Add word",
+  "txt_column_index": "Column index",
+  "txt_sound": "Sound",
+  "txt_sound_order": "Sound order"
 }

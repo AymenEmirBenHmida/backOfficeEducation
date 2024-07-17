@@ -52,7 +52,7 @@ const Video: React.FC<ExerciceCreationProps> = ({
         className="!mt-[15px]"
       />
       <TextField
-        label={"link"}
+        label={t("txt_link")}
         value={formData.content.text || ""}
         onChange={(e) => handleContentChange("link", e.target.value)}
         fullWidth
@@ -67,7 +67,7 @@ const Video: React.FC<ExerciceCreationProps> = ({
             onChange={(e) => handleFormChange("isLocked", e.target.checked)}
           />
         }
-        label="Locked"
+        label={t("txt_locked")}
       />
       <Button
         variant="contained"

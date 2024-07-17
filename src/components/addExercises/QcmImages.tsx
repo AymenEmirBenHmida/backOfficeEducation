@@ -109,13 +109,13 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
         >
           <TextField
             className="!mr-[5px]"
-            label={`${t("txt_option_image")} ${index + 1}`}
+            label={`${t("txt_image")} ${index + 1}`}
             value={option.image}
             onChange={(e) => handleOptionChange(index, "image", e.target.value)}
             fullWidth
           />
           <FormControlLabel
-            label={"isCorrect"}
+            label={t("txt_is_correct")}
             control={
               <Checkbox
                 checked={option.isCorrect}
@@ -140,11 +140,10 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
             onChange={(e) => handleFormChange("isLocked", e.target.checked)}
           />
         }
-        label="Locked"
+        label={t("txt_locked")}
       />
       <Button onClick={addOption} className="!mt-[15px]">
-        {/* <AddIcon /> {t("txt_add_option")} */}
-        add
+        {t("txt_add")}
       </Button>
       <Button
         className="!mt-[15px]"

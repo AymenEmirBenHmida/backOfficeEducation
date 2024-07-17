@@ -63,5 +63,21 @@
   "txt_phone_already": "رقم الهاتف مستخدم بالفعل.",
   "txt_code": "كود",
   "txt_verify": "تحقق",
-  "txt_phone_verification": "التحقق من الهاتف"
+  "txt_phone_verification": "التحقق من الهاتف",
+  "txt_submit": "إرسال",
+  "txt_locked": "مغلق",
+  "txt_link": "رابط",
+  "txt_text": "نص",
+  "txt_option_imag": "صورة",
+  "txt_background": "الخلفية",
+  "txt_image": "صورة",
+  "txt_is_correct": "صحيح",
+  "txt_add_column": "إضافة عمود",
+  "txt_remove": "إزالة",
+  "txt_order": "ترتيب",
+  "txt_correct_order": "الترتيب الصحيح",
+  "txt_add_word": "إضافة كلمة",
+  "txt_column_index": "فهرس العمود",
+  "txt_sound": "صوت",
+  "txt_sound_order": "ترتيب الصوت"
 }

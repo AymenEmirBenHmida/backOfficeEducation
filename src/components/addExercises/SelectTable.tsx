@@ -151,7 +151,7 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
         <Box key={indexColumn} className="!mt-[15px]">
           <TextField
             className="!mt-[5px] !mb-[5px]"
-            label={`${t("txt_option_image")} ${indexColumn + 1}`}
+            label={`${t("txt_text")} ${indexColumn + 1}`}
             value={column.text}
             onChange={(e) =>
               handleColumnChange(indexColumn, "text", e.target.value)
@@ -160,7 +160,7 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
           />
           <TextField
             className="!mt-[5px] !mb-[5px]"
-            label={`background ${indexColumn + 1}`}
+            label={`${t("txt_background")} ${indexColumn + 1}`}
             value={column.background}
             onChange={(e) =>
               handleColumnChange(indexColumn, "background", e.target.value)
@@ -176,7 +176,7 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
             >
               <TextField
                 className="!mr-[5px]"
-                label={`image ${index + 1}`}
+                label={`${t("txt_image")} ${index + 1}`}
                 value={option.image}
                 onChange={(e) =>
                   handleOptionChange(
@@ -189,7 +189,7 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
                 fullWidth
               />
               <FormControlLabel
-                label={"isCorrect"}
+                label={t("txt_is_correct")}
                 control={
                   <Checkbox
                     checked={option.isCorrect}
@@ -214,13 +214,13 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
           <Box className="!mt-[15px]" display={"flex"} flexDirection={"row"}>
             {" "}
             <Button onClick={() => addOptionColumn(indexColumn)}>
-              {t("txt_add_image")}
+              {t("txt_add_column")}
             </Button>
             <Button
               className="!flex !justify-center !align-center"
               onClick={() => removeColumn(indexColumn)}
             >
-              remove
+              {t("txt_remove")}
             </Button>
           </Box>
         </Box>
@@ -235,10 +235,10 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
               onChange={(e) => handleFormChange("isLocked", e.target.checked)}
             />
           }
-          label="Locked"
+          label={t("txt_locked")}
         />
         <Button onClick={addColumn} className="!mt-[15px]">
-          {t("txt_add_text")}
+          {t("txt_add")}
         </Button>
         <Button
           variant="contained"

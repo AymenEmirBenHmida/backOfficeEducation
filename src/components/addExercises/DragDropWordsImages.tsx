@@ -101,26 +101,26 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
       {formData.content.options.map((option: any, index: number) => (
         <Box key={index} className="!mt-[15px]">
           <TextField
-            label={`${t("txt_option_image")} ${index + 1}`}
+            label={`${t("txt_text")} ${index + 1}`}
             value={option.text}
             onChange={(e) => handleOptionChange(index, "text", e.target.value)}
             fullWidth
           />
           <TextField
-            label={`image ${index + 1}`}
+            label={`${t("text_image")} ${index + 1}`}
             value={option.image}
             onChange={(e) => handleOptionChange(index, "image", e.target.value)}
             fullWidth
           />
           <TextField
-            label={`order ${index + 1}`}
+            label={`${t("txt_order")} ${index + 1}`}
             value={option.order}
             type="number"
             onChange={(e) => handleOptionChange(index, "order", e.target.value)}
             fullWidth
           />
 
-          <Button onClick={() => removeOption(index)}>remove</Button>
+          <Button onClick={() => removeOption(index)}>{t("txt_remove")}</Button>
         </Box>
       ))}
       <FormControlLabel
@@ -132,11 +132,10 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
             onChange={(e) => handleFormChange("isLocked", e.target.checked)}
           />
         }
-        label="Locked"
+        label={t("txt_locked")}
       />
       <Button onClick={addOption} className="!mt-[15px]">
-        {/* <AddIcon /> {t("txt_add_option")} */}
-        add
+        {t("txt_add")}
       </Button>
       <Button
         className="!mt-[15px]"

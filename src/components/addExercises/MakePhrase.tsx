@@ -104,14 +104,14 @@ const MakePhrase: React.FC<ExerciceCreationProps> = ({
         >
           <TextField
             className="!mr-[5px]"
-            label={`${t("txt_word_text")} ${index + 1}`}
+            label={`${t("txt_text")} ${index + 1}`}
             value={word.text}
             onChange={(e) => handleWordChange(index, "text", e.target.value)}
             fullWidth
           />
           <TextField
             className="!mr-[5px]"
-            label={`${t("txt_word_order")} ${index + 1}`}
+            label={`${t("txt_order")} ${index + 1}`}
             value={word.order}
             onChange={(e) => handleWordChange(index, "order", e.target.value)}
             fullWidth
@@ -139,7 +139,7 @@ const MakePhrase: React.FC<ExerciceCreationProps> = ({
               onChange={(e) => handleFormChange("isLocked", e.target.checked)}
             />
           }
-          label="Locked"
+          label={t("txt_lcoked")}
         />
         <Button onClick={addWord}>{t("txt_add_word")}</Button>
         <Button

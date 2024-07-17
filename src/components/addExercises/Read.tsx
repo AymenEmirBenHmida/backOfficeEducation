@@ -53,7 +53,7 @@ const Read: React.FC<ExerciceCreationProps> = ({
         className="!mt-[15px]"
       />
       <TextField
-        label={"image"}
+        label={t("txt_image")}
         value={formData.content.text || ""}
         onChange={(e) => handleContentChange("image", e.target.value)}
         fullWidth
@@ -68,7 +68,7 @@ const Read: React.FC<ExerciceCreationProps> = ({
             onChange={(e) => handleFormChange("isLocked", e.target.checked)}
           />
         }
-        label="Locked"
+        label={t("txt_locked")}
       />
       <Button
         variant="contained"
