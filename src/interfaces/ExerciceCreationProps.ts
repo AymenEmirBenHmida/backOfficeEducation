@@ -4,3 +4,8 @@ export interface ExerciceCreationProps {
   selectedLessonId?: string;
   description?: string;
 }
+export interface ExerciceUpdateProps {
+  handleSubmit?: () => void;
+  handleError?: (message:string) => void;
+  selectedExerciceId: string;
+}

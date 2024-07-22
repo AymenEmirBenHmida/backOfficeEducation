@@ -17,6 +17,7 @@ import ModalExerciceAdd from "../../../components/modalExerciceAdd/ModalExercice
 import { LessonInterface } from "@/interfaces/LessonInterface";
 import { AppDispatch } from "@/redux/Store";
 import { refreshTokenService } from "@/services/authService";
+import { useNavigate } from "react-router-dom";
 const Exercises: React.FC = () => {
   const questionTypes = QuestionTypes();
   const { t } = useTranslation();
@@ -24,14 +25,13 @@ const Exercises: React.FC = () => {
   const [selectedTypeImage, setSelectedTypeImage] = useState("");
   const [selectedTypeId, setSelectedTypeId] = useState("");
   const [lessons, setLessons] = useState<LessonInterface[]>([]);
-
   const itemPerpage = 6;
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(itemPerpage);
   const [page, setPage] = useState(1);
   const displayedTypes = questionTypes.slice(startIndex, endIndex);
   const dispatch = useDispatch<AppDispatch>();
-
+  const navigate = useNavigate();
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
     value: number
@@ -61,15 +61,11 @@ const Exercises: React.FC = () => {
       console.error("Failed to fetch lessons");
     }
   };
-  const getRefreshToken = async () => {
-    const refreshToken = localStorage.getItem("refreshToken");
-    const response = await refreshTokenService({ refreshToken: refreshToken! });
-    console.log(response);
-  };
+
+  
 
   useEffect(() => {
     getLessons();
-   // getRefreshToken();
   }, []);
 
   return (
@@ -79,11 +75,14 @@ const Exercises: React.FC = () => {
         display={"flex"}
         justifyContent={"end"}
       >
-        <Button variant="contained" sx={{ marginRight: "10px" }}>
-          {t("txt_add_an_exercise")}
+        <Button
+          variant="contained"
+          onClick={() => {
+            navigate("/teacher/all-exercices");
+          }}
+        >
+          {t("txt_consult_an_exercise")}
         </Button>
-
-        <Button variant="contained">{t("txt_consult_an_exercise")}</Button>
       </Box>
       <Box
         display={"flex"}
@@ -133,7 +132,7 @@ const Exercises: React.FC = () => {
         page={page}
         onChange={handlePageChange}
         color="primary"
-        style={{
+        sx={{
           paddingTop: "40px",
           paddingBottom: "40px",
           display: "flex",

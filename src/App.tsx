@@ -14,6 +14,7 @@ import { selectUserRole } from "./redux/adminSlice";
 import LessonsPage from "./pages/Teacher/lessons/LessonsPage";
 import PhoneValidationPage from "./pages/phoneValidationPage/PhoneValidationPage";
 import AuthWrapper from "./components/authWrapper/AuthWrapper";
+import AllExercises from "./pages/Teacher/exercises/AllExercices";
 
 type RouteConfig = {
   path: string;
@@ -25,7 +26,11 @@ const routes: RouteConfig[] = [
   { path: "/signup", component: <SignupPage /> },
   { path: "/login", component: <LogingPage /> },
   { path: "/validate-phone", component: <PhoneValidationPage /> },
-
+  {
+    path: "/teacher/all-exercices",
+    component: <AllExercises />,
+    requiredRoles: ["Teacher"],
+  },
   {
     path: "/teacher/exercises",
     component: <Exercises />,
