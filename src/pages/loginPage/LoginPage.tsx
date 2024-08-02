@@ -5,8 +5,6 @@ import {
   Grid,
   TextField,
   CircularProgress,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import logoSvg from "/images/school-svgrepo-com.svg";
 

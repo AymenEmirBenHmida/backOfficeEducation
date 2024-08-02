@@ -6,29 +6,49 @@ import {
   Checkbox,
   IconButton,
   Button,
+  Skeleton,
+  CircularProgress,
+  Select,
+  MenuItem,
+  Typography,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { ExerciceCreationProps } from "@/interfaces/ExerciceCreationProps";
+import {
+  ExerciceUpdateProps,
+} from "@/interfaces/ExerciceCrudProps";
+import { LessonInterface } from "@/interfaces/LessonInterface";
+import { AppDispatch } from "@/redux/Store";
+import { useDispatch } from "react-redux";
+import { getExercice, updatExercice } from "@/redux/exerciceSlice";
+import { getAllLessons } from "@/redux/lessonSlice";
 
-const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
-  selectedTypeId,
+const DragDropTableImages: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
-  description,
-  selectedLessonId,
+  selectedExerciceId,
+  handleError,
+  getExercices,
 }) => {
   const { t } = useTranslation();
+  //lessons variable
+  const [lessons, setLessons] = useState<LessonInterface[]>([]);
+  //initial loading variable
+  const [loading, setLoading] = useState(true);
+  //update loading variable
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  //form inputs variable
   const [formData, setFormData] = useState<any>({
-    typeQuestion: selectedTypeId,
+    typeQuestion: "",
     content: {
       text: "",
       options: [{ text: "", isCorrect: false }],
       columns: [{ text: "", background: "" }],
     },
-    courId: selectedLessonId || "",
-    description: description || "",
+    courId: "",
+    description: "",
     isLocked: false,
   });
-
+  //handles changing the content attrbiute
   const handleContentChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -38,7 +58,7 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //remove an option
   const removeOption = (index: number) => {
     const newOptions = [...formData.content.options];
     newOptions.splice(index, 1);
@@ -50,6 +70,7 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //handle changing the columns attribute
   const handleColumnsChange = (index: number, field: string, value: any) => {
     const newColumns = formData.content.columns
       ? [...formData.content.columns]
@@ -78,7 +99,7 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
     }
     console.log(formData);
   };
-
+  //add option
   const addOption = () => {
     setFormData((prev: any) => ({
       ...prev,
@@ -88,93 +109,181 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //change the form variable attributes directly under it
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
-
+  //handle updating exercice
+  const handleUpdateExercice = async () => {
+    try {
+      const data = cleanFormData(formData);
+      setUpdateLoading(true);
+      const response = await dispatch(
+        updatExercice({ formData: data, id: selectedExerciceId })
+      ).unwrap();
+      setUpdateLoading(false);
+      if (response && response.statusText === "OK") {
+        console.log("response update ", response);
+        handleSubmit!();
+        await getExercices();
+      } else {
+        handleError!("error");
+      }
+    } catch (error) {
+      handleError!("error");
+      console.log(error);
+    }
+  };
+  //getting exercice
+  const handleGetExercice = async () => {
+    try {
+      const response = await dispatch(getExercice(selectedExerciceId));
+      setFormData(response.payload.data);
+      console.log(response);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    }
+  };
+  //leave out unnecessary attributes
+  const cleanFormData = (data: any) => {
+    const {
+      cour, // Add the attributes you want to remove
+      createById,
+      createdAt,
+      updatedAt,
+      ...cleanedData
+    } = data;
+    return cleanedData;
+  };
+  //getting lessons
+  const getLessons = async () => {
+    const result = await dispatch(getAllLessons());
+    if (getAllLessons.fulfilled.match(result)) {
+      setLessons(result.payload as LessonInterface[]);
+    } else {
+      console.error("Failed to fetch lessons");
+    }
+  };
   useEffect(() => {
-    setFormData((prev: any) => ({
-      ...prev,
-      ["courId"]: selectedLessonId,
-      ["description"]: description,
-    }));
-  }, [selectedLessonId, description]);
+    handleGetExercice();
+    getLessons();
+    console.log("entered use effect");
+  }, []);
   return (
     <>
-      <TextField
-        label={t("txt_text")}
-        value={formData.content.text || ""}
-        onChange={(e) => handleContentChange("text", e.target.value)}
-        fullWidth
-        className="!mt-[15px]"
-      />
-      {formData.content.options.map((option: any, index: number) => (
-        <Box key={index} className="!mt-[15px]">
+      {loading ? (
+        <>
+          {" "}
+          <Skeleton className="!mb-2" />
+          <Skeleton className="!mb-2" animation="wave" />
+          <Skeleton className="!mb-2" />
+          <Skeleton className="!mb-2" />
+          <Skeleton className="!mb-2" />
+        </>
+      ) : (
+        <>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            {formData.typeQuestion}
+          </Typography>
+          <Select
+            value={formData.courId}
+            label={t("txt_lesson")}
+            onChange={(e) => {
+              console.log("lesson id", e.target.value);
+              handleFormChange("courId", e.target.value);
+            }}
+            className="w-full"
+          >
+            {lessons.map((lesson) => (
+              <MenuItem key={lesson.id} value={lesson.id}>
+                {lesson.name}
+              </MenuItem>
+            ))}
+          </Select>
           <TextField
-            value={option.text}
-            label={`${t("txt_text")} ${index + 1}`}
-            onChange={(e) => handleColumnsChange(index, "text", e.target.value)}
+            label={t("txt_text")}
+            value={formData.content.text || ""}
+            onChange={(e) => handleContentChange("text", e.target.value)}
             fullWidth
+            className="!mt-[15px]"
           />
-          <TextField
-            value={option.background}
-            label={`${t("txt_background")} ${index + 1}`}
-            onChange={(e) =>
-              handleColumnsChange(index, "background", e.target.value)
-            }
-            fullWidth
-          />
-          <TextField
-            value={option.image}
-            label={`${t("txt_image")} ${index + 1}`}
-            onChange={(e) =>
-              handleColumnsChange(index, "image", e.target.value)
-            }
-            fullWidth
-          />
-          <TextField
-            value={option.columnIndex}
-            label={`${t("txt_column_index")} ${index + 1}`}
-            type="number"
-            onChange={(e) =>
-              handleColumnsChange(index, "columnIndex", e.target.value)
-            }
-            fullWidth
-          />
+          {formData.content.options.map((option: any, index: number) => (
+            <Box key={index} className="!mt-[15px]">
+              <TextField
+                value={option.text}
+                label={`${t("txt_text")} ${index + 1}`}
+                onChange={(e) =>
+                  handleColumnsChange(index, "text", e.target.value)
+                }
+                fullWidth
+              />
+              <TextField
+                value={option.background}
+                label={`${t("txt_background")} ${index + 1}`}
+                onChange={(e) =>
+                  handleColumnsChange(index, "background", e.target.value)
+                }
+                fullWidth
+              />
+              <TextField
+                value={option.image}
+                label={`${t("txt_image")} ${index + 1}`}
+                onChange={(e) =>
+                  handleColumnsChange(index, "image", e.target.value)
+                }
+                fullWidth
+              />
+              <TextField
+                value={option.columnIndex}
+                label={`${t("txt_column_index")} ${index + 1}`}
+                type="number"
+                onChange={(e) =>
+                  handleColumnsChange(index, "columnIndex", e.target.value)
+                }
+                fullWidth
+              />
 
-          <IconButton onClick={() => removeOption(index)}>
-            {t("txt_remove")}
-          </IconButton>
-        </Box>
-      ))}
-      <FormControlLabel
-        className="!mt-[15px]"
-        control={
-          <Checkbox
-            value={formData.isLocked}
-            checked={formData.isLocked}
-            onChange={(e) => handleFormChange("isLocked", e.target.checked)}
+              <IconButton onClick={() => removeOption(index)}>
+                {t("txt_remove")}
+              </IconButton>
+            </Box>
+          ))}
+          <FormControlLabel
+            className="!mt-[15px]"
+            control={
+              <Checkbox
+                value={formData.isLocked}
+                checked={formData.isLocked}
+                onChange={(e) => handleFormChange("isLocked", e.target.checked)}
+              />
+            }
+            label={t("txt_locked")}
           />
-        }
-        label={t("txt_locked")}
-      />
-      <Button onClick={addOption} className="!mt-[15px]">
-        {t("txt_locked")}
-      </Button>
-      <Button
-        className="!mt-[15px]"
-        variant="contained"
-        color="primary"
-        onClick={async () => {
-          console.log(formData);
-          await handleSubmit({ formData });
-        }}
-      >
-        {t("txt_submit")}
-      </Button>
+          <Button onClick={addOption} className="!mt-[15px]">
+            {t("txt_locked")}
+          </Button>
+          <Button
+            className="!mt-[15px]"
+            variant="contained"
+            color="primary"
+            onClick={async () => {
+              console.log(formData);
+              await handleUpdateExercice();
+            }}
+          >
+            {updateLoading ? (
+              <CircularProgress sx={{ color: "white" }} size={30} />
+            ) : (
+              t("txt_submit")
+            )}
+          </Button>
+        </>
+      )}
     </>
   );
 };

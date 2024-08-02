@@ -8,7 +8,7 @@ import {
   Button,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { ExerciceCreationProps } from "@/interfaces/ExerciceCreationProps";
+import { ExerciceCreationProps } from "@/interfaces/ExerciceCrudProps";
 
 const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
   selectedTypeId,
@@ -17,6 +17,7 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
   selectedLessonId,
 }) => {
   const { t } = useTranslation();
+  //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
@@ -28,7 +29,7 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
     description: description || "",
     isLocked: false,
   });
-
+  //handles changes in content attribute
   const handleContentChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -38,7 +39,7 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //removing an option
   const removeOption = (index: number) => {
     const newOptions = [...formData.content.options];
     newOptions.splice(index, 1);
@@ -50,6 +51,7 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //handles changing then columns attribute
   const handleColumnsChange = (index: number, field: string, value: any) => {
     const newColumns = formData.content.columns
       ? [...formData.content.columns]
@@ -78,7 +80,7 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
     }
     console.log(formData);
   };
-
+  //adds an options
   const addOption = () => {
     setFormData((prev: any) => ({
       ...prev,
@@ -88,13 +90,14 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //change the form variable attributes directly under it
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
-
+  //initialise courId and description inside the form variable
   useEffect(() => {
     setFormData((prev: any) => ({
       ...prev,

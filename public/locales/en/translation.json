@@ -79,5 +79,22 @@
   "txt_add_word": "Add word",
   "txt_column_index": "Column index",
   "txt_sound": "Sound",
-  "txt_sound_order": "Sound order"
+  "txt_sound_order": "Sound order",
+  "txt_actions": "Actions",
+  "txt_course_name": "Course Name",
+  "txt_question_type": "Question Type",
+  "txt_description": "Description",
+  "txt_yes": "Yes",
+  "txt_no": "No",
+  "txt_edit": "Edit",
+  "txt_delete": "Delete",
+  "txt_exercice_delete_alert": "Are you sure you want to delete the exercice?",
+  "txt_agree": "Agree",
+  "txt_disagree": "Disagree",
+  "txt_add_a_lesson": "Add a lesson",
+  "txt_content": "Content",
+  "txt_lesson_delete_alert": "Are you sure you want to delete the lesson?",
+  "txt_images":"Images",
+  "txt_new_images":"New image",
+  "txt_add_image":"Add Image"
 }

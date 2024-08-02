@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
-import { ExerciceCreationProps } from "@/interfaces/ExerciceCreationProps";
+import { ExerciceCreationProps } from "@/interfaces/ExerciceCrudProps";
 
 const ArrowSound: React.FC<ExerciceCreationProps> = ({
   selectedTypeId,
@@ -18,6 +18,7 @@ const ArrowSound: React.FC<ExerciceCreationProps> = ({
   selectedLessonId,
 }) => {
   const { t } = useTranslation();
+  //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
@@ -28,7 +29,7 @@ const ArrowSound: React.FC<ExerciceCreationProps> = ({
     description: description || "",
     isLocked: false,
   });
-
+  //handles changing a tuple
   const handleTupleChange = (index: number, field: string, value: any) => {
     const newTuples = [...formData.content.tuples];
     newTuples[index] = { ...newTuples[index], [field]: value };
@@ -40,7 +41,7 @@ const ArrowSound: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //handles changes in content attribute
   const handleContentChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -50,7 +51,7 @@ const ArrowSound: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //removes a tuple
   const removeTuple = (index: number) => {
     const newTuples = [...formData.content.tuples];
     newTuples.splice(index, 1);
@@ -62,7 +63,7 @@ const ArrowSound: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //add tuple
   const addTuple = () => {
     setFormData((prev: any) => ({
       ...prev,
@@ -75,12 +76,14 @@ const ArrowSound: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //change the form variable attributes directly under it
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
+  //initialise courId and description inside the form variable
   useEffect(() => {
     setFormData((prev: any) => ({
       ...prev,

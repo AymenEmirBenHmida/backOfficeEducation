@@ -5,7 +5,7 @@ interface ActivateUserParams {
   password: string;
   verificationCode: string;
 }
-
+//notify back to send an activation code
 export const sendActivationService = async (
   phone: string,
   password: string
@@ -20,6 +20,7 @@ export const sendActivationService = async (
     throw error;
   }
 };
+//  activate a user
 export const activateUserService = async ({
   phone,
   password,
@@ -37,6 +38,7 @@ export const activateUserService = async ({
     throw error;
   }
 };
+//refresh token
 export const refreshTokenService = async ({
   refreshToken,
 }: {

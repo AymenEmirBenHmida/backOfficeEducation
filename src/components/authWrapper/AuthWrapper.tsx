@@ -1,22 +1,20 @@
+import React from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
-import { Navigate } from "react-router-dom";
 
 interface AuthWrapperProps {
+  route: RouteConfig;
   children: React.ReactNode;
-  requiredRoles?: string[];
 }
 
-const AuthWrapper: React.FC<AuthWrapperProps> = ({
-  children,
-  requiredRoles,
-}) => {
+const AuthWrapper: React.FC<AuthWrapperProps> = ({ route, children }) => {
   const { role } = useAuth();
-  if (!role) {
-    return <Navigate to="/login" />;
-  }
+  const navigate = useNavigate();
 
-  if (requiredRoles && !requiredRoles.includes(role)) {
-    return <Navigate to={"/login"} />;
+  if (route.requiredRoles && route.requiredRoles.length > 0) {
+    if (!role || !route.requiredRoles.includes(role)) {
+      return <Navigate to="/login" replace />;
+    }
   }
 
   return <>{children}</>;

@@ -20,7 +20,6 @@ const SideDrawer: React.FC = () => {
   const dispatch = useDispatch();
   //logout
   const logout = () => {
-    
     dispatch(logoutRedux());
     // navigate("/login");
   };
@@ -83,7 +82,7 @@ const SideDrawer: React.FC = () => {
           aria-label="teachers"
           startIcon={<IoDocumentText />}
           onClick={() => {
-            navigate("/teacher/lessons");
+            navigate("/teacher/all-lessons");
           }}
         >
           {t("txt_manage_lessons")}

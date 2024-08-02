@@ -15,12 +15,7 @@ import LessonsPage from "./pages/Teacher/lessons/LessonsPage";
 import PhoneValidationPage from "./pages/phoneValidationPage/PhoneValidationPage";
 import AuthWrapper from "./components/authWrapper/AuthWrapper";
 import AllExercises from "./pages/Teacher/exercises/AllExercices";
-
-type RouteConfig = {
-  path: string;
-  component: React.ReactNode;
-  requiredRoles?: string[];
-};
+import AllLessons from "./pages/Teacher/lessons/AllLessons";
 
 const routes: RouteConfig[] = [
   { path: "/signup", component: <SignupPage /> },
@@ -29,6 +24,11 @@ const routes: RouteConfig[] = [
   {
     path: "/teacher/all-exercices",
     component: <AllExercises />,
+    requiredRoles: ["Teacher"],
+  },
+  {
+    path: "/teacher/all-lessons",
+    component: <AllLessons />,
     requiredRoles: ["Teacher"],
   },
   {
@@ -47,33 +47,32 @@ function App() {
   //get current role
   const role = useSelector(selectUserRole);
 
-  //Function to check if user allowed to route
-  const isRouteAllowed = (route: RouteConfig): boolean => {
-    var currentdate = new Date();
+  // //Function to check if user allowed to route
+  // const isRouteAllowed = (route: RouteConfig): boolean => {
+  //   var currentdate = new Date();
 
-    if (!route.requiredRoles || route.requiredRoles.length === 0) {
-      console.log("protected route no roles");
-      return true;
-    }
-    console.log(
-      "resposne from route is protected ",
-      role !== null && route.requiredRoles.includes(role)
-    );
-    return role !== null && route.requiredRoles.includes(role);
-  };
+  //   if (!route.requiredRoles || route.requiredRoles.length === 0) {
+  //     console.log("protected route no roles");
+  //     return true;
+  //   }
+  //   console.log(
+  //     "resposne from route is protected ",
+  //     role !== null && route.requiredRoles.includes(role)
+  //   );
+  //   return role !== null && route.requiredRoles.includes(role);
+  // };
   return (
     <>
       <Router>
         <Routes>
           <Route path="/" element={<Navigate to="/signup" />} />
-
           <Route path="/" element={<Layout />}>
             {routes.map((route, index) => (
               <Route
                 key={index}
                 path={route.path}
                 element={
-                  <AuthWrapper requiredRoles={route.requiredRoles}>
+                  <AuthWrapper route={route}>
                     {route.component}
                   </AuthWrapper>
                 }

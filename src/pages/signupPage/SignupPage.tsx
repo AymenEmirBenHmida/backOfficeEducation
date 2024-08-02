@@ -21,14 +21,12 @@ import { useTranslation } from "react-i18next";
 import SnackAlert from "../../components/snackAlert/SnackAlert";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/material";
 import { AppDispatch } from "@/redux/Store";
 
 const SignupPage: React.FC = ({}) => {
   const userRole = useSelector(selectUserRole);
   //to navigate
   const navigate = useNavigate();
-  const theme = useTheme();
   //variable used for translating
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();

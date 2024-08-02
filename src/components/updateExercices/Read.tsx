@@ -10,10 +10,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import {
-  ExerciceCreationProps,
-  ExerciceUpdateProps,
-} from "@/interfaces/ExerciceCreationProps";
+import { ExerciceUpdateProps } from "@/interfaces/ExerciceCrudProps";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/Store";
 import { getExercice, updatExercice } from "@/redux/exerciceSlice";
@@ -24,9 +21,11 @@ const Read: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
   selectedExerciceId,
   handleError,
+  getExercices,
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  //form variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: "",
     content: {
@@ -38,9 +37,11 @@ const Read: React.FC<ExerciceUpdateProps> = ({
     isLocked: false,
   });
   const [loading, setLoading] = useState(true);
+  //update loading variable
   const [updateLoading, setUpdateLoading] = useState(false);
+  //lessons variable
   const [lessons, setLessons] = useState<LessonInterface[]>([]);
-
+  //change content attribute
   const handleContentChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -50,12 +51,14 @@ const Read: React.FC<ExerciceUpdateProps> = ({
       },
     }));
   };
+  //change form variabel
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
+  //leave out unnecessary attributes
   const cleanFormData = (data: any) => {
     const {
       cour, // Add the attributes you want to remove
@@ -66,17 +69,19 @@ const Read: React.FC<ExerciceUpdateProps> = ({
     } = data;
     return cleanedData;
   };
+  //update exercice
   const handleUpdateExercice = async () => {
     try {
       const data = cleanFormData(formData);
       setUpdateLoading(true);
       const response = await dispatch(
         updatExercice({ formData: data, id: selectedExerciceId })
-      );
+      ).unwrap();
       setUpdateLoading(false);
-      if (response.payload.statusText === "OK") {
+      if (response && response.statusText === "OK") {
         console.log("response update ", response);
         handleSubmit!();
+        await getExercices();
       } else {
         handleError!("error");
       }
@@ -85,12 +90,13 @@ const Read: React.FC<ExerciceUpdateProps> = ({
       console.log(error);
     }
   };
-
+  //get exercice
   const handleGetExercice = async () => {
     const response = await dispatch(getExercice(selectedExerciceId));
     setFormData(response.payload.data);
     console.log(response);
   };
+  //getting all lessons
   const getLessons = async () => {
     const result = await dispatch(getAllLessons());
     if (getAllLessons.fulfilled.match(result)) {

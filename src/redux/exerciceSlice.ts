@@ -7,7 +7,7 @@ import {
   getExerciceService,
   updateExerciceService,
 } from "@/services/exerciceService";
-
+//creating exercice
 export const createExercice = createAsyncThunk(
   "exercice/create",
   async ({ formData }: { formData: any }) => {
@@ -18,6 +18,7 @@ export const createExercice = createAsyncThunk(
     } catch (error) {}
   }
 );
+//getting all exercices
 export const getAllExercices = createAsyncThunk("exercice/getAll", async () => {
   try {
     console.log("get all exercices redux");
@@ -26,7 +27,7 @@ export const getAllExercices = createAsyncThunk("exercice/getAll", async () => {
     return response.data;
   } catch (error) {}
 });
-
+//deleting all exercices
 export const deleteExercice = createAsyncThunk(
   "exercice/delete",
   async (id: string) => {
@@ -38,7 +39,7 @@ export const deleteExercice = createAsyncThunk(
     } catch (error) {}
   }
 );
-
+//getting exercice
 export const getExercice = createAsyncThunk(
   "exercice/get",
   async (id: string) => {
@@ -50,7 +51,7 @@ export const getExercice = createAsyncThunk(
     } catch (error) {}
   }
 );
-
+//updating exercice
 export const updatExercice = createAsyncThunk(
   "exercice/update",
   async ({ formData, id }: { formData: any; id: string }) => {

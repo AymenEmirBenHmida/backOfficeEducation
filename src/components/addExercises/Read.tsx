@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TextField, FormControlLabel, Checkbox, Button } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { ExerciceCreationProps } from "@/interfaces/ExerciceCreationProps";
+import { ExerciceCreationProps } from "@/interfaces/ExerciceCrudProps";
 
 const Read: React.FC<ExerciceCreationProps> = ({
   selectedTypeId,
@@ -10,6 +10,7 @@ const Read: React.FC<ExerciceCreationProps> = ({
   selectedLessonId,
 }) => {
   const { t } = useTranslation();
+  //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
@@ -20,7 +21,7 @@ const Read: React.FC<ExerciceCreationProps> = ({
     description: description || "",
     isLocked: false,
   });
-
+  //handle changes in content attribute
   const handleContentChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -30,12 +31,14 @@ const Read: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //change the form variable attributes directly under it
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
+  //initialise courId and description inside the form variable
   useEffect(() => {
     setFormData((prev: any) => ({
       ...prev,

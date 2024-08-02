@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
   baseURL: "http://localhost:3000",
 });
 
-// / Add a request interceptor
+// actions done on every request made
 axiosInstance.interceptors.request.use(
   (config: any) => {
     const token = localStorage.getItem("accessToken");
@@ -27,7 +27,7 @@ axiosInstance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
+//actions done every response gotten
 axiosInstance.interceptors.response.use(
   (response) => {
     console.log("hello");

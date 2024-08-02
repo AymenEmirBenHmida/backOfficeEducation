@@ -7,17 +7,14 @@ import {
   IconButton,
   Button,
   Skeleton,
-  FormControl,
   CircularProgress,
-  Alert,
-  Snackbar,
   Typography,
   Select,
   MenuItem,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
-import { ExerciceUpdateProps } from "@/interfaces/ExerciceCreationProps";
+import { ExerciceUpdateProps } from "@/interfaces/ExerciceCrudProps";
 import { AppDispatch } from "@/redux/Store";
 import { useDispatch } from "react-redux";
 import { getExercice, updatExercice } from "@/redux/exerciceSlice";
@@ -28,9 +25,10 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
   selectedExerciceId,
   handleError,
+  getExercices,
 }) => {
   const { t } = useTranslation();
-  const [lessons, setLessons] = useState<LessonInterface[]>([]);
+  //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: "",
     content: {
@@ -42,10 +40,14 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
     isLocked: false,
     order: 0,
   });
+  //lessons variable
+  const [lessons, setLessons] = useState<LessonInterface[]>([]);
+  //initial loading variable
   const [loading, setLoading] = useState(true);
+  //update loading variable
   const [updateLoading, setUpdateLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-
+  //handle changing the options attribute
   const handleOptionChange = (index: number, field: string, value: any) => {
     const newOptions = [...formData.content.options];
     if (field === "isCorrect") {
@@ -64,6 +66,7 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
       },
     }));
   };
+  //handles changing the content attrbiute
   const handleContentChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -73,7 +76,7 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
       },
     }));
   };
-
+  //remove an option
   const removeOption = (index: number) => {
     const newOptions = [...formData.content.options];
     newOptions.splice(index, 1);
@@ -85,7 +88,7 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
       },
     }));
   };
-
+  //add option
   const addOption = () => {
     setFormData((prev: any) => ({
       ...prev,
@@ -95,24 +98,26 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
       },
     }));
   };
+  //change the form variable attributes directly under it
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
-
+  //handle updating exercice
   const handleUpdateExercice = async () => {
     try {
       const data = cleanFormData(formData);
       setUpdateLoading(true);
       const response = await dispatch(
         updatExercice({ formData: data, id: selectedExerciceId })
-      );
+      ).unwrap();
       setUpdateLoading(false);
-      if (response.payload.statusText === "OK") {
+      if (response && response.statusText === "OK") {
         console.log("response update ", response);
         handleSubmit!();
+        await getExercices();
       } else {
         handleError!("error");
       }
@@ -121,7 +126,7 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
       console.log(error);
     }
   };
-
+  //getting exercice
   const handleGetExercice = async () => {
     try {
       const response = await dispatch(getExercice(selectedExerciceId));
@@ -133,6 +138,7 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
       console.error(error);
     }
   };
+  //leave out unnecessary attributes
   const cleanFormData = (data: any) => {
     const {
       cour, // Add the attributes you want to remove
@@ -143,6 +149,7 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
     } = data;
     return cleanedData;
   };
+  //getting lessons
   const getLessons = async () => {
     const result = await dispatch(getAllLessons());
     if (getAllLessons.fulfilled.match(result)) {

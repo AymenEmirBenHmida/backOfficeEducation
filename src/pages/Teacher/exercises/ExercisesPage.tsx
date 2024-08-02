@@ -16,22 +16,32 @@ import { useDispatch } from "react-redux";
 import ModalExerciceAdd from "../../../components/modalExerciceAdd/ModalExerciceAdd";
 import { LessonInterface } from "@/interfaces/LessonInterface";
 import { AppDispatch } from "@/redux/Store";
-import { refreshTokenService } from "@/services/authService";
 import { useNavigate } from "react-router-dom";
 const Exercises: React.FC = () => {
+  // importing the questions
   const questionTypes = QuestionTypes();
   const { t } = useTranslation();
+  // variable responsible for opening the add modal
   const [open, setOpen] = useState(false);
+  //the selected questions image
   const [selectedTypeImage, setSelectedTypeImage] = useState("");
+  // the selected question type id
   const [selectedTypeId, setSelectedTypeId] = useState("");
+  //lessons
   const [lessons, setLessons] = useState<LessonInterface[]>([]);
+  //number of items per page
   const itemPerpage = 6;
+  //start index for each page
   const [startIndex, setStartIndex] = useState(0);
+  //end index for each page
   const [endIndex, setEndIndex] = useState(itemPerpage);
+  //number of the current page
   const [page, setPage] = useState(1);
+  //the questions types to be actually displayed
   const displayedTypes = questionTypes.slice(startIndex, endIndex);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  //function that for each page change will smoothly return to the top of the list
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
     value: number
@@ -45,14 +55,15 @@ const Exercises: React.FC = () => {
       behavior: "smooth",
     });
   };
-
+  //doing the necessary actions needed to open the add modal
   const handleOpen = (image: string, id: string) => {
     setSelectedTypeId(id);
     setSelectedTypeImage(image);
     setOpen(true);
   };
+  //closing the add modal
   const handleClose = () => setOpen(false);
-
+  //getting all lessons
   const getLessons = async () => {
     const result = await dispatch(getAllLessons());
     if (getAllLessons.fulfilled.match(result)) {
@@ -61,9 +72,7 @@ const Exercises: React.FC = () => {
       console.error("Failed to fetch lessons");
     }
   };
-
-  
-
+  // initially launching the functions necessary
   useEffect(() => {
     getLessons();
   }, []);

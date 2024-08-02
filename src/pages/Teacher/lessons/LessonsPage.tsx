@@ -12,19 +12,20 @@ import {
   TableRow,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 
 const LessonsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  //lessons variable
   const [lessons, setLessons] = useState<LessonInterface[]>([]);
-
+  //getting all lessons
   const getLessons = () => {
     const data = dispatch(getAllLessons());
     if (getAllLessons.fulfilled.match(data)) {
       setLessons(data.payload as LessonInterface[]);
     }
   };
+  // getting all lessons
   useEffect(() => {
     getLessons();
   }, []);

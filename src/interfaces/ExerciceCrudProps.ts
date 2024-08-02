@@ -6,6 +6,8 @@ export interface ExerciceCreationProps {
 }
 export interface ExerciceUpdateProps {
   handleSubmit?: () => void;
-  handleError?: (message:string) => void;
+  getExercices: () => void;
+  handleError?: (message: string) => void;
   selectedExerciceId: string;
+  exerciceData?: any;
 }

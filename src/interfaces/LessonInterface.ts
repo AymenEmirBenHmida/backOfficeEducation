@@ -7,4 +7,6 @@ export interface LessonInterface {
   isLocked: boolean;
   images: [string];
   video: string | null;
+  audio?: string;
+  chapitre?: any;
 }

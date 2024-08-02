@@ -72,6 +72,7 @@ export const fetchUsers = createAsyncThunk(
     }
   }
 );
+//counting users
 export const CountUsers = createAsyncThunk<{ totalUsers: number }, void>(
   "users/CountUsers",
   async (_, { dispatch, rejectWithValue }) => {
@@ -94,6 +95,7 @@ export const CountUsers = createAsyncThunk<{ totalUsers: number }, void>(
     }
   }
 );
+//deleting commercial
 export const deleteCommercialById = createAsyncThunk(
   "admin/deleteCommercialById",
   async (commercialId: string) => {
@@ -116,7 +118,7 @@ export const deleteCommercialById = createAsyncThunk(
     }
   }
 );
-
+//deleting teacher
 export const deleteTeacherById = createAsyncThunk(
   "admin/deleteTeacherById",
   async (teacherId: string) => {
@@ -139,7 +141,7 @@ export const deleteTeacherById = createAsyncThunk(
     }
   }
 );
-
+//update  commercial
 export const updateCommercial = createAsyncThunk(
   "admin/updateCommercial",
   async (updatedCommercialData: any) => {
@@ -154,6 +156,7 @@ export const updateCommercial = createAsyncThunk(
     }
   }
 );
+//updating teacher
 export const updateTeacher = createAsyncThunk(
   "admin/updateTeacher",
   async (updatedTeacherData: {
@@ -198,7 +201,7 @@ export const createCommercial = createAsyncThunk(
     }
   }
 );
-
+//creating a teacher
 export const createTechear = createAsyncThunk(
   "admin/createTechear",
   async (userData: any) => {
@@ -220,7 +223,7 @@ export const createTechear = createAsyncThunk(
     }
   }
 );
-
+//loggin in user
 export const loginUser = createAsyncThunk(
   "admin/login",
   async ({

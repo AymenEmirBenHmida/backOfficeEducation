@@ -1,5 +1,4 @@
-import { getAllLessons } from "../../../redux/lessonSlice";
-import QuestionTypes from "../../../constants";
+
 import {
   Table,
   TableBody,
@@ -13,32 +12,29 @@ import {
   Skeleton,
   Dialog,
   DialogActions,
-  DialogContent,
-  DialogContentText,
   DialogTitle,
   Modal,
-  Typography,
-  InputLabel,
-  FormControl,
-  Select,
-  TextField,
   Snackbar,
   Alert,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import ModalExerciceAdd from "../../../components/modalExerciceAdd/ModalExerciceAdd";
-import { LessonInterface } from "@/interfaces/LessonInterface";
 import { AppDispatch } from "@/redux/Store";
-import { refreshTokenService } from "@/services/authService";
-import {
-  deleteExercice,
-  getAllExercices,
-  getExercice,
-} from "@/redux/exerciceSlice";
-import { AxiosResponse } from "axios";
+import { deleteExercice, getAllExercices } from "@/redux/exerciceSlice";
 import QcmText from "@/components/updateExercices/QcmText";
+import QcmImages from "@/components/updateExercices/QcmImages";
+import QcmImageWords from "@/components/updateExercices/QcmImageWords";
+import DragDropWordsImages from "@/components/updateExercices/DragDropWordsImages";
+import DragDropTableImages from "@/components/updateExercices/DragDropTableImages";
+import Video from "@/components/updateExercices/Video";
+import MakePhrase from "@/components/updateExercices/MakePhrase";
+import ReadImage from "@/components/updateExercices/ReadImage";
+import Read from "@/components/updateExercices/Read";
+import ArrowSound from "@/components/updateExercices/ArrowSound";
+import ArrowOrColor from "@/components/updateExercices/ArrowOrColor";
+import SelectTable from "@/components/updateExercices/SelectTable";
+import { useNavigate } from "react-router-dom";
 
 // Define the types for your data
 interface Option {
@@ -67,17 +63,26 @@ interface Exercice {
   cour: Cour;
 }
 const AllExercises: React.FC = () => {
-  const questionTypes = QuestionTypes();
   const { t } = useTranslation();
+  // exercices variable
   const [exercices, setExercices] = useState<Exercice[]>([]);
+  // variable responsible for the initial loading animation
   const [loading, setLoading] = useState<boolean>(true);
   const dispatch = useDispatch<AppDispatch>();
+  //variable responsible for opening modal edit
   const [openModalEdit, setOpenModalEdit] = useState(false);
+  //variable responsible for opening
   const [openAlertDelete, setOpenAlertDelete] = useState(false);
+  //selected exercice
   const [selectedExercice, setSelectedExercice] = useState("");
+  //selected type of question
   const [selectedTypeId, setSelectedTypeId] = useState("");
+  //variable responsible for opening snackbar
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  //variable for snack bar message
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const navigate = useNavigate();
+  //snack bar opening
   const handleSnackbarOpen = (message: string) => {
     setSnackbarMessage(message);
     setSnackbarOpen(true);
@@ -98,28 +103,33 @@ const AllExercises: React.FC = () => {
     boxShadow: 24,
     p: 4,
   };
-    const handleSnackbarClose = () => {
-      setSnackbarOpen(false);
-    };
+  //snack bar close
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+  //delete exercice
   const deleteExerciceHandler = async (id: string) => {
     await dispatch(deleteExercice(id));
+    await handleGetExercices();
     handleClose();
   };
+  //open alert and set message
   const handleClickOpen = (id: string) => {
     setOpenAlertDelete(true);
     setSelectedExercice(id);
   };
-
+  //closing delete alert
   const handleClose = () => {
     setOpenAlertDelete(false);
   };
-
+  // opening edit  modal
   const handleOpenModal = async () => {
     setOpenModalEdit(true);
   };
-
-  const getExercices = async () => {
+  // getting exercices
+  const handleGetExercices = async () => {
     try {
+      setLoading(true);
       const result = await dispatch(getAllExercices()).unwrap();
       const data: Exercice[] = result.data;
       if (data) {
@@ -149,139 +159,140 @@ const AllExercises: React.FC = () => {
       case "QCM_MULTI_ANSWER_PHRASE_SMALL":
         return (
           <QcmText
+            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
             handleSubmit={handleCloseModalEdit}
             handleError={handleSnackbarOpen}
           />
         );
-      // case "QCM_MULTI_ANSWER_IMAGES":
-      //   return (
-      //     <QcmImages
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
-      // case "QCM_MULTI_ANSWER_WORDS_IMAGES":
-      //   return (
-      //     <QcmImageWords
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
-      // case "DRAG_DROP_WORDS_TO_IMAGE":
-      //   return (
-      //     <DragDropWordsImages
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
-      // case "DRAG_DROP_IN_TABLE_IMAGES":
-      //   return (
-      //     <DragDropTableImages
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
-      // case "SELECT_TABLE":
-      //   return (
-      //     <SelectTable
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
-      // case "COLOR":
-      //   return (
-      //     <ArrowOrColor
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
-      // case "ARROW":
-      //   return (
-      //     <ArrowOrColor
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
-      // case "ARROW_SOUND":
-      //   return (
-      //     <ArrowSound
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
-      // case "READ":
-      //   return (
-      //     <Read
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
-      // case "READ_IMAGE":
-      //   return (
-      //     <ReadImage
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
-      // case "MAKE_PHRASE":
-      //   return (
-      //     <MakePhrase
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
-      // case "MAKE_PHRASE_FROM_TABLE":
-      //   return (
-      //     <MakePhrase
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
-      // case "VIDEO":
-      //   return (
-      //     <Video
-      //       selectedTypeId={selectedTypeId}
-      //       selectedLessonId={selectedLessonId}
-      //       description={description}
-      //       handleSubmit={handleSubmit}
-      //     />
-      //   );
+      case "QCM_MULTI_ANSWER_IMAGES":
+        return (
+          <QcmImages
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
+      case "QCM_MULTI_ANSWER_WORDS_IMAGES":
+        return (
+          <QcmImageWords
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
+      case "DRAG_DROP_WORDS_TO_IMAGE":
+        return (
+          <DragDropWordsImages
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
+      case "DRAG_DROP_IN_TABLE_IMAGES":
+        return (
+          <DragDropTableImages
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
+      case "SELECT_TABLE":
+        return (
+          <SelectTable
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
+      case "COLOR":
+        return (
+          <ArrowOrColor
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
+      case "ARROW":
+        return (
+          <ArrowOrColor
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
+      case "ARROW_SOUND":
+        return (
+          <ArrowSound
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
+      case "READ":
+        return (
+          <Read
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
+      case "READ_IMAGE":
+        return (
+          <ReadImage
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
+      case "MAKE_PHRASE":
+        return (
+          <MakePhrase
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
+      case "MAKE_PHRASE_FROM_TABLE":
+        return (
+          <MakePhrase
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
+      case "VIDEO":
+        return (
+          <Video
+            getExercices={handleGetExercices}
+            selectedExerciceId={exerciceId}
+            handleSubmit={handleCloseModalEdit}
+            handleError={handleSnackbarOpen}
+          />
+        );
       default:
         return null;
     }
   };
 
-  const handleCloseModalEdit = () => {
+  const handleCloseModalEdit = async () => {
     setOpenModalEdit(false);
   };
 
   useEffect(() => {
-    getExercices();
+    handleGetExercices();
   }, []);
 
   return (
@@ -291,7 +302,13 @@ const AllExercises: React.FC = () => {
         display={"flex"}
         justifyContent={"end"}
       >
-        <Button variant="contained" sx={{ marginRight: "10px" }}>
+        <Button
+          variant="contained"
+          sx={{ marginRight: "10px" }}
+          onClick={() => {
+            navigate("/teacher/exercises");
+          }}
+        >
           {t("txt_add_an_exercise")}
         </Button>
       </Box>
@@ -306,11 +323,19 @@ const AllExercises: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow style={{ backgroundColor: "#1976d2" }}>
-                <TableCell sx={{ color: "white" }}>Question Type</TableCell>
-                <TableCell sx={{ color: "white" }}>Description</TableCell>
-                <TableCell sx={{ color: "white" }}>Course Name</TableCell>
-                <TableCell sx={{ color: "white" }}>Locked</TableCell>
-                <TableCell sx={{ color: "white" }}>Actions</TableCell>
+                <TableCell sx={{ color: "white" }}>
+                  {t("txt_question_type")}
+                </TableCell>
+                <TableCell sx={{ color: "white" }}>
+                  {t("txt_description")}
+                </TableCell>
+                <TableCell sx={{ color: "white" }}>
+                  {t("txt_course_name")}
+                </TableCell>
+                <TableCell sx={{ color: "white" }}>{t("txt_locked")}</TableCell>
+                <TableCell sx={{ color: "white" }}>
+                  {t("txt_actions")}
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -339,7 +364,9 @@ const AllExercises: React.FC = () => {
                       <TableCell>{exercice.typeQuestion}</TableCell>
                       <TableCell>{exercice.description}</TableCell>
                       <TableCell>{exercice.cour.name}</TableCell>
-                      <TableCell>{exercice.isLocked ? "Yes" : "No"}</TableCell>
+                      <TableCell>
+                        {exercice.isLocked ? t("txt_yes") : t("txt_no")}
+                      </TableCell>
                       <TableCell>
                         <Button
                           variant="contained"
@@ -351,7 +378,7 @@ const AllExercises: React.FC = () => {
                             await handleOpenModal();
                           }}
                         >
-                          Edit
+                          {t("txt_edit")}
                         </Button>
                         <Button
                           variant="contained"
@@ -361,7 +388,7 @@ const AllExercises: React.FC = () => {
                             handleClickOpen(exercice.id);
                           }}
                         >
-                          Delete
+                          {t("txt_delete")}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -376,18 +403,18 @@ const AllExercises: React.FC = () => {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"Are you sure you want to delete the exercice?"}
+            {t("txt_exercice_delete_alert")}
           </DialogTitle>
 
           <DialogActions>
-            <Button onClick={handleClose}>Disagree</Button>
+            <Button onClick={handleClose}>{t("txt_disagree")}</Button>
             <Button
               onClick={async () =>
                 await deleteExerciceHandler(selectedExercice)
               }
               autoFocus
             >
-              Agree
+              {t("txt_agree")}
             </Button>
           </DialogActions>
         </Dialog>
@@ -398,12 +425,7 @@ const AllExercises: React.FC = () => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <form>
-              {/* <img src={selectedTypeImage} alt="" /> */}
-              
-
-              {renderContentFields(selectedExercice, selectedTypeId)}
-            </form>
+            <form>{renderContentFields(selectedExercice, selectedTypeId)}</form>
           </Box>
         </Modal>
       </Box>

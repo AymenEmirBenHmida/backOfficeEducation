@@ -8,7 +8,7 @@ import {
   Button,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { ExerciceCreationProps } from "@/interfaces/ExerciceCreationProps";
+import { ExerciceCreationProps } from "@/interfaces/ExerciceCrudProps";
 
 const QcmImageWords: React.FC<ExerciceCreationProps> = ({
   handleSubmit,
@@ -17,6 +17,7 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
   selectedLessonId,
 }) => {
   const { t } = useTranslation();
+  //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
@@ -46,6 +47,7 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //changing the content attribute in formData
   const handleContentChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -55,7 +57,7 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //removes an option from formData
   const removeOption = (index: number) => {
     const newOptions = [...formData.content.options];
     newOptions.splice(index, 1);
@@ -67,7 +69,7 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //adds an option
   const addOption = () => {
     setFormData((prev: any) => ({
       ...prev,
@@ -77,13 +79,14 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //change the form variable attributes directly under it
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
-
+  //initialise courId and description inside the form variable
   useEffect(() => {
     setFormData((prev: any) => ({
       ...prev,

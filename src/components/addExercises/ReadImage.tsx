@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  TextField,
-  Button,
-  Checkbox,
-  FormControlLabel,
-} from "@mui/material";
+import { TextField, Button, Checkbox, FormControlLabel } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { ExerciceCreationProps } from "@/interfaces/ExerciceCreationProps";
+import { ExerciceCreationProps } from "@/interfaces/ExerciceCrudProps";
 
 const ReadImage: React.FC<ExerciceCreationProps> = ({
   selectedTypeId,
@@ -15,17 +10,18 @@ const ReadImage: React.FC<ExerciceCreationProps> = ({
   selectedLessonId,
 }) => {
   const { t } = useTranslation();
+  //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
       text: "",
       image: "",
     },
-    courId: selectedLessonId||"",
-    description: description||"",
+    courId: selectedLessonId || "",
+    description: description || "",
     isLocked: false,
   });
-
+  //change the content attribute
   const handleContentChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -35,19 +31,21 @@ const ReadImage: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //change the form variable attributes directly under it
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
-    useEffect(() => {
-      setFormData((prev: any) => ({
-        ...prev,
-        ["courId"]: selectedLessonId,
-        ["description"]: description,
-      }));
-    }, [selectedLessonId, description]);
+  //initialise courId and description inside the form variable
+  useEffect(() => {
+    setFormData((prev: any) => ({
+      ...prev,
+      ["courId"]: selectedLessonId,
+      ["description"]: description,
+    }));
+  }, [selectedLessonId, description]);
   return (
     <>
       <TextField

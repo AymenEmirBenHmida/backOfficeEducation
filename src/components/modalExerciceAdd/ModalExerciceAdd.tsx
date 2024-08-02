@@ -45,9 +45,11 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  //variable for the description
   const [description, setDescription] = useState<any>("");
+  //the selected lesson id
   const [selectedLessonId, setSelectedLessonId] = useState("");
-
+  //handles changing the state variable for the description
   const handleInputChange = (value: any) => {
     setDescription(value);
   };

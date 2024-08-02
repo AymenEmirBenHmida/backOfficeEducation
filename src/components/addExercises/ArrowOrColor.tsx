@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
-import { ExerciceCreationProps } from "@/interfaces/ExerciceCreationProps";
+import { ExerciceCreationProps } from "@/interfaces/ExerciceCrudProps";
 
 const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
   selectedTypeId,
@@ -18,6 +18,7 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
   selectedLessonId,
 }) => {
   const { t } = useTranslation();
+  //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
@@ -28,7 +29,7 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
     description: description || "",
     isLocked: false,
   });
-
+  //change the tuple attribute
   const handleTupleChange = (
     index: number,
     field: string,
@@ -45,7 +46,7 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //handles changes in content attribute
   const handleContentChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -55,7 +56,7 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //remove a tuple
   const removeTuple = (index: number) => {
     const newTuples = [...formData.content.tuples];
     newTuples.splice(index, 1);
@@ -67,7 +68,7 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //add a tuple
   const addTuple = () => {
     setFormData((prev: any) => ({
       ...prev,
@@ -80,12 +81,14 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //change the form variable attributes directly under it
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
+  //initialise courId and description inside the form variable
   useEffect(() => {
     setFormData((prev: any) => ({
       ...prev,

@@ -1,5 +1,5 @@
 import axios from "../config/axiosConfig";
-
+//create an exercice
 export const createExerciceService = async ({
   formData,
 }: {
@@ -13,7 +13,7 @@ export const createExerciceService = async ({
     throw error;
   }
 };
-
+//get all exercices
 export const getAllExercicesService = async () => {
   try {
     const response = await axios.get("/api/exercice/getAll");
@@ -22,7 +22,7 @@ export const getAllExercicesService = async () => {
     throw error;
   }
 };
-
+//delete an exercice
 export const deleteExerciceService = async (id: string) => {
   try {
     const response = await axios.delete(`/api/exercice/delete?id=${id}`);
@@ -31,7 +31,7 @@ export const deleteExerciceService = async (id: string) => {
     throw error;
   }
 };
-
+//get an exercice
 export const getExerciceService = async (id: string) => {
   try {
     const response = await axios.get(`/api/exercice?id=${id}`);
@@ -40,7 +40,7 @@ export const getExerciceService = async (id: string) => {
     throw error;
   }
 };
-
+//update an exercice
 export const updateExerciceService = async ({
   formData,
   id,

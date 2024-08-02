@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
-import { ExerciceCreationProps } from "@/interfaces/ExerciceCreationProps";
+import { ExerciceCreationProps } from "@/interfaces/ExerciceCrudProps";
 
 const SelectTable: React.FC<ExerciceCreationProps> = ({
   selectedTypeId,
@@ -18,6 +18,7 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
   selectedLessonId,
 }) => {
   const { t } = useTranslation();
+  //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
@@ -34,7 +35,7 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
     description: description || "",
     isLocked: false,
   });
-
+  //handle changing the columns attribute
   const handleColumnChange = (index: number, field: string, value: any) => {
     const newColumns = [...formData.content.columns];
     newColumns[index] = { ...newColumns[index], [field]: value };
@@ -46,7 +47,7 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //handle changing the options attribute
   const handleOptionChange = (
     indexColumn: number,
     indexOption: number,
@@ -73,7 +74,7 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //add an option inside of the column
   const addOptionColumn = (indexColumn: number) => {
     const newColumns = [...formData.content.columns];
     newColumns[indexColumn].options = [
@@ -88,7 +89,7 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //removing an option
   const removeOptionColumn = (indexColumn: number, indexOption: number) => {
     const newColumns = [...formData.content.columns];
     newColumns[indexColumn].options.splice(indexOption, 1);
@@ -100,7 +101,7 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //add a column
   const addColumn = () => {
     const newColumns = [
       ...formData.content.columns,
@@ -118,7 +119,7 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //remove a column
   const removeColumn = (index: number) => {
     const newColumns = formData.content.columns.filter(
       (_: any, i: number) => i !== index
@@ -131,13 +132,14 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //change the form variable attributes directly under it
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
-
+  //initialise courId and description inside the form variable
   useEffect(() => {
     setFormData((prev: any) => ({
       ...prev,

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
-import { ExerciceCreationProps } from "@/interfaces/ExerciceCreationProps";
+import { ExerciceCreationProps } from "@/interfaces/ExerciceCrudProps";
 
 const MakePhrase: React.FC<ExerciceCreationProps> = ({
   selectedTypeId,
@@ -18,6 +18,7 @@ const MakePhrase: React.FC<ExerciceCreationProps> = ({
   selectedLessonId,
 }) => {
   const { t } = useTranslation();
+  //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
@@ -28,7 +29,7 @@ const MakePhrase: React.FC<ExerciceCreationProps> = ({
     description: description || "",
     isLocked: false,
   });
-
+  //handle changing the words attribute
   const handleWordChange = (index: number, field: string, value: any) => {
     const newWords = [...formData.content.words];
     newWords[index] = { ...newWords[index], [field]: value };
@@ -40,7 +41,7 @@ const MakePhrase: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //handles changes in content attribute
   const handleContentChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -50,14 +51,14 @@ const MakePhrase: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //change the form variable attributes directly under it
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
-
+  //removes a word
   const removeWord = (index: number) => {
     const newWords = [...formData.content.words];
     newWords.splice(index, 1);
@@ -69,7 +70,7 @@ const MakePhrase: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //add a word
   const addWord = () => {
     setFormData((prev: any) => ({
       ...prev,
@@ -79,6 +80,7 @@ const MakePhrase: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //initialise courId and description inside the form variable
   useEffect(() => {
     setFormData((prev: any) => ({
       ...prev,

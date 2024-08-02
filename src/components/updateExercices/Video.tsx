@@ -5,22 +5,37 @@ import {
   Checkbox,
   Button,
   Skeleton,
+  Select,
+  MenuItem,
+  Typography,
+  CircularProgress,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import {
   ExerciceCreationProps,
   ExerciceUpdateProps,
-} from "@/interfaces/ExerciceCreationProps";
+} from "@/interfaces/ExerciceCrudProps";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/Store";
 import { getExercice, updatExercice } from "@/redux/exerciceSlice";
+import { LessonInterface } from "@/interfaces/LessonInterface";
+import { getAllLessons } from "@/redux/lessonSlice";
 
 const Video: React.FC<ExerciceUpdateProps> = ({
   selectedExerciceId,
   handleSubmit,
+  handleError,
+  getExercices,
 }) => {
   const { t } = useTranslation();
+  //variabl for the lessons gotten
+  const [lessons, setLessons] = useState<LessonInterface[]>([]);
+  //responsible for the initial loading animation
+  const [loading, setLoading] = useState(true);
+  //responsible for the update animation
+  const [updateLoading, setUpdateLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  //variable representing the inputs
   const [formData, setFormData] = useState<any>({
     typeQuestion: "",
     content: {
@@ -31,7 +46,7 @@ const Video: React.FC<ExerciceUpdateProps> = ({
     description: "",
     isLocked: false,
   });
-  const [loading, setLoading] = useState(true);
+  //handles updating the attributes under content
   const handleContentChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -41,19 +56,35 @@ const Video: React.FC<ExerciceUpdateProps> = ({
       },
     }));
   };
+  //handles updating the attributes directly under the form variable
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
+  // handles updating the exercice
   const handleUpdateExercice = async () => {
-    const response = await dispatch(
-      updatExercice({ formData, id: selectedExerciceId })
-    );
-    console.log("response update ", response);
+    try {
+      const data = cleanFormData(formData);
+      setUpdateLoading(true);
+      const response = await dispatch(
+        updatExercice({ formData: data, id: selectedExerciceId })
+      ).unwrap();
+      setUpdateLoading(false);
+      if (response && response.statusText === "OK") {
+        console.log("response update ", response);
+        handleSubmit!();
+        await getExercices();
+      } else {
+        handleError!("error");
+      }
+    } catch (error) {
+      handleError!("error");
+      console.log(error);
+    }
   };
-
+  //handles getting the exercice initially
   const handleGetExercice = async () => {
     try {
       const response = await dispatch(getExercice(selectedExerciceId));
@@ -62,24 +93,66 @@ const Video: React.FC<ExerciceUpdateProps> = ({
       setLoading(false);
     } catch (error) {
       setLoading(false);
+      console.error(error);
     }
   };
+  //removing the unnecesarry attributes gotten at the beginning
+  const cleanFormData = (data: any) => {
+    const {
+      cour, // Add the attributes you want to remove
+      createById,
+      createdAt,
+      updatedAt,
+      ...cleanedData
+    } = data;
+    return cleanedData;
+  };
+  //getting lessons
+  const getLessons = async () => {
+    const result = await dispatch(getAllLessons());
+    if (getAllLessons.fulfilled.match(result)) {
+      setLessons(result.payload as LessonInterface[]);
+    } else {
+      console.error("Failed to fetch lessons");
+    }
+  };
+  // on load functions called
   useEffect(() => {
     handleGetExercice();
+    getLessons();
     console.log("entered use effect");
   }, []);
-
   return (
     <>
       {loading ? (
         <>
           {" "}
-          <Skeleton />
-          <Skeleton animation="wave" />
-          <Skeleton animation={false} />
+          <Skeleton className="!mb-2" />
+          <Skeleton className="!mb-2" animation="wave" />
+          <Skeleton className="!mb-2" />
+          <Skeleton className="!mb-2" />
+          <Skeleton className="!mb-2" />
         </>
       ) : (
         <>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            {formData.typeQuestion}
+          </Typography>
+          <Select
+            value={formData.courId}
+            label={t("txt_lesson")}
+            onChange={(e) => {
+              console.log("lesson id", e.target.value);
+              handleFormChange("courId", e.target.value);
+            }}
+            className="w-full"
+          >
+            {lessons.map((lesson) => (
+              <MenuItem key={lesson.id} value={lesson.id}>
+                {lesson.name}
+              </MenuItem>
+            ))}
+          </Select>
           <TextField
             label={t("txt_text")}
             value={formData.content.text || ""}
@@ -106,15 +179,19 @@ const Video: React.FC<ExerciceUpdateProps> = ({
             label={t("txt_locked")}
           />
           <Button
+            className="!mt-[15px]"
             variant="contained"
             color="primary"
             onClick={async () => {
               console.log(formData);
               await handleUpdateExercice();
             }}
-            className="!mt-[15px]"
           >
-            {t("txt_submit")}
+            {updateLoading ? (
+              <CircularProgress sx={{ color: "white" }} size={30} />
+            ) : (
+              t("txt_submit")
+            )}
           </Button>
         </>
       )}

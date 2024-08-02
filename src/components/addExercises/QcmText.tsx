@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
-import { ExerciceCreationProps } from "@/interfaces/ExerciceCreationProps";
+import { ExerciceCreationProps } from "@/interfaces/ExerciceCrudProps";
 
 const QcmText: React.FC<ExerciceCreationProps> = ({
   selectedTypeId,
@@ -18,6 +18,7 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
   description,
 }) => {
   const { t } = useTranslation();
+  //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
@@ -29,7 +30,7 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
     isLocked: false,
     order: 0,
   });
-
+  //handle changing the options attribute
   const handleOptionChange = (index: number, field: string, value: any) => {
     const newOptions = [...formData.content.options];
     if (field === "isCorrect") {
@@ -48,6 +49,7 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //handles changes in content attribute
   const handleContentChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -57,7 +59,7 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //removing an option
   const removeOption = (index: number) => {
     const newOptions = [...formData.content.options];
     newOptions.splice(index, 1);
@@ -69,7 +71,7 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //add an option
   const addOption = () => {
     setFormData((prev: any) => ({
       ...prev,
@@ -79,12 +81,14 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
+  //change the form variable attributes directly under it
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
+  //initialise courId and description inside the form variable
   useEffect(() => {
     setFormData((prev: any) => ({
       ...prev,
