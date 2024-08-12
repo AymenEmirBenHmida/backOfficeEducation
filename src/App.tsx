@@ -11,11 +11,16 @@ import Layout from "./components/layout/Layout";
 import Exercises from "./pages/Teacher/exercises/ExercisesPage";
 import { useSelector } from "react-redux";
 import { selectUserRole } from "./redux/adminSlice";
-import LessonsPage from "./pages/Teacher/lessons/LessonsPage";
 import PhoneValidationPage from "./pages/phoneValidationPage/PhoneValidationPage";
 import AuthWrapper from "./components/authWrapper/AuthWrapper";
 import AllExercises from "./pages/Teacher/exercises/AllExercices";
 import AllLessons from "./pages/Teacher/lessons/AllLessons";
+import AllChapters from "./pages/Teacher/chapters/ChaptersPage";
+import { useTranslation } from "react-i18next";
+import { useMemo } from "react";
+import { createTheme, GlobalStyles, ThemeProvider } from "@mui/material";
+import AllSubjects from "./pages/Teacher/subjects/SubjectsPage";
+import AllTrimesters from "./pages/Teacher/trimesters/TrimestersPage";
 
 const routes: RouteConfig[] = [
   { path: "/signup", component: <SignupPage /> },
@@ -37,16 +42,41 @@ const routes: RouteConfig[] = [
     requiredRoles: ["Teacher"],
   },
   {
-    path: "/teacher/lessons",
-    component: <LessonsPage />,
+    path: "/teacher/subjects",
+    component: <AllSubjects />,
+    requiredRoles: ["Teacher"],
+  },
+  {
+    path: "/teacher/chapters",
+    component: <AllChapters />,
+    requiredRoles: ["Teacher"],
+  },
+  {
+    path: "/teacher/trimesters",
+    component: <AllTrimesters />,
     requiredRoles: ["Teacher"],
   },
 ];
 
 function App() {
-  //get current role
-  const role = useSelector(selectUserRole);
+  const { i18n } = useTranslation();
 
+  // Create a theme that sets direction based on the language
+  const theme = useMemo(
+    () =>
+      createTheme({
+        components: {
+          MuiTypography: {
+            styleOverrides: {
+              root: {
+                textAlign: i18n.language === "ar" ? "right" : "left",
+              },
+            },
+          },
+        },
+      }),
+    [i18n.language]
+  );
   // //Function to check if user allowed to route
   // const isRouteAllowed = (route: RouteConfig): boolean => {
   //   var currentdate = new Date();
@@ -64,22 +94,29 @@ function App() {
   return (
     <>
       <Router>
-        <Routes>
-          <Route path="/" element={<Navigate to="/signup" />} />
-          <Route path="/" element={<Layout />}>
-            {routes.map((route, index) => (
-              <Route
-                key={index}
-                path={route.path}
-                element={
-                  <AuthWrapper route={route}>
-                    {route.component}
-                  </AuthWrapper>
-                }
-              />
-            ))}
-          </Route>
-        </Routes>
+        <ThemeProvider theme={theme}>
+          <GlobalStyles
+            styles={{
+              "p, h1, h2, h3, h4, h5, h6, div, span, .text-element": {
+                textAlign: i18n.language === "ar" ? "right" : "left",
+              },
+            }}
+          />
+          <Routes>
+            <Route path="/" element={<Navigate to="/signup" />} />
+            <Route path="/" element={<Layout />}>
+              {routes.map((route, index) => (
+                <Route
+                  key={index}
+                  path={route.path}
+                  element={
+                    <AuthWrapper route={route}>{route.component}</AuthWrapper>
+                  }
+                />
+              ))}
+            </Route>
+          </Routes>
+        </ThemeProvider>
       </Router>
     </>
   );

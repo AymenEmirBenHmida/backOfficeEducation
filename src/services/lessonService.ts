@@ -41,7 +41,7 @@ export const createLessonService = async ({ formData }: { formData: any }) => {
 };
 
 export const updateLessonService = async ({ formData }: { formData: any }) => {
-  console.log("update exercice ", formData);
+  console.log("update lesson ", formData);
   try {
     const response = await axios.put(
       `/api/cours/update?id=${formData.id}`,

@@ -3,6 +3,8 @@ import adminReducer from "./adminSlice";
 import lessonReducer from "./lessonSlice";
 import exerciceSlice from "./exerciceSlice";
 import chaptersSlice from "./chaptersSlice";
+import subjectsSlice from "./subjectsSlice";
+import levelSlice from "./levelSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +12,8 @@ const store = configureStore({
     lesson: lessonReducer,
     exercice: exerciceSlice,
     chapter: chaptersSlice,
+    subject: subjectsSlice,
+    level: levelSlice,
   },
 });
 

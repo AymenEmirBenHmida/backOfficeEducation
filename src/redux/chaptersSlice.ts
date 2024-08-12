@@ -1,23 +1,76 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AdminState } from "../interfaces/AdminState";
-import { LessonInterface } from "../interfaces/LessonInterface";
-import { getAllChaptersService } from "@/services/chaptersService";
+import {
+  createChapterService,
+  deleteChapterService,
+  getAllChaptersService,
+  getChapterService,
+  updateChapitreService,
+} from "@/services/chaptersService";
 
 //getting all chapters
 export const getAllChapters = createAsyncThunk(
   "chapters/getAll", // Utilisez le bon nom pour l'action
   async () => {
     try {
-    console.log("get all chapters redux");
-    const response = await getAllChaptersService();
-    console.log("redux ", response.data);
-    return response.data;
+      console.log("get all chapters redux");
+      const response = await getAllChaptersService();
+      console.log("redux ", response.data);
+      return response.data;
     } catch (error) {
       throw error;
     }
   }
 );
 
+//creating chapter
+export const createChapter = createAsyncThunk(
+  "chapters/create",
+  async ({ formData }: { formData: any }) => {
+    try {
+      console.log("create chapter redux ", formData);
+      const response = await createChapterService({ formData });
+      return response;
+    } catch (error) {}
+  }
+);
+//deleting a chapter
+export const deleteChapter = createAsyncThunk(
+  "chapter/delete",
+  async (id: string) => {
+    try {
+      console.log("delete chapter redux");
+      const response = await deleteChapterService(id);
+      console.log("redux ", response.data);
+      return response.data;
+    } catch (error) {}
+  }
+);
+//getting exercice
+export const getChapter = createAsyncThunk(
+  "chapter/get",
+  async (id: string) => {
+    try {
+      console.log("get chapter redux");
+      const response = await getChapterService(id);
+      console.log("redux ", response.data);
+      return response.data;
+    } catch (error) {}
+  }
+);
+//updating exercice
+export const updateChapter = createAsyncThunk(
+  "chapter/update",
+  async ({ formData, id }: { formData: any; id: string }) => {
+    try {
+      console.log("update exercice redux ", formData);
+      const response = await updateChapitreService({ formData, id });
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
 
 // Définir le slice Redux pour gérer l'état
 const chaptersState = createSlice({

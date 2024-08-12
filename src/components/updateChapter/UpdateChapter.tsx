@@ -8,68 +8,60 @@ import {
   CircularProgress,
   Select,
   MenuItem,
-  Input,
   Box,
   FormControl,
-  FormLabel,
   InputLabel,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
 import { useDispatch } from "react-redux";
-import { createLesson, getAllLessons, getLesson } from "@/redux/lessonSlice";
-import { getAllChapters } from "@/redux/chaptersSlice";
-import { LessonUpdateProps } from "@/interfaces/LessonCrudProps";
+import { getChapter, updateChapter } from "@/redux/chaptersSlice";
+import { ChapterUpdateProps } from "@/interfaces/chaptersCrudInterface";
+import { getAllSubjects } from "@/redux/subjectsSlice";
 
-const AddLessons: React.FC<LessonUpdateProps> = ({
+const AddLessons: React.FC<ChapterUpdateProps> = ({
   handleSubmit,
   handleError,
-  getLessons,
+  getChapters,
+  chapterId,
 }) => {
   const { t } = useTranslation();
-  //state variable responsible for the images files
-  const [images, setImages] = useState<any[]>([]);
-  //state variable responsible for the videos files
-  const [videos, setVideos] = useState<any[]>([]);
-  //state variable responsible for the audio files
-  const [audio, setAudio] = useState<any[]>([]);
+  //the form state variable
   const [formData, setFormData] = useState<any>({
     name: "",
-    content: "",
-    chapitre: "",
-    chapitreId: "",
     description: "",
+    matiereId: "",
     isLocked: false,
-    images: [""],
-    video: "",
-    audio: "",
   });
-  const [chapters, setChapters] = useState<any>([]);
-  const [loading, setLoading] = useState(false);
+  //list of subjects
+  const [subjects, setSubjects] = useState([]);
+  //used when the initial loading is done
+  const [loading, setLoading] = useState(true);
+  //used when the update is happening
   const [updateLoading, setUpdateLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-
+  // change form state variables direct attribute
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
-
-  const handleCreatelesson = async () => {
+  //update chapter
+  const handleUpdateChapter = async () => {
     try {
       setUpdateLoading(true);
       const response = await dispatch(
-        createLesson({
+        updateChapter({
           formData: formData,
-          images: images,
+          id: chapterId,
         })
       ).unwrap();
       setUpdateLoading(false);
       if (response && response.statusText === "OK") {
         console.log("response create ", response);
         handleSubmit!();
-        await getLessons();
+        await getChapters();
       } else {
         handleError!("error");
       }
@@ -78,40 +70,33 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
       console.log(error);
     }
   };
-
-  const getChapters = async () => {
+  //getting subjects
+  const getSubjects = async () => {
     try {
-      const result = await dispatch(getAllChapters()).unwrap();
+      const result = await dispatch(getAllSubjects()).unwrap();
       console.log("chapters :", result);
-      setChapters(result.data);
+
+      setSubjects(result.data);
     } catch (error) {
       console.log(error);
     }
   };
-  //function handeling setting the image files selected to be manipulated
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      console.log("images inputted");
-      setImages(Array.from(event.target.files));
+  //get the chosen chapters data to be modified
+  const getChapterUpdate = async () => {
+    try {
+      const result = await dispatch(getChapter(chapterId)).unwrap();
+      console.log("chapters :", result);
+      setFormData(result.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
     }
   };
-  //function handeling setting the audio files selected to be manipulated
-  const handleAudioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      console.log("audio files inputted");
-      setAudio(Array.from(event.target.files));
-    }
-  };
-  //function handeling setting the video files selected to be manipulated
-  const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      console.log("videos inputted");
-      setVideos(Array.from(event.target.files));
-    }
-  };
+
   useEffect(() => {
-    getChapters();
-    setChapters([]);
+    getSubjects();
+    getChapterUpdate();
     console.log("entered use effect");
   }, []);
 
@@ -119,7 +104,6 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
     <>
       {loading ? (
         <>
-          {" "}
           <Skeleton className="!mb-2" />
           <Skeleton className="!mb-2" animation="wave" />
           <Skeleton className="!mb-2" />
@@ -130,24 +114,25 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
         <>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">
-              {t("txt_course")}
+              {t("txt_subject")}
             </InputLabel>
             <Select
-              value={formData.courId}
-              label={t("txt_course")}
+              value={formData.matiereId}
+              label={t("txt_subject")}
               onChange={(e) => {
-                console.log("lesson id", e.target.value);
-                handleFormChange("chapitreId", e.target.value);
+                console.log("matiereId", e.target.value);
+                handleFormChange("matiereId", e.target.value);
               }}
               className="w-full"
             >
-              {chapters.map((chapter) => (
-                <MenuItem key={chapter.id} value={chapter.id}>
-                  {chapter.name}
+              {subjects.map((subject) => (
+                <MenuItem key={subject.id} value={subject.id}>
+                  {subject.name}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
+
           <TextField
             className="!mt-[15px]"
             label={t("txt_description")}
@@ -162,13 +147,6 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
             fullWidth
             className="!mt-[15px]"
           />
-          <TextField
-            label={t("txt_content")}
-            value={formData.content}
-            onChange={(e) => handleFormChange("content", e.target.value)}
-            fullWidth
-            className="!mt-[15px]"
-          />
           <Box
             sx={{
               width: "100%",
@@ -177,37 +155,13 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
               gap: 2,
             }}
           >
-            <FormControl className="!mt-[5px]" fullWidth>
+            {/* <FormControl className="!mt-[5px]" fullWidth>
               <FormLabel>{t("txt_images")}</FormLabel>
               <input
                 type="file"
                 multiple
-                accept=".jpg, .jpeg, .png .mp4, .avi, .mov .mp3, .wav .pdf .txt"
+                accept=".jpg, .jpeg, .png"
                 onChange={handleImageChange}
-                className="!mt-[15px]"
-                style={{ marginTop: "8px", marginBottom: "8px" }}
-              />
-            </FormControl>
-            {/* 
-            <FormControl fullWidth>
-              <FormLabel>Videos</FormLabel>
-              <input
-                type="file"
-                multiple
-                accept=".mp4, .avi, .mov"
-                onChange={handleVideoChange}
-                className="!mt-[15px]"
-                style={{ marginTop: "8px", marginBottom: "8px" }}
-              />
-            </FormControl>
-
-            <FormControl fullWidth>
-              <FormLabel>Audios</FormLabel>
-              <input
-                type="file"
-                multiple
-                accept=".mp3, .wav"
-                onChange={handleAudioChange}
                 className="!mt-[15px]"
                 style={{ marginTop: "8px", marginBottom: "8px" }}
               />
@@ -224,13 +178,14 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
             }
             label={t("txt_locked")}
           />
+
           <Button
             className="!mt-[15px]"
             variant="contained"
             color="primary"
             onClick={async () => {
               console.log(formData);
-              await handleCreatelesson();
+              await handleUpdateChapter();
             }}
           >
             {updateLoading ? (

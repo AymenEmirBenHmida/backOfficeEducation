@@ -94,7 +94,20 @@
   "txt_add_a_lesson": "Add a lesson",
   "txt_content": "Content",
   "txt_lesson_delete_alert": "Are you sure you want to delete the lesson?",
-  "txt_images":"Images",
-  "txt_new_images":"New image",
-  "txt_add_image":"Add Image"
+  "txt_chapter_delete_alert": "Are you sure you want to delete the chapter?",
+  "txt_trimester_delete_alert": "Are you sure you want to delete the trimester?",
+  "txt_images": "Images",
+  "txt_new_images": "New image",
+  "txt_add_image": "Add Image",
+  "txt_or": "Or",
+  "txt_course": "Course",
+  "txt_status": "Status",
+  "txt_learn_more": "Learn More",
+  "txt_add_a_chapter": "Add a chapter",
+  "txt_subject": "Subject",
+  "txt_completed": "Completed",
+  "txt_subjects": "Subjects",
+  "txt_not_completed": "Not completed",
+  "txt_add_a_subject": "Add a subject",
+  "txt_trimester": "Trimester"
 }

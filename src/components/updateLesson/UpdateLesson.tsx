@@ -230,7 +230,7 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
               fullWidth
               className="!mt-[15px]"
             />
-            Or
+            {t("txt_or")}
             <FormControl className="!mt-[5px]" fullWidth>
               <input
                 type="file"
@@ -248,7 +248,7 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
               setAddImageHidden(!addImageHidden);
             }}
           >
-            A{t("txt_add_image")}
+            {t("txt_add_image")}
           </Button>
           {/* {JSON.stringify(formData.images)} */}
           <FormControlLabel

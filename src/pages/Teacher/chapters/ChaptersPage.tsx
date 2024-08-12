@@ -16,6 +16,13 @@ import {
   Modal,
   Snackbar,
   Alert,
+  Card,
+  CardContent,
+  Typography,
+  CardActions,
+  List,
+  ListItem,
+  Grid,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -24,26 +31,38 @@ import { AppDispatch } from "@/redux/Store";
 import { LessonInterface } from "@/interfaces/LessonInterface";
 import UpdateLesson from "@/components/updateLesson/UpdateLesson";
 import AddLessons from "@/components/addLessons/AddLessons";
+import { deleteChapter, getAllChapters } from "@/redux/chaptersSlice";
+import React from "react";
+import ChapterInformation from "@/components/chapterInformation/ChapterInformation";
+import AddChapter from "@/components/addChapter/AddChapter";
+import UpdateChapter from "@/components/updateChapter/UpdateChapter";
 
-const AllLessons: React.FC = () => {
+const AllChapters: React.FC = () => {
   const { t } = useTranslation();
   //lessons
-  const [lessons, setLessons] = useState<LessonInterface[]>([]);
+  const [chapters, setChapters] = useState<any[]>([]);
   //variable responsible for the intial loading animation
   const [loading, setLoading] = useState<boolean>(true);
   const dispatch = useDispatch<AppDispatch>();
   //variable for the opening of the modal for the edit
   const [openModalEdit, setOpenModalEdit] = useState(false);
+  //variable for the opening of the modal to see the whole chapter info
+  const [openModalInfo, setOpenModalInfo] = useState(false);
   //varibale for opening the add modal
   const [openModalAdd, setOpenModalAdd] = useState(false);
   //variable for opening the delete alert
   const [openAlertDelete, setOpenAlertDelete] = useState(false);
   //the selected lesson to be either updated or deleted
-  const [selectedLesson, setSelectedLesson] = useState("");
+  const [selectedChapter, setSelectedChapter] = useState("");
   //variable snackbar opening varibale
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   //variable for the snackbar message
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  //opening snack bar and setting it's message
+  const handleSnackbarOpen = (message: string) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+  };
   // styling for the modal
   const style = {
     overflowX: "auto",
@@ -60,25 +79,20 @@ const AllLessons: React.FC = () => {
     boxShadow: 24,
     p: 4,
   };
-  //opening snack bar and setting it's message
-  const handleSnackbarOpen = (message: string) => {
-    setSnackbarMessage(message);
-    setSnackbarOpen(true);
-  };
   //snack bar close
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
   //deleting a lesson
   const deleteLessonHandler = async (id: string) => {
-    await dispatch(deleteLesson(id));
-    await handleGetLessons();
+    await dispatch(deleteChapter(id));
+    await handleGetChapters();
     handleClose();
   };
   //opening alert
   const handleClickOpen = (id: string) => {
     setOpenAlertDelete(true);
-    setSelectedLesson(id);
+    // setSelectedLesson(id);
   };
   //closing alert
   const handleClose = () => {
@@ -93,28 +107,42 @@ const AllLessons: React.FC = () => {
     setOpenModalAdd(true);
   };
   // getting lessons
-  const handleGetLessons = async () => {
+  const handleGetChapters = async () => {
     try {
       setLoading(true);
-      const result = await dispatch(getAllLessons()).unwrap();
+      const result = await dispatch(getAllChapters()).unwrap();
       console.log(result);
-      const data: LessonInterface[] = result;
+      const data: any[] = result.data;
       if (data) {
-        setLessons(data);
+        setChapters(data);
       } else {
         console.error("No Lessons found");
-        setLessons([]);
+        setChapters([]);
       }
     } catch (error) {
       console.error("An error occurred while fetching Lessons:", error);
-      setLessons([]);
+      setChapters([]);
     } finally {
       setLoading(false);
     }
   };
+  //opening alert
+  const handleClickDelete = (id: string) => {
+    setOpenAlertDelete(true);
+    setSelectedChapter(id);
+  };
+  //closing alert
+  const handleDeleteAlertClose = () => {
+    setOpenAlertDelete(false);
+  };
+
   //closing modal edit
   const handleCloseModalEdit = async () => {
     setOpenModalEdit(false);
+  };
+  //closing modal edit
+  const handleCloseModalInfo = async () => {
+    setOpenModalInfo(false);
   };
   //closing modal add
   const handleCloseModalAdd = async () => {
@@ -122,7 +150,7 @@ const AllLessons: React.FC = () => {
   };
   // getting lessons initially
   useEffect(() => {
-    handleGetLessons();
+    handleGetChapters();
   }, []);
 
   return (
@@ -132,104 +160,74 @@ const AllLessons: React.FC = () => {
         display={"flex"}
         justifyContent={"end"}
       >
-        <Button
-          variant="contained"
-          sx={{ marginRight: "10px" }}
-          onClick={() => handleOpenModalAdd()}
-        >
-          {t("txt_add_a_lesson")}
+        <Button variant="contained" onClick={() => handleOpenModalAdd()}>
+          {t("txt_add_a_chapter")}
         </Button>
       </Box>
-      <Box
-        display={"flex"}
-        flexDirection={"row"}
-        flexWrap={"wrap"}
-        justifyContent={"space-between"}
-        sx={{ marginTop: "40px" }}
-      >
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow style={{ backgroundColor: "#1976d2" }}>
-                <TableCell sx={{ color: "white" }}>{t("txt_name")}</TableCell>
-                <TableCell sx={{ color: "white" }}>
-                  {t("txt_content")}
-                </TableCell>
-                <TableCell sx={{ color: "white" }}>
-                  {t("txt_description")}
-                </TableCell>
-                <TableCell sx={{ color: "white" }}>
-                  {t("txt_course_name")}
-                </TableCell>
-                <TableCell sx={{ color: "white" }}>{t("txt_locked")}</TableCell>
-                <TableCell sx={{ color: "white" }}>
-                  {t("txt_actions")}
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {loading
-                ? Array.from(new Array(5)).map((_, index) => (
-                    <TableRow key={index}>
-                      <TableCell>
-                        <Skeleton />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton />
-                      </TableCell>
-                    </TableRow>
-                  ))
-                : lessons.map((lesson) => (
-                    <TableRow key={lesson.id}>
-                      <TableCell>{lesson.name}</TableCell>
-                      <TableCell sx={{ maxWidth: "400px" }}>
-                        {lesson.content}
-                      </TableCell>
-                      <TableCell>{lesson.description}</TableCell>
-                      <TableCell>{lesson.chapitre.name}</TableCell>
-                      <TableCell>
-                        {lesson.isLocked ? t("txt_yes") : t("txt_no")}
-                      </TableCell>
-                      <TableCell>
+      <Box sx={{ marginTop: "40px" }}>
+        <Grid container spacing={2}>
+          {loading
+            ? Array.from(new Array(5)).map((_, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Skeleton variant="rectangular" width="100%" height={150} />
+                </Grid>
+              ))
+            : chapters.map((chapter) => (
+                <Grid item xs={12} sm={6} md={4} key={chapter.id}>
+                  <Card variant="outlined" sx={{ height: "100%" }}>
+                    <React.Fragment>
+                      <CardContent>
+                        <Typography
+                          sx={{ fontSize: 20 }}
+                          color="text.secondary"
+                          gutterBottom
+                        >
+                          {t("txt_name") + " : " + chapter.name}
+                        </Typography>
+                        <Typography variant="body2">
+                          {t("txt_description") + " : " + chapter.description}
+                          <br />
+                          {t("txt_status") +
+                            " : " +
+                            (chapter.estTermine
+                              ? t("txt_completed")
+                              : t("txt_not_completed"))}
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
                         <Button
-                          variant="contained"
-                          className="!mr-3"
-                          color="primary"
+                          size="small"
+                          onClick={() => {
+                            setOpenModalInfo(true);
+                            setSelectedChapter(chapter.id);
+                          }}
+                        >
+                          {t("txt_learn_more")}
+                        </Button>
+                        <Button
+                          sx={{ color: "red" }}
+                          size="small"
+                          onClick={() => {
+                            handleClickDelete(chapter.id);
+                          }}
+                        >
+                          {t("txt_delete")}
+                        </Button>
+                        <Button
+                          size="small"
                           onClick={async () => {
-                            setSelectedLesson(lesson.id);
+                            setSelectedChapter(chapter.id);
                             await handleOpenModal();
                           }}
                         >
                           {t("txt_edit")}
                         </Button>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          onClick={async () => {
-                            // await deleteExerciceHandler(exercice.id);
-                            handleClickOpen(lesson.id);
-                          }}
-                        >
-                          {t("txt_delete")}
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                      </CardActions>
+                    </React.Fragment>
+                  </Card>
+                </Grid>
+              ))}
+        </Grid>
         <Dialog
           open={openAlertDelete}
           onClose={handleClose}
@@ -237,13 +235,13 @@ const AllLessons: React.FC = () => {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {t("txt_lesson_delete_alert")}
+            {t("txt_lesson_delete_chapter")}
           </DialogTitle>
 
           <DialogActions>
             <Button onClick={handleClose}>{t("txt_disagree")}</Button>
             <Button
-              onClick={async () => await deleteLessonHandler(selectedLesson)}
+              onClick={async () => await deleteLessonHandler(selectedChapter)}
               autoFocus
             >
               {t("txt_agree")}
@@ -257,12 +255,12 @@ const AllLessons: React.FC = () => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <UpdateLesson
-              getLessons={handleGetLessons}
-              selectedLessonId={selectedLesson}
+            <UpdateChapter
+              getChapters={handleGetChapters}
+              chapterId={selectedChapter}
               handleSubmit={handleCloseModalEdit}
               handleError={handleSnackbarOpen}
-            ></UpdateLesson>
+            ></UpdateChapter>
           </Box>
         </Modal>
         <Modal
@@ -272,12 +270,23 @@ const AllLessons: React.FC = () => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <AddLessons
-              getLessons={handleGetLessons}
-              selectedLessonId={selectedLesson}
+            <AddChapter
+              getChapters={handleGetChapters}
               handleSubmit={handleCloseModalAdd}
               handleError={handleSnackbarOpen}
-            ></AddLessons>
+            ></AddChapter>
+          </Box>
+        </Modal>
+        <Modal
+          open={openModalInfo}
+          onClose={handleCloseModalInfo}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <ChapterInformation
+              selectedChapterId={selectedChapter}
+            ></ChapterInformation>
           </Box>
         </Modal>
       </Box>
@@ -297,4 +306,4 @@ const AllLessons: React.FC = () => {
     </>
   );
 };
-export default AllLessons;
+export default AllChapters;

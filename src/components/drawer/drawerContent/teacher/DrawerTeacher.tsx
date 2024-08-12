@@ -93,7 +93,7 @@ const SideDrawer: React.FC = () => {
           aria-label="teachers"
           startIcon={<GiBookCover />}
           onClick={() => {
-            // router.push("/fileUpload");
+            navigate("/teacher/subjects");
           }}
         >
           {t("txt_manage_subjects")}
@@ -104,6 +104,9 @@ const SideDrawer: React.FC = () => {
           className="tab"
           aria-label="absence"
           startIcon={<MdMenuBook />}
+          onClick={() => {
+            navigate("/teacher/chapters");
+          }}
         >
           {t("txt_manage_chapters")}
         </Button>
