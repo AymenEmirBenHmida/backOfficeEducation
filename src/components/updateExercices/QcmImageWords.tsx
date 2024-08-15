@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import {
-  ExerciceCreationProps,
   ExerciceUpdateProps,
 } from "@/interfaces/ExerciceCrudProps";
 import { LessonInterface } from "@/interfaces/LessonInterface";

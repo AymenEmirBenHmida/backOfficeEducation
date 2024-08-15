@@ -8,10 +8,9 @@ import {
   CircularProgress,
   Select,
   MenuItem,
-  Box,
   FormControl,
-  FormLabel,
   InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
@@ -19,6 +18,8 @@ import { useDispatch } from "react-redux";
 import { createTrimester, getAllTrimesters } from "@/redux/trimesterSlice";
 import { getAllLevels } from "@/redux/levelSlice";
 import { TrimesterCreationProps } from "@/interfaces/trimestersCrudInterface";
+import { createTrimestreInputSchema } from "@/zod/trimestre";
+import { z } from "zod";
 
 const AddTrimester: React.FC<TrimesterCreationProps> = ({
   handleSubmit,
@@ -39,6 +40,8 @@ const AddTrimester: React.FC<TrimesterCreationProps> = ({
   const [loading, setLoading] = useState(false);
   //used when updating database
   const [updateLoading, setUpdateLoading] = useState(false);
+  //state variable for form validation
+  const [errors, setErrors] = useState<any>({});
   const dispatch = useDispatch<AppDispatch>();
   //change formData direct attribute
   const handleFormChange = (field: string, value: any) => {
@@ -50,6 +53,7 @@ const AddTrimester: React.FC<TrimesterCreationProps> = ({
   //create a subject
   const handleCreateTrimester = async () => {
     try {
+      createTrimestreInputSchema.parse(formData);
       setUpdateLoading(true);
       const response = await dispatch(
         createTrimester({
@@ -65,8 +69,17 @@ const AddTrimester: React.FC<TrimesterCreationProps> = ({
         handleError!("error");
       }
     } catch (error) {
-      handleError!("error");
-      console.log(error);
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const newErrors = error.errors.reduce((acc: any, curr: any) => {
+          acc[curr.path[0]] = curr.message;
+          return acc;
+        }, {});
+        setErrors(newErrors);
+      } else {
+        handleError!("error");
+        console.log(error);
+      }
     }
   };
   //getting list of levels
@@ -103,6 +116,7 @@ const AddTrimester: React.FC<TrimesterCreationProps> = ({
             </InputLabel>
             <Select
               value={formData.niveauId}
+              error={!!errors.niveauId}
               label={t("txt_trimester")}
               onChange={(e) => {
                 console.log("niveauId", e.target.value);
@@ -116,9 +130,16 @@ const AddTrimester: React.FC<TrimesterCreationProps> = ({
                 </MenuItem>
               ))}
             </Select>
+            {errors.niveauId && (
+              <FormHelperText sx={{ color: "red" }}>
+                {errors.niveauId}
+              </FormHelperText>
+            )}
           </FormControl>
           <TextField
             label={t("txt_name")}
+            error={!!errors.name}
+            helperText={errors.name}
             value={formData.name}
             onChange={(e) => handleFormChange("name", e.target.value)}
             fullWidth
@@ -127,6 +148,8 @@ const AddTrimester: React.FC<TrimesterCreationProps> = ({
           <TextField
             className="!mt-[15px]"
             label={t("txt_slug")}
+            error={!!errors.slug}
+            helperText={errors.slug}
             value={formData.slug}
             onChange={(e) => handleFormChange("slug", e.target.value)}
             fullWidth

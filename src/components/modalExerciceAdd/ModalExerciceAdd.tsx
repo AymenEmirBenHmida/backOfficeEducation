@@ -8,10 +8,10 @@ import {
   InputLabel,
   Modal,
   Typography,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { LessonInterface } from "@/interfaces/LessonInterface";
-import axios from "@/config/axiosConfig";
 import QcmText from "../addExercises/QcmText";
 import QcmImageWords from "../addExercises/QcmImageWords";
 import QcmImages from "../addExercises/QcmImages";
@@ -27,6 +27,8 @@ import Video from "../addExercises/Video";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/Store";
 import { createExercice } from "@/redux/exerciceSlice";
+import { createExerciceInputSchema } from "@/zod/exercice";
+import { z } from "zod";
 
 interface ModalExerciceAddProps {
   lessons: LessonInterface[];
@@ -34,6 +36,7 @@ interface ModalExerciceAddProps {
   handleClose: () => void;
   selectedTypeImage: string;
   selectedTypeId: string;
+  handleStartErrorMessage: (message: string) => void;
 }
 
 const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
@@ -42,13 +45,18 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
   handleClose,
   selectedTypeImage,
   selectedTypeId,
+  handleStartErrorMessage,
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  //loading animation
+  const [loading, setLoading] = useState(false);
   //variable for the description
   const [description, setDescription] = useState<any>("");
   //the selected lesson id
   const [selectedLessonId, setSelectedLessonId] = useState("");
+  //state variable for form validation
+  const [errors, setErrors] = useState<any>({});
   //handles changing the state variable for the description
   const handleInputChange = (value: any) => {
     setDescription(value);
@@ -57,12 +65,26 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
   const handleSubmit = async ({ formData }: { formData: any }) => {
     console.log("Form Data:", formData);
     try {
+      createExerciceInputSchema.parse(formData);
+      setLoading(true);
       const data = await dispatch(createExercice({ formData }));
-
       console.log("Exercise created:", data);
+      setLoading(false);
       // handleClose();
     } catch (error) {
-      console.error("Failed to create exercise:", error);
+      setLoading(false);
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const newErrors = error.errors.reduce((acc: any, curr: any) => {
+          acc[curr.path.join(".")] = curr.message;
+          return acc;
+        }, {});
+        console.log(newErrors);
+        setErrors(newErrors);
+      } else {
+        handleStartErrorMessage(t("txt_error"));
+        console.log("failed to create exercice ", error);
+      }
     }
   };
   //responsible for the components to be displayed depending on the type of the question
@@ -83,6 +105,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "QCM_MULTI_ANSWER_IMAGES":
@@ -92,6 +116,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "QCM_MULTI_ANSWER_WORDS_IMAGES":
@@ -101,6 +127,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "DRAG_DROP_WORDS_TO_IMAGE":
@@ -110,6 +138,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "DRAG_DROP_IN_TABLE_IMAGES":
@@ -119,6 +149,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "SELECT_TABLE":
@@ -128,6 +160,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "COLOR":
@@ -137,6 +171,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "ARROW":
@@ -146,6 +182,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "ARROW_SOUND":
@@ -155,6 +193,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "READ":
@@ -164,6 +204,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "READ_IMAGE":
@@ -173,6 +215,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "MAKE_PHRASE":
@@ -182,6 +226,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "MAKE_PHRASE_FROM_TABLE":
@@ -191,6 +237,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       case "VIDEO":
@@ -200,6 +248,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             selectedLessonId={selectedLessonId}
             description={description}
             handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
           />
         );
       default:
@@ -236,9 +286,10 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
           <Typography id="modal-modal-title" variant="h6" component="h2">
             {selectedTypeId}
           </Typography>
-          <FormControl fullWidth className="!mt-[15px]">
+          <FormControl required fullWidth className="!mt-[15px]">
             <InputLabel>{t("txt_lesson")}</InputLabel>
             <Select
+              error={!!errors[`courId`]}
               value={selectedLessonId}
               label={t("txt_lesson")}
               onChange={(e) => {
@@ -253,6 +304,11 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
                 </MenuItem>
               ))}
             </Select>
+            {!!errors[`courId`] && (
+              <FormHelperText sx={{ color: "red" }}>
+                {errors[`courId`]}
+              </FormHelperText>
+            )}
           </FormControl>
           <FormControl fullWidth className="!mt-[15px]">
             <TextField

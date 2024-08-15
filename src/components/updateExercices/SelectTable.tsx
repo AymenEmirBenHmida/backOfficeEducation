@@ -15,7 +15,6 @@ import {
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
 import {
-  ExerciceCreationProps,
   ExerciceUpdateProps,
 } from "@/interfaces/ExerciceCrudProps";
 import { useDispatch } from "react-redux";

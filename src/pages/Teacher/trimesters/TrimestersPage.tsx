@@ -19,12 +19,9 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/Store";
 import React from "react";
-import { deleteSubject, getAllSubjects } from "@/redux/subjectsSlice";
-import SubjectInformation from "@/components/subjectInformation/ChapterInformation";
-import AddSubject from "@/components/addSubject/AddSubject";
-import UpdateSubject from "@/components/updateSubject/UpdateSubject";
 import { deleteTrimester, getAllTrimesters } from "@/redux/trimesterSlice";
 import AddTrimester from "@/components/addTrimester/AddTrimester";
+import UpdateTrimester from "@/components/updateTrimester/UpdateTrimester";
 
 const AllTrimesters: React.FC = () => {
   const { t } = useTranslation();
@@ -45,11 +42,6 @@ const AllTrimesters: React.FC = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   //variable for the snackbar message
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  //opening snack bar and setting it's message
-  const handleSnackbarOpen = (message: string) => {
-    setSnackbarMessage(message);
-    setSnackbarOpen(true);
-  };
   // styling for the modal
   const style = {
     overflowX: "auto",
@@ -66,20 +58,32 @@ const AllTrimesters: React.FC = () => {
     boxShadow: 24,
     p: 4,
   };
+  //opening snack bar and setting it's message
+  const handleSnackbarOpen = (message: string) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+  };
   //snack bar close
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
-  //deleting a lesson
-  const deleteSubjectHandler = async (id: string) => {
-    await dispatch(deleteTrimester(id));
-    await handleGetTrimesters();
-    handleClose();
+  //deleting a trimester
+  const deleteTrimesterHandler = async (id: string) => {
+    try {
+      handleDeleteAlertClose();
+      setLoading(true);
+      await dispatch(deleteTrimester(id));
+      await handleGetTrimesters();
+      handleClose();
+      setLoading(false);
+    } catch (error) {
+      console.log("error deleting trimester");
+      setLoading(false);
+    }
   };
   //opening alert
   const handleClickOpen = (id: string) => {
     setOpenAlertDelete(true);
-    // setSelectedLesson(id);
   };
   //closing alert
   const handleClose = () => {
@@ -93,7 +97,7 @@ const AllTrimesters: React.FC = () => {
   const handleOpenModalAdd = async () => {
     setOpenModalAdd(true);
   };
-  // getting lessons
+  // getting trimesters
   const handleGetTrimesters = async () => {
     try {
       setLoading(true);
@@ -103,11 +107,12 @@ const AllTrimesters: React.FC = () => {
       if (data) {
         setTrimesters(data);
       } else {
-        console.error("No Lessons found");
+        console.error("No trimesters found");
         setTrimesters([]);
       }
     } catch (error) {
-      console.error("An error occurred while fetching Lessons:", error);
+      console.error("An error occurred while fetching trimesters:", error);
+      handleSnackbarOpen(t("txt_error"));
       setTrimesters([]);
     } finally {
       setLoading(false);
@@ -130,7 +135,7 @@ const AllTrimesters: React.FC = () => {
   const handleCloseModalAdd = async () => {
     setOpenModalAdd(false);
   };
-  // getting lessons initially
+  // getting trimesters initially
   useEffect(() => {
     handleGetTrimesters();
   }, []);
@@ -143,7 +148,7 @@ const AllTrimesters: React.FC = () => {
         justifyContent={"end"}
       >
         <Button variant="contained" onClick={() => handleOpenModalAdd()}>
-          {t("txt_add_a_subject")}
+          {t("txt_add_a_trimester")}
         </Button>
       </Box>
       <Box sx={{ marginTop: "40px" }}>
@@ -218,7 +223,7 @@ const AllTrimesters: React.FC = () => {
             <Button onClick={handleClose}>{t("txt_disagree")}</Button>
             <Button
               onClick={async () =>
-                await deleteSubjectHandler(selectedTrimester)
+                await deleteTrimesterHandler(selectedTrimester)
               }
               autoFocus
             >
@@ -233,12 +238,12 @@ const AllTrimesters: React.FC = () => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <UpdateSubject
-              getSubjects={handleGetTrimesters}
-              subjectId={selectedTrimester}
+            <UpdateTrimester
+              getTrimesters={handleGetTrimesters}
+              trimesterId={selectedTrimester}
               handleSubmit={handleCloseModalEdit}
               handleError={handleSnackbarOpen}
-            ></UpdateSubject>
+            ></UpdateTrimester>
           </Box>
         </Modal>
         <Modal

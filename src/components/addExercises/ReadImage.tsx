@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Button, Checkbox, FormControlLabel } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  CircularProgress,
+} from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ExerciceCreationProps } from "@/interfaces/ExerciceCrudProps";
 
@@ -8,6 +14,8 @@ const ReadImage: React.FC<ExerciceCreationProps> = ({
   handleSubmit,
   description,
   selectedLessonId,
+  errors,
+  loading,
 }) => {
   const { t } = useTranslation();
   //form inputs variable
@@ -51,6 +59,9 @@ const ReadImage: React.FC<ExerciceCreationProps> = ({
       <TextField
         label={t("txt_text")}
         value={formData.content.text || ""}
+        required
+        error={!!errors[`content.text`]}
+        helperText={errors[`content.text`]}
         onChange={(e) => handleContentChange("text", e.target.value)}
         fullWidth
         className="!mt-[15px]"
@@ -58,6 +69,9 @@ const ReadImage: React.FC<ExerciceCreationProps> = ({
       <TextField
         label={t("txt_image")}
         value={formData.content.image || ""}
+        required
+        error={!!errors[`content.image`]}
+        helperText={errors[`content.image`]}
         onChange={(e) => handleContentChange("image", e.target.value)}
         fullWidth
         className="!mt-[15px]"
@@ -80,7 +94,11 @@ const ReadImage: React.FC<ExerciceCreationProps> = ({
         }}
         className="!mt-[15px]"
       >
-        {t("txt_submit")}
+        {loading ? (
+          <CircularProgress sx={{ color: "white" }} size={30} />
+        ) : (
+          t("txt_submit")
+        )}
       </Button>
     </>
   );

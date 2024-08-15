@@ -20,7 +20,7 @@ import { getTrimester, updateTrimester } from "@/redux/trimesterSlice";
 import { TrimesterUpdateProps } from "@/interfaces/trimestersCrudInterface";
 import { getAllLevels } from "@/redux/levelSlice";
 
-const UpdateSubject: React.FC<TrimesterUpdateProps> = ({
+const UpdateTrimester: React.FC<TrimesterUpdateProps> = ({
   handleSubmit,
   handleError,
   getTrimesters,
@@ -122,11 +122,11 @@ const UpdateSubject: React.FC<TrimesterUpdateProps> = ({
               {t("txt_trimester")}
             </InputLabel>
             <Select
-              value={formData.trimestreId}
+              value={formData.niveauId}
               label={t("txt_trimester")}
               onChange={(e) => {
-                console.log("trimestreId", e.target.value);
-                handleFormChange("trimestreId", e.target.value);
+                console.log("niveauId", e.target.value);
+                handleFormChange("niveauId", e.target.value);
               }}
               className="w-full"
             >
@@ -147,9 +147,9 @@ const UpdateSubject: React.FC<TrimesterUpdateProps> = ({
           />
           <TextField
             className="!mt-[15px]"
-            label={t("txt_description")}
-            value={formData.description}
-            onChange={(e) => handleFormChange("description", e.target.value)}
+            label={t("txt_slug")}
+            value={formData.slug}
+            onChange={(e) => handleFormChange("slug", e.target.value)}
             fullWidth
           />
           <Box
@@ -205,4 +205,4 @@ const UpdateSubject: React.FC<TrimesterUpdateProps> = ({
   );
 };
 
-export default UpdateSubject;
+export default UpdateTrimester;

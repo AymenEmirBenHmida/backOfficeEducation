@@ -15,7 +15,6 @@ import {
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
 import { useDispatch } from "react-redux";
-import { updatExercice } from "@/redux/exerciceSlice";
 import { getLesson, updatLesson } from "@/redux/lessonSlice";
 import { getAllChapters } from "@/redux/chaptersSlice";
 import { LessonUpdateProps } from "@/interfaces/LessonCrudProps";

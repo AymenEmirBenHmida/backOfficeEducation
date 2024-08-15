@@ -6,6 +6,8 @@ import {
   Checkbox,
   IconButton,
   Button,
+  CircularProgress,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ExerciceCreationProps } from "@/interfaces/ExerciceCrudProps";
@@ -15,6 +17,8 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
   selectedTypeId,
   description,
   selectedLessonId,
+  loading,
+  errors,
 }) => {
   const { t } = useTranslation();
   //form inputs variable
@@ -42,7 +46,7 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
     setFormData((prev: any) => ({
       ...prev,
       content: {
-        // ...prev.content,
+        ...prev.content,
         options: newOptions,
       },
     }));
@@ -75,7 +79,10 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
       ...prev,
       content: {
         ...prev.content,
-        options: [...prev.content.options, { text: "", isCorrect: false }],
+        options: [
+          ...prev.content.options,
+          { text: "", image: "", isCorrect: false },
+        ],
       },
     }));
   };
@@ -97,6 +104,9 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
   return (
     <>
       <TextField
+        required
+        error={!!errors["content.text"]}
+        helperText={errors["content.text"]}
         label={t("txt_text")}
         value={formData.content.text || ""}
         onChange={(e) => handleContentChange("text", e.target.value)}
@@ -106,12 +116,18 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
       {formData.content.options.map((option: any, index: number) => (
         <Box key={index} className="!mt-[15px]">
           <TextField
+            required
+            error={!!errors[`content.options.${index}.text`]}
+            helperText={errors[`content.options.${index}.text`]}
             label={`${t("txt_text")} ${index + 1}`}
             value={option.text}
             onChange={(e) => handleOptionChange(index, "text", e.target.value)}
             fullWidth
           />
           <TextField
+            error={!!errors[`content.options.${index}.image`]}
+            helperText={errors[`content.options.${index}.image`]}
+            required
             label={`${t("txt_image")} ${index + 1}`}
             value={option.image}
             onChange={(e) => handleOptionChange(index, "image", e.target.value)}
@@ -134,6 +150,11 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
           </IconButton>
         </Box>
       ))}
+      {!!errors[`content.options`] && (
+        <FormHelperText sx={{ color: "red" }}>
+          {errors[`content.options`]}
+        </FormHelperText>
+      )}
       <FormControlLabel
         className="!mt-[15px]"
         control={
@@ -157,7 +178,11 @@ const QcmImageWords: React.FC<ExerciceCreationProps> = ({
           await handleSubmit({ formData });
         }}
       >
-        {t("txt_submit")}
+        {loading ? (
+          <CircularProgress sx={{ color: "white" }} size={30} />
+        ) : (
+          t("txt_submit")
+        )}
       </Button>
     </>
   );

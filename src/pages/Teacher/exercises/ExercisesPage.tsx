@@ -1,6 +1,7 @@
 import { getAllLessons } from "../../../redux/lessonSlice";
 import QuestionTypes from "../../../constants";
 import {
+  Alert,
   Box,
   Button,
   Card,
@@ -8,6 +9,7 @@ import {
   CardContent,
   CardMedia,
   Pagination,
+  Snackbar,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -37,6 +39,10 @@ const Exercises: React.FC = () => {
   const [endIndex, setEndIndex] = useState(itemPerpage);
   //number of the current page
   const [page, setPage] = useState(1);
+  //variable for the snackbar message
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  //snackbar opening state
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
   //the questions types to be actually displayed
   const displayedTypes = questionTypes.slice(startIndex, endIndex);
   const dispatch = useDispatch<AppDispatch>();
@@ -61,15 +67,28 @@ const Exercises: React.FC = () => {
     setSelectedTypeImage(image);
     setOpen(true);
   };
+  //snack bar close
+  const handleSnackbarClose = () => {
+    setSnackBarOpen(false);
+  };
+  //opening snack bar and setting it's message
+  const handleSnackbarOpen = (message: string) => {
+    setSnackbarMessage(message);
+    setSnackBarOpen(true);
+  };
   //closing the add modal
   const handleClose = () => setOpen(false);
   //getting all lessons
   const getLessons = async () => {
-    const result = await dispatch(getAllLessons());
-    if (getAllLessons.fulfilled.match(result)) {
-      setLessons(result.payload as LessonInterface[]);
-    } else {
-      console.error("Failed to fetch lessons");
+    try {
+      const result = await dispatch(getAllLessons());
+      if (getAllLessons.fulfilled.match(result)) {
+        setLessons(result.payload as LessonInterface[]);
+      } else {
+        console.error("Failed to fetch lessons");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
   // initially launching the functions necessary
@@ -130,6 +149,7 @@ const Exercises: React.FC = () => {
         })}
       </Box>
       <ModalExerciceAdd
+        handleStartErrorMessage={handleSnackbarOpen}
         handleClose={handleClose}
         lessons={lessons}
         open={open}
@@ -148,6 +168,19 @@ const Exercises: React.FC = () => {
           justifyContent: "center",
         }}
       />
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

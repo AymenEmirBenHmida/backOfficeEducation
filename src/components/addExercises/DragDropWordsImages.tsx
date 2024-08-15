@@ -5,6 +5,8 @@ import {
   FormControlLabel,
   Checkbox,
   Button,
+  FormHelperText,
+  CircularProgress,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ExerciceCreationProps } from "@/interfaces/ExerciceCrudProps";
@@ -14,6 +16,8 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
   handleSubmit,
   description,
   selectedLessonId,
+  errors,
+  loading,
 }) => {
   const { t } = useTranslation();
   //form inputs variable
@@ -21,7 +25,7 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
     typeQuestion: selectedTypeId,
     content: {
       text: "",
-      options: [{ text: "", isCorrect: false }],
+      options: [{ text: "", isCorrect: false, order: 0, image: "" }],
     },
     courId: selectedLessonId || "",
     description: description || "",
@@ -41,7 +45,7 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
     setFormData((prev: any) => ({
       ...prev,
       content: {
-        // ...prev.content,
+        ...prev.content,
         options: newOptions,
       },
     }));
@@ -74,7 +78,10 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
       ...prev,
       content: {
         ...prev.content,
-        options: [...prev.content.options, { text: "", isCorrect: false }],
+        options: [
+          ...prev.content.options,
+          { text: "", isCorrect: false, order: 0, image: "" },
+        ],
       },
     }));
   };
@@ -97,6 +104,9 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
     <>
       <TextField
         label={t("txt_text")}
+        required
+        error={!!errors["content.text"]}
+        helperText={errors["content.text"]}
         value={formData.content.text || ""}
         onChange={(e) => handleContentChange("text", e.target.value)}
         fullWidth
@@ -106,12 +116,18 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
         <Box key={index} className="!mt-[15px]">
           <TextField
             label={`${t("txt_text")} ${index + 1}`}
+            error={!!errors[`content.options.${index}.text`]}
+            helperText={errors[`content.options.${index}.text`]}
+            required
             value={option.text}
             onChange={(e) => handleOptionChange(index, "text", e.target.value)}
             fullWidth
           />
           <TextField
             label={`${t("text_image")} ${index + 1}`}
+            required
+            error={!!errors[`content.options.${index}.image`]}
+            helperText={errors[`content.options.${index}.image`]}
             value={option.image}
             onChange={(e) => handleOptionChange(index, "image", e.target.value)}
             fullWidth
@@ -119,14 +135,28 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
           <TextField
             label={`${t("txt_order")} ${index + 1}`}
             value={option.order}
+            required
+            error={!!errors[`content.options.${index}.order`]}
+            helperText={errors[`content.options.${index}.order`]}
             type="number"
-            onChange={(e) => handleOptionChange(index, "order", e.target.value)}
+            onChange={(e) =>
+              handleOptionChange(
+                index,
+                "order",
+                e.target.value === "" ? "" : parseInt(e.target.value)
+              )
+            }
             fullWidth
           />
 
           <Button onClick={() => removeOption(index)}>{t("txt_remove")}</Button>
         </Box>
       ))}
+      {!!errors[`content.options`] && (
+        <FormHelperText sx={{ color: "red" }}>
+          {errors[`content.options`]}
+        </FormHelperText>
+      )}
       <FormControlLabel
         className="!mt-[15px]"
         control={
@@ -150,7 +180,11 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
           await handleSubmit({ formData });
         }}
       >
-        {t("txt_submit")}
+        {loading ? (
+          <CircularProgress sx={{ color: "white" }} size={30} />
+        ) : (
+          t("txt_submit")
+        )}
       </Button>
     </>
   );

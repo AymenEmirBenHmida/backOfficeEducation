@@ -6,6 +6,8 @@ import {
   Checkbox,
   IconButton,
   Button,
+  CircularProgress,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
@@ -16,6 +18,8 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
   handleSubmit,
   description,
   selectedLessonId,
+  errors,
+  loading,
 }) => {
   const { t } = useTranslation();
   //form inputs variable
@@ -99,6 +103,9 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
   return (
     <>
       <TextField
+        required
+        error={!!errors[`content.text`]}
+        helperText={errors[`content.text`]}
         label={t("txt_text")}
         value={formData.content.text || ""}
         onChange={(e) => handleContentChange("text", e.target.value)}
@@ -115,6 +122,9 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
           <TextField
             className="!mr-[5px]"
             label={`1.${t("txt_text")} ${index + 1}`}
+            required
+            error={!!errors[`content.tuples.${index}.text1`]}
+            helperText={errors[`content.tuples.${index}.text1`]}
             value={tuple.text1}
             onChange={(e) =>
               handleTupleChange(index, "text1", e.target.value, "text1")
@@ -124,16 +134,28 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
           <TextField
             className="!mr-[5px]"
             label={`1.${t("txt_order")} ${index + 1}`}
+            required
+            error={!!errors[`content.tuples.${index}.order1`]}
+            helperText={errors[`content.tuples.${index}.order1`]}
             value={tuple.order1}
             onChange={(e) =>
-              handleTupleChange(index, "order1", e.target.value, "order1")
+              handleTupleChange(
+                index,
+                "order1",
+                e.target.value === "" ? "" : parseInt(e.target.value),
+                "order1"
+              )
             }
+            type="number"
             fullWidth
           />
           <TextField
             className="!mr-[5px]"
             label={`2.${t("txt_text")} ${index + 1}`}
             value={tuple.text2}
+            required
+            error={!!errors[`content.tuples.${index}.text2`]}
+            helperText={errors[`content.tuples.${index}.text2`]}
             onChange={(e) =>
               handleTupleChange(index, "text2", e.target.value, "text2")
             }
@@ -142,10 +164,19 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
           <TextField
             className="!mr-[5px]"
             label={`2.${t("txt_order")} ${index + 1}`}
+            required
+            error={!!errors[`content.tuples.${index}.order2`]}
+            helperText={errors[`content.tuples.${index}.order2`]}
             value={tuple.order2}
             onChange={(e) =>
-              handleTupleChange(index, "order2", e.target.value, "order2")
+              handleTupleChange(
+                index,
+                "order2",
+                e.target.value === "" ? "" : parseInt(e.target.value),
+                "order2"
+              )
             }
+            type="number"
             fullWidth
           />
           <IconButton onClick={() => removeTuple(index)}>
@@ -153,6 +184,11 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
           </IconButton>
         </Box>
       ))}
+      {!!errors[`content.content.tuples`] && (
+        <FormHelperText sx={{ color: "red" }}>
+          {errors[`content.content.tuples`]}
+        </FormHelperText>
+      )}
       <FormControlLabel
         className="!mt-[15px]"
         control={
@@ -176,7 +212,11 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
         }}
         className="!mt-[15px]"
       >
-        {t("txt_submit")}
+        {loading ? (
+          <CircularProgress sx={{ color: "white" }} size={30} />
+        ) : (
+          t("txt_submit")
+        )}
       </Button>
     </>
   );

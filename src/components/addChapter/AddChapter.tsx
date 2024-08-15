@@ -10,16 +10,17 @@ import {
   MenuItem,
   Box,
   FormControl,
-  FormLabel,
   InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
 import { useDispatch } from "react-redux";
-import { createLesson, getAllLessons } from "@/redux/lessonSlice";
-import { createChapter, getAllChapters } from "@/redux/chaptersSlice";
+import { createChapter } from "@/redux/chaptersSlice";
 import { ChapterCreationProps } from "@/interfaces/chaptersCrudInterface";
 import { getAllSubjects } from "@/redux/subjectsSlice";
+import { createChapitreInputSchema } from "@/zod/chapitre";
+import { z } from "zod";
 
 const AddChapter: React.FC<ChapterCreationProps> = ({
   handleSubmit,
@@ -39,6 +40,8 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
   const [subjects, setSubjects] = useState([]);
   //used on initial loading
   const [loading, setLoading] = useState(false);
+  //state variable for form validation
+  const [errors, setErrors] = useState<any>({});
   //used when updating database
   const [updateLoading, setUpdateLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -52,6 +55,8 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
   //create chapter
   const handleCreateChapter = async () => {
     try {
+      console.log("hello here");
+      createChapitreInputSchema.parse(formData);
       setUpdateLoading(true);
       const response = await dispatch(
         createChapter({
@@ -67,8 +72,19 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
         handleError!("error");
       }
     } catch (error) {
-      handleError!("error");
-      console.log(error);
+      console.log("error help");
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const newErrors = error.errors.reduce((acc: any, curr: any) => {
+          acc[curr.path[0]] = curr.message;
+          console.log(acc.message);
+          return acc;
+        }, {});
+        setErrors(newErrors);
+      } else {
+        handleError!("error");
+        console.log(error);
+      }
     }
   };
   //getting list of subjects
@@ -106,6 +122,7 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
             </InputLabel>
             <Select
               value={formData.matiereId}
+              error={!!errors.matiereId}
               label={t("txt_subject")}
               onChange={(e) => {
                 console.log("matiereId", e.target.value);
@@ -119,6 +136,11 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
                 </MenuItem>
               ))}
             </Select>
+            {errors.matiereId && (
+              <FormHelperText sx={{ color: "red" }}>
+                {errors.matiereId}
+              </FormHelperText>
+            )}
           </FormControl>
 
           <TextField
@@ -131,6 +153,8 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
           <TextField
             label={t("txt_name")}
             value={formData.name}
+            error={!!errors.name}
+            helperText={errors.name}
             onChange={(e) => handleFormChange("name", e.target.value)}
             fullWidth
             className="!mt-[15px]"
@@ -166,19 +190,24 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
             }
             label={t("txt_locked")}
           />
-          <FormControlLabel
-            className="!mt-[15px]"
-            control={
-              <Checkbox
-                value={formData.estTermine}
-                checked={formData.estTermine}
-                onChange={(e) =>
-                  handleFormChange("estTermine", e.target.checked)
-                }
-              />
-            }
-            label={t("txt_completed")}
-          />
+          <FormControl error={!!errors.estTermine}>
+            <FormControlLabel
+              className="!mt-[15px]"
+              control={
+                <Checkbox
+                  value={formData.estTermine}
+                  checked={formData.estTermine}
+                  onChange={(e) =>
+                    handleFormChange("estTermine", e.target.checked)
+                  }
+                />
+              }
+              label={t("txt_completed")}
+            />
+            {errors.estTermine && (
+              <FormHelperText>{errors.estTermine}</FormHelperText>
+            )}
+          </FormControl>
           <Button
             className="!mt-[15px]"
             variant="contained"

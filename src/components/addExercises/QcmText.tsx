@@ -6,6 +6,8 @@ import {
   Checkbox,
   IconButton,
   Button,
+  CircularProgress,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
@@ -16,6 +18,8 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
   handleSubmit,
   selectedLessonId,
   description,
+  errors,
+  loading,
 }) => {
   const { t } = useTranslation();
   //form inputs variable
@@ -102,6 +106,9 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
       <TextField
         label={t("txt_text")}
         value={formData.content.text}
+        required
+        error={!!errors["content.text"]}
+        helperText={errors["content.text"]}
         onChange={(e) => handleContentChange("text", e.target.value)}
         fullWidth
         className="!mt-[15px]"
@@ -117,6 +124,9 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
             className="!mr-[5px]"
             label={`${t("txt_text")} ${index + 1}`}
             value={option.text}
+            required
+            error={!!errors[`content.options.${index}.text`]}
+            helperText={errors[`content.options.${index}.text`]}
             onChange={(e) => handleOptionChange(index, "text", e.target.value)}
             fullWidth
           />
@@ -137,6 +147,11 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
           </IconButton>
         </Box>
       ))}
+      {!!errors[`content.options`] && (
+        <FormHelperText sx={{ color: "red" }}>
+          {errors[`content.options`]}
+        </FormHelperText>
+      )}
       <FormControlLabel
         className="!mt-[15px]"
         control={
@@ -160,7 +175,11 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
           await handleSubmit({ formData });
         }}
       >
-        {t("txt_submit")}
+        {loading ? (
+          <CircularProgress sx={{ color: "white" }} size={30} />
+        ) : (
+          t("txt_submit")
+        )}
       </Button>
     </>
   );

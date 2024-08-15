@@ -1,6 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AdminState } from "../interfaces/AdminState";
-import { createTrimesterService, deleteTrimesterService, getAllTrimestersService, getTrimesterService } from "@/services/trimesterService";
+import {
+  createTrimesterService,
+  deleteTrimesterService,
+  getAllTrimestersService,
+  getTrimesterService,
+  updateTrimesterService,
+} from "@/services/trimesterService";
 
 //creating trimester
 export const createTrimester = createAsyncThunk(
@@ -14,14 +20,17 @@ export const createTrimester = createAsyncThunk(
   }
 );
 //getting all trimesters
-export const getAllTrimesters = createAsyncThunk("trimester/getAll", async () => {
-  try {
-    console.log("get all trimesters redux");
-    const response = await getAllTrimestersService();
-    console.log("redux ", response.data);
-    return response.data;
-  } catch (error) {}
-});
+export const getAllTrimesters = createAsyncThunk(
+  "trimester/getAll",
+  async () => {
+    try {
+      console.log("get all trimesters redux");
+      const response = await getAllTrimestersService();
+      console.log("redux ", response.data);
+      return response.data;
+    } catch (error) {}
+  }
+);
 //deleting all trimesters
 export const deleteTrimester = createAsyncThunk(
   "trimester/delete",
@@ -52,7 +61,7 @@ export const updateTrimester = createAsyncThunk(
   async ({ formData, id }: { formData: any; id: string }) => {
     try {
       console.log("update trimester redux ", formData);
-      const response = await createTrimesterService({ formData });
+      const response = await updateTrimesterService({ formData, id });
       return response;
     } catch (error) {}
   }

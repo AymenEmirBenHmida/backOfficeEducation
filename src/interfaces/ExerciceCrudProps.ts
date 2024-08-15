@@ -3,6 +3,8 @@ export interface ExerciceCreationProps {
   handleSubmit: ({ formData }: { formData: any }) => void;
   selectedLessonId?: string;
   description?: string;
+  errors?: any;
+  loading?:boolean;
 }
 export interface ExerciceUpdateProps {
   handleSubmit?: () => void;

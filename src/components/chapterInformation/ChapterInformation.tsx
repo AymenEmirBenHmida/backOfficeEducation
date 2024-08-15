@@ -4,7 +4,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  Modal,
   Skeleton,
   Typography,
 } from "@mui/material";
@@ -12,7 +11,6 @@ import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
 import { useDispatch } from "react-redux";
 import { getChapter } from "@/redux/chaptersSlice";
-import AddChapter from "../addChapter/AddChapter";
 interface ChapterInfoProps {
   selectedChapterId: string;
 }

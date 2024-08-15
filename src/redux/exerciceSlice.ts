@@ -15,7 +15,9 @@ export const createExercice = createAsyncThunk(
       console.log("create exercice redux ", formData);
       const response = await createExerciceService({ formData });
       return response;
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
   }
 );
 //getting all exercices

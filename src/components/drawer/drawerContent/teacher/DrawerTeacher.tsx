@@ -1,5 +1,5 @@
 import { Avatar, Button } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { FaHome } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import { FaBook } from "react-icons/fa";
@@ -21,7 +21,6 @@ const SideDrawer: React.FC = () => {
   //logout
   const logout = () => {
     dispatch(logoutRedux());
-    // navigate("/login");
   };
   return (
     <>
@@ -42,30 +41,25 @@ const SideDrawer: React.FC = () => {
       </div>
       <div className="flex flex-col items-start mr-10 ml-[20px]">
         <Button
-          ////variant="outlined"
           className="tab "
           aria-label="Home"
           startIcon={<FaHome />}
           onClick={() => {
-            // router.push("/dashAdmin");
           }}
         >
           {t("txt_dashboard")}
         </Button>
         <Button
-          ////variant="outlined"
           className="tab"
           aria-label="students"
           startIcon={<FaUser />}
           onClick={() => {
-            // router.push("/students");
           }}
         >
           {t("txt_profile")}
         </Button>
 
         <Button
-          ////variant="outlined"
           className="tab"
           aria-label="Home"
           startIcon={<FaBook />}
@@ -77,18 +71,16 @@ const SideDrawer: React.FC = () => {
         </Button>
 
         <Button
-          ////variant="outlined"
           className="tab"
           aria-label="teachers"
           startIcon={<IoDocumentText />}
           onClick={() => {
-            navigate("/teacher/all-lessons");
+            navigate("/teacher/lessons");
           }}
         >
           {t("txt_manage_lessons")}
         </Button>
         <Button
-          //variant="outlined"
           className="tab"
           aria-label="teachers"
           startIcon={<GiBookCover />}
@@ -100,7 +92,6 @@ const SideDrawer: React.FC = () => {
         </Button>
 
         <Button
-          //variant="outlined"
           className="tab"
           aria-label="absence"
           startIcon={<MdMenuBook />}
@@ -116,7 +107,7 @@ const SideDrawer: React.FC = () => {
           aria-label="matieres"
           startIcon={<GrScorecard />}
           onClick={() => {
-            navigate("/login");
+            navigate("/teacher/trimesters");
           }}
         >
           {t("txt_manage_trimesters")}

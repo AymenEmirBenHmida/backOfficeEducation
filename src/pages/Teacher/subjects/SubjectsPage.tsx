@@ -26,7 +26,7 @@ import UpdateSubject from "@/components/updateSubject/UpdateSubject";
 
 const AllSubjects: React.FC = () => {
   const { t } = useTranslation();
-  //lessons
+  //subjects
   const [subjects, setSubjects] = useState<any[]>([]);
   //variable responsible for the intial loading animation
   const [loading, setLoading] = useState<boolean>(true);
@@ -39,7 +39,7 @@ const AllSubjects: React.FC = () => {
   const [openModalAdd, setOpenModalAdd] = useState(false);
   //variable for opening the delete alert
   const [openAlertDelete, setOpenAlertDelete] = useState(false);
-  //the selected lesson to be either updated or deleted
+  //the selected subject to be either updated or deleted
   const [selectedChapter, setSelectedChapter] = useState("");
   //variable snackbar opening varibale
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -70,16 +70,23 @@ const AllSubjects: React.FC = () => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
-  //deleting a lesson
+  //deleting a subject
   const deleteSubjectHandler = async (id: string) => {
-    await dispatch(deleteSubject(id));
-    await handleGetSubjects();
-    handleClose();
+    try {
+      handleDeleteAlertClose();
+      setLoading(true);
+      await dispatch(deleteSubject(id));
+      await handleGetSubjects();
+      handleClose();
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
   //opening alert
   const handleClickOpen = (id: string) => {
     setOpenAlertDelete(true);
-    // setSelectedLesson(id);
   };
   //closing alert
   const handleClose = () => {
@@ -93,7 +100,7 @@ const AllSubjects: React.FC = () => {
   const handleOpenModalAdd = async () => {
     setOpenModalAdd(true);
   };
-  // getting lessons
+  // getting subjects
   const handleGetSubjects = async () => {
     try {
       setLoading(true);
@@ -107,8 +114,9 @@ const AllSubjects: React.FC = () => {
         setSubjects([]);
       }
     } catch (error) {
-      console.error("An error occurred while fetching Lessons:", error);
+      console.error("An error occurred while fetching Subjects:", error);
       setSubjects([]);
+      handleSnackbarOpen(t("txt_error"));
     } finally {
       setLoading(false);
     }
@@ -135,7 +143,7 @@ const AllSubjects: React.FC = () => {
   const handleCloseModalAdd = async () => {
     setOpenModalAdd(false);
   };
-  // getting lessons initially
+  // getting subjects initially
   useEffect(() => {
     handleGetSubjects();
   }, []);
@@ -220,7 +228,7 @@ const AllSubjects: React.FC = () => {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {t("txt_lesson_delete_chapter")}
+            {t("txt_subject_delete_alert")}
           </DialogTitle>
 
           <DialogActions>

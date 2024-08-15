@@ -6,6 +6,8 @@ import {
   Checkbox,
   IconButton,
   Button,
+  FormHelperText,
+  CircularProgress,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
@@ -16,6 +18,8 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
   handleSubmit,
   description,
   selectedLessonId,
+  loading,
+  errors,
 }) => {
   const { t } = useTranslation();
   //form inputs variable
@@ -154,6 +158,9 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
           <TextField
             className="!mt-[5px] !mb-[5px]"
             label={`${t("txt_text")} ${indexColumn + 1}`}
+            required
+            error={!!errors[`content.columns.${indexColumn}.text`]}
+            helperText={errors[`content.columns.${indexColumn}.text`]}
             value={column.text}
             onChange={(e) =>
               handleColumnChange(indexColumn, "text", e.target.value)
@@ -163,6 +170,9 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
           <TextField
             className="!mt-[5px] !mb-[5px]"
             label={`${t("txt_background")} ${indexColumn + 1}`}
+            required
+            error={!!errors[`content.columns.${indexColumn}.background`]}
+            helperText={errors[`content.columns.${indexColumn}.background`]}
             value={column.background}
             onChange={(e) =>
               handleColumnChange(indexColumn, "background", e.target.value)
@@ -179,6 +189,17 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
               <TextField
                 className="!mr-[5px]"
                 label={`${t("txt_image")} ${index + 1}`}
+                required
+                error={
+                  !!errors[
+                    `content.columns.${indexColumn}.options.${index}.image`
+                  ]
+                }
+                helperText={
+                  errors[
+                    `content.columns.${indexColumn}.options.${index}.image`
+                  ]
+                }
                 value={option.image}
                 onChange={(e) =>
                   handleOptionChange(
@@ -213,6 +234,11 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
               </IconButton>
             </Box>
           ))}
+          {!!errors[`content.columns.${indexColumn}.options`] && (
+            <FormHelperText sx={{ color: "red" }}>
+              {errors[`content.columns.${indexColumn}.options`]}
+            </FormHelperText>
+          )}
           <Box className="!mt-[15px]" display={"flex"} flexDirection={"row"}>
             {" "}
             <Button onClick={() => addOptionColumn(indexColumn)}>
@@ -227,6 +253,11 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
           </Box>
         </Box>
       ))}
+      {!!errors[`content.columns`] && (
+        <FormHelperText sx={{ color: "red" }}>
+          {errors[`content.columns`]}
+        </FormHelperText>
+      )}
       <Box display={"flex"} flexDirection={"row"}>
         <FormControlLabel
           className="!mt-[15px]"
@@ -251,7 +282,11 @@ const SelectTable: React.FC<ExerciceCreationProps> = ({
           }}
           className="!mt-[15px]"
         >
-          {t("txt_submit")}
+          {loading ? (
+            <CircularProgress sx={{ color: "white" }} size={30} />
+          ) : (
+            t("txt_submit")
+          )}
         </Button>
       </Box>
     </>

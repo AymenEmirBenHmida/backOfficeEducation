@@ -6,6 +6,9 @@ import {
   Checkbox,
   IconButton,
   Button,
+  CircularProgress,
+  Typography,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
@@ -16,8 +19,12 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
   selectedLessonId,
   handleSubmit,
   description,
+  errors,
+  loading,
 }) => {
   const { t } = useTranslation();
+  // State for error message
+  const [validationError, setValidationError] = useState<string>("");
   //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
@@ -43,10 +50,22 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
     setFormData((prev: any) => ({
       ...prev,
       content: {
-        // ...prev.content,
+        ...prev.content,
         options: newOptions,
       },
     }));
+  };
+  // Validate if exactly one option is marked as correct
+  const validateOptions = () => {
+    const correctOptions = formData.content.options.filter(
+      (option: any) => option.isCorrect
+    );
+    if (correctOptions.length !== 1) {
+      setValidationError(t("txt_one_correct_option_required")); // Assuming this key exists in translations
+      return false;
+    }
+    setValidationError("");
+    return true;
   };
   //changes content attribute
   const handleContentChange = (field: string, value: any) => {
@@ -76,7 +95,7 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
       ...prev,
       content: {
         ...prev.content,
-        options: [...prev.content.options, { text: "", isCorrect: false }],
+        options: [...prev.content.options, { image: "", isCorrect: false }],
       },
     }));
   };
@@ -100,6 +119,9 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
       <TextField
         label={t("txt_text")}
         value={formData.content.text || ""}
+        required
+        error={!!errors["content.text"]}
+        helperText={errors["content.text"]}
         onChange={(e) => handleContentChange("text", e.target.value)}
         fullWidth
         className="!mt-[15px]"
@@ -115,6 +137,9 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
             className="!mr-[5px]"
             label={`${t("txt_image")} ${index + 1}`}
             value={option.image}
+            required
+            error={!!errors[`content.options.${index}.image`]}
+            helperText={errors[`content.options.${index}.image`]}
             onChange={(e) => handleOptionChange(index, "image", e.target.value)}
             fullWidth
           />
@@ -135,6 +160,11 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
           </IconButton>
         </Box>
       ))}
+      {!!errors[`content.options`] && (
+        <FormHelperText sx={{ color: "red" }}>
+          {errors[`content.options`]}
+        </FormHelperText>
+      )}
       <FormControlLabel
         className="!mt-[15px]"
         control={
@@ -149,6 +179,7 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
       <Button onClick={addOption} className="!mt-[15px]">
         {t("txt_add")}
       </Button>
+
       <Button
         className="!mt-[15px]"
         variant="contained"
@@ -158,7 +189,11 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
           await handleSubmit({ formData });
         }}
       >
-        {t("txt_submit")}
+        {loading ? (
+          <CircularProgress sx={{ color: "white" }} size={30} />
+        ) : (
+          t("txt_submit")
+        )}
       </Button>
     </>
   );

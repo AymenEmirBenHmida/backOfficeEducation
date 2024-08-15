@@ -9,8 +9,6 @@ import SignupPage from "./pages/signupPage/SignupPage";
 import LogingPage from "./pages/loginPage/LoginPage";
 import Layout from "./components/layout/Layout";
 import Exercises from "./pages/Teacher/exercises/ExercisesPage";
-import { useSelector } from "react-redux";
-import { selectUserRole } from "./redux/adminSlice";
 import PhoneValidationPage from "./pages/phoneValidationPage/PhoneValidationPage";
 import AuthWrapper from "./components/authWrapper/AuthWrapper";
 import AllExercises from "./pages/Teacher/exercises/AllExercices";
@@ -32,7 +30,7 @@ const routes: RouteConfig[] = [
     requiredRoles: ["Teacher"],
   },
   {
-    path: "/teacher/all-lessons",
+    path: "/teacher/lessons",
     component: <AllLessons />,
     requiredRoles: ["Teacher"],
   },

@@ -8,18 +8,20 @@ import {
   CircularProgress,
   Select,
   MenuItem,
-  Input,
   Box,
   FormControl,
   FormLabel,
   InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
 import { useDispatch } from "react-redux";
-import { createLesson, getAllLessons, getLesson } from "@/redux/lessonSlice";
+import { createLesson } from "@/redux/lessonSlice";
 import { getAllChapters } from "@/redux/chaptersSlice";
 import { LessonUpdateProps } from "@/interfaces/LessonCrudProps";
+import { createCourInputSchema } from "@/zod/cour";
+import { z } from "zod";
 
 const AddLessons: React.FC<LessonUpdateProps> = ({
   handleSubmit,
@@ -33,6 +35,8 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
   const [videos, setVideos] = useState<any[]>([]);
   //state variable responsible for the audio files
   const [audio, setAudio] = useState<any[]>([]);
+  //state variable for form validation
+  const [errors, setErrors] = useState<any>({});
   const [formData, setFormData] = useState<any>({
     name: "",
     content: "",
@@ -44,20 +48,24 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
     video: "",
     audio: "",
   });
+  //chaptres
   const [chapters, setChapters] = useState<any>([]);
+  //initial loading variable
   const [loading, setLoading] = useState(false);
+  //loading variable for updating
   const [updateLoading, setUpdateLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-
+  //form variable editing first level attribute
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
-
+  //cerating a lesson
   const handleCreatelesson = async () => {
     try {
+      createCourInputSchema.parse({ ...formData, images: images });
       setUpdateLoading(true);
       const response = await dispatch(
         createLesson({
@@ -74,11 +82,20 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
         handleError!("error");
       }
     } catch (error) {
-      handleError!("error");
-      console.log(error);
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const newErrors = error.errors.reduce((acc: any, curr: any) => {
+          acc[curr.path[0]] = curr.message;
+          return acc;
+        }, {});
+        setErrors(newErrors);
+      } else {
+        handleError!("error");
+        console.log(error);
+      }
     }
   };
-
+  //getting chapters
   const getChapters = async () => {
     try {
       const result = await dispatch(getAllChapters()).unwrap();
@@ -133,10 +150,11 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
               {t("txt_course")}
             </InputLabel>
             <Select
-              value={formData.courId}
+              error={!!errors.chapitreId}
+              value={formData.chapitreId}
               label={t("txt_course")}
               onChange={(e) => {
-                console.log("lesson id", e.target.value);
+                console.log("chapter id", e.target.value);
                 handleFormChange("chapitreId", e.target.value);
               }}
               className="w-full"
@@ -147,27 +165,41 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
                 </MenuItem>
               ))}
             </Select>
+            {errors.chapitreId && (
+              <FormHelperText sx={{ color: "red" }}>
+                {errors.chapitreId}
+              </FormHelperText>
+            )}
           </FormControl>
+          <TextField
+            required
+            label={t("txt_name")}
+            value={formData.name}
+            onChange={(e) => handleFormChange("name", e.target.value)}
+            fullWidth
+            className="!mt-[15px]"
+            error={!!errors.name}
+            helperText={errors.name}
+          />
           <TextField
             className="!mt-[15px]"
             label={t("txt_description")}
             value={formData.description}
             onChange={(e) => handleFormChange("description", e.target.value)}
             fullWidth
+            error={!!errors.description}
+            helperText={errors.description}
           />
-          <TextField
-            label={t("txt_name")}
-            value={formData.name}
-            onChange={(e) => handleFormChange("name", e.target.value)}
-            fullWidth
-            className="!mt-[15px]"
-          />
+
           <TextField
             label={t("txt_content")}
             value={formData.content}
             onChange={(e) => handleFormChange("content", e.target.value)}
             fullWidth
             className="!mt-[15px]"
+            required
+            error={!!errors.content}
+            helperText={errors.content}
           />
           <Box
             sx={{
@@ -187,31 +219,12 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
                 className="!mt-[15px]"
                 style={{ marginTop: "8px", marginBottom: "8px" }}
               />
+              {errors.images && (
+                <FormHelperText sx={{ color: "red" }}>
+                  {errors.images}
+                </FormHelperText>
+              )}{" "}
             </FormControl>
-            {/* 
-            <FormControl fullWidth>
-              <FormLabel>Videos</FormLabel>
-              <input
-                type="file"
-                multiple
-                accept=".mp4, .avi, .mov"
-                onChange={handleVideoChange}
-                className="!mt-[15px]"
-                style={{ marginTop: "8px", marginBottom: "8px" }}
-              />
-            </FormControl>
-
-            <FormControl fullWidth>
-              <FormLabel>Audios</FormLabel>
-              <input
-                type="file"
-                multiple
-                accept=".mp3, .wav"
-                onChange={handleAudioChange}
-                className="!mt-[15px]"
-                style={{ marginTop: "8px", marginBottom: "8px" }}
-              />
-            </FormControl> */}
           </Box>
           <FormControlLabel
             className="!mt-[15px]"

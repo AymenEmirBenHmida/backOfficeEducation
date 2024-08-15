@@ -108,6 +108,7 @@ const AllLessons: React.FC = () => {
     } catch (error) {
       console.error("An error occurred while fetching Lessons:", error);
       setLessons([]);
+      handleSnackbarOpen(t("txt_error"));
     } finally {
       setLoading(false);
     }

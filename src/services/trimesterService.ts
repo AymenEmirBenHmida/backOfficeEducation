@@ -39,7 +39,7 @@ export const getTrimesterService = async (id: string) => {
   }
 };
 //update a trimester
-export const updateChapitreService = async ({
+export const updateTrimesterService = async ({
   formData,
   id,
 }: {

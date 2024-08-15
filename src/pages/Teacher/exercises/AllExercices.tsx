@@ -1,4 +1,3 @@
-
 import {
   Table,
   TableBody,
@@ -141,6 +140,7 @@ const AllExercises: React.FC = () => {
     } catch (error) {
       console.error("An error occurred while fetching exercices:", error);
       setExercices([]);
+      handleSnackbarOpen(t("txt_error"));
     } finally {
       setLoading(false);
     }

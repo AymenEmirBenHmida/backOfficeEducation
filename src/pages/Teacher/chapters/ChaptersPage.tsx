@@ -1,12 +1,4 @@
-import { deleteLesson, getAllLessons } from "../../../redux/lessonSlice";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Button,
   Box,
   Skeleton,
@@ -20,17 +12,12 @@ import {
   CardContent,
   Typography,
   CardActions,
-  List,
-  ListItem,
   Grid,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/Store";
-import { LessonInterface } from "@/interfaces/LessonInterface";
-import UpdateLesson from "@/components/updateLesson/UpdateLesson";
-import AddLessons from "@/components/addLessons/AddLessons";
 import { deleteChapter, getAllChapters } from "@/redux/chaptersSlice";
 import React from "react";
 import ChapterInformation from "@/components/chapterInformation/ChapterInformation";
@@ -39,7 +26,7 @@ import UpdateChapter from "@/components/updateChapter/UpdateChapter";
 
 const AllChapters: React.FC = () => {
   const { t } = useTranslation();
-  //lessons
+  //chapters
   const [chapters, setChapters] = useState<any[]>([]);
   //variable responsible for the intial loading animation
   const [loading, setLoading] = useState<boolean>(true);
@@ -52,7 +39,7 @@ const AllChapters: React.FC = () => {
   const [openModalAdd, setOpenModalAdd] = useState(false);
   //variable for opening the delete alert
   const [openAlertDelete, setOpenAlertDelete] = useState(false);
-  //the selected lesson to be either updated or deleted
+  //the selected chapter to be either updated or deleted
   const [selectedChapter, setSelectedChapter] = useState("");
   //variable snackbar opening varibale
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -83,16 +70,23 @@ const AllChapters: React.FC = () => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
-  //deleting a lesson
-  const deleteLessonHandler = async (id: string) => {
-    await dispatch(deleteChapter(id));
-    await handleGetChapters();
-    handleClose();
+  //deleting a chapter
+  const deleteChapterHandler = async (id: string) => {
+    try {
+      handleDeleteAlertClose();
+      setLoading(true);
+      await dispatch(deleteChapter(id));
+      await handleGetChapters();
+      handleClose();
+      setLoading(false);
+    } catch (error) {
+      console.log("error ", error);
+      setLoading(false);
+    }
   };
   //opening alert
   const handleClickOpen = (id: string) => {
     setOpenAlertDelete(true);
-    // setSelectedLesson(id);
   };
   //closing alert
   const handleClose = () => {
@@ -106,7 +100,7 @@ const AllChapters: React.FC = () => {
   const handleOpenModalAdd = async () => {
     setOpenModalAdd(true);
   };
-  // getting lessons
+  // getting chapters
   const handleGetChapters = async () => {
     try {
       setLoading(true);
@@ -116,12 +110,13 @@ const AllChapters: React.FC = () => {
       if (data) {
         setChapters(data);
       } else {
-        console.error("No Lessons found");
+        console.error("No chapters found");
         setChapters([]);
       }
     } catch (error) {
-      console.error("An error occurred while fetching Lessons:", error);
+      console.error("An error occurred while fetching Chapters:", error);
       setChapters([]);
+      handleSnackbarOpen(t("txt_error"));
     } finally {
       setLoading(false);
     }
@@ -148,7 +143,7 @@ const AllChapters: React.FC = () => {
   const handleCloseModalAdd = async () => {
     setOpenModalAdd(false);
   };
-  // getting lessons initially
+  // getting chapters initially
   useEffect(() => {
     handleGetChapters();
   }, []);
@@ -235,13 +230,13 @@ const AllChapters: React.FC = () => {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {t("txt_lesson_delete_chapter")}
+            {t("txt_chapter_delete_alert")}
           </DialogTitle>
 
           <DialogActions>
             <Button onClick={handleClose}>{t("txt_disagree")}</Button>
             <Button
-              onClick={async () => await deleteLessonHandler(selectedChapter)}
+              onClick={async () => await deleteChapterHandler(selectedChapter)}
               autoFocus
             >
               {t("txt_agree")}

@@ -10,16 +10,14 @@ import {
   MenuItem,
   Box,
   FormControl,
-  FormLabel,
   InputLabel,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
 import { useDispatch } from "react-redux";
-import { createSubject, getSubject, updatSubject } from "@/redux/subjectsSlice";
+import {  getSubject, updatSubject } from "@/redux/subjectsSlice";
 import { getAllTrimesters } from "@/redux/trimesterSlice";
 import {
-  SubjectCreationProps,
   SubjectUpdateProps,
 } from "@/interfaces/subjectsCrudInterface";
 

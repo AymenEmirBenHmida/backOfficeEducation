@@ -10,8 +10,8 @@ import {
   MenuItem,
   Box,
   FormControl,
-  FormLabel,
   InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
@@ -19,6 +19,8 @@ import { useDispatch } from "react-redux";
 import { createSubject } from "@/redux/subjectsSlice";
 import { getAllTrimesters } from "@/redux/trimesterSlice";
 import { SubjectCreationProps } from "@/interfaces/subjectsCrudInterface";
+import { createMatiereInputSchema } from "@/zod/matiere";
+import { z } from "zod";
 
 const AddSubject: React.FC<SubjectCreationProps> = ({
   handleSubmit,
@@ -38,6 +40,8 @@ const AddSubject: React.FC<SubjectCreationProps> = ({
   const [trimesters, setTrimesters] = useState([]);
   //used on initial loading
   const [loading, setLoading] = useState(false);
+  //state variable for form validation
+  const [errors, setErrors] = useState<any>({});
   //used when updating database
   const [updateLoading, setUpdateLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -51,6 +55,7 @@ const AddSubject: React.FC<SubjectCreationProps> = ({
   //create a subject
   const handleCreateSubject = async () => {
     try {
+      createMatiereInputSchema.parse(formData);
       setUpdateLoading(true);
       const response = await dispatch(
         createSubject({
@@ -66,8 +71,17 @@ const AddSubject: React.FC<SubjectCreationProps> = ({
         handleError!("error");
       }
     } catch (error) {
-      handleError!("error");
-      console.log(error);
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const newErrors = error.errors.reduce((acc: any, curr: any) => {
+          acc[curr.path[0]] = curr.message;
+          return acc;
+        }, {});
+        setErrors(newErrors);
+      } else {
+        handleError!("error");
+        console.log(error);
+      }
     }
   };
   //getting list of subjects
@@ -104,8 +118,9 @@ const AddSubject: React.FC<SubjectCreationProps> = ({
               {t("txt_trimester")}
             </InputLabel>
             <Select
-              value={formData.matiereId}
+              value={formData.trimestreId}
               label={t("txt_trimester")}
+              error={!!errors.trimestreId}
               onChange={(e) => {
                 console.log("trimestreId", e.target.value);
                 handleFormChange("trimestreId", e.target.value);
@@ -118,6 +133,11 @@ const AddSubject: React.FC<SubjectCreationProps> = ({
                 </MenuItem>
               ))}
             </Select>
+            {errors.trimestreId && (
+              <FormHelperText sx={{ color: "red" }}>
+                {errors.trimestreId}
+              </FormHelperText>
+            )}
           </FormControl>
           <TextField
             label={t("txt_name")}
@@ -125,6 +145,8 @@ const AddSubject: React.FC<SubjectCreationProps> = ({
             onChange={(e) => handleFormChange("name", e.target.value)}
             fullWidth
             className="!mt-[15px]"
+            error={!!errors.name}
+            helperText={errors.name}
           />
           <TextField
             className="!mt-[15px]"
