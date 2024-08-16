@@ -27,7 +27,6 @@ const initializeI18n = async () => {
     console.error("i18n initialization failed:", error);
   }
 };
-
 initializeI18n();
 
 export default i18n;

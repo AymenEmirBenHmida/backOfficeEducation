@@ -115,7 +115,7 @@
   "txt_add_a_trimester": "Ajouter un trimestre",
   "txt_error": "Erreur",
   "txt_level": "Niveau",
-   "txt_remove_option": "Supprimer une option",
+  "txt_remove_option": "Supprimer une option",
   "txt_columns": "Colonnes",
   "txt_remove_column": "Supprimer la colonne",
   "txt_add_option": "Ajouter une option",
@@ -137,5 +137,12 @@
   "txt_error_text2_required": "Le deuxième texte est requis",
   "txt_error_at_least_one_tuple_required": "Au moins une paire de valeurs est requise",
   "txt_error_sound_required": "Le son est requis",
-  "txt_error_link_required": "Le lien est requis"
+  "txt_error_link_required": "Le lien est requis",
+  "txt_error_name_required": "Le nom est requis",
+  "txt_error_at_least_one_image_required": "Au moins une image est requise",
+  "txt_error_content_required": "Le contenu est requis",
+  "txt_error_chapter_id_required": "L'ID du chapitre est requis",
+  "txt_error_trimester_required": "Le trimestre est requis",
+  "txt_error_matiere_id_required": "L'ID de la matière est requis",
+  "txt_error_completion_status_required": "Le statut de complétion est requis"
 }

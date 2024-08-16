@@ -19,7 +19,10 @@ import { useDispatch } from "react-redux";
 import { createChapter } from "@/redux/chaptersSlice";
 import { ChapterCreationProps } from "@/interfaces/chaptersCrudInterface";
 import { getAllSubjects } from "@/redux/subjectsSlice";
-import { createChapitreInputSchema } from "@/zod/chapitre";
+import {
+  createChapitreInputSchema,
+  createChapterInputSchema,
+} from "@/zod/chapitre";
 import { z } from "zod";
 
 const AddChapter: React.FC<ChapterCreationProps> = ({
@@ -56,7 +59,8 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
   const handleCreateChapter = async () => {
     try {
       console.log("hello here");
-      createChapitreInputSchema.parse(formData);
+      const createChapterValidation = await createChapterInputSchema();
+      createChapterValidation.parse(formData);
       setUpdateLoading(true);
       const response = await dispatch(
         createChapter({

@@ -126,7 +126,7 @@
   "txt_error_at_least_one_option_required": "مطلوب خيار واحد على الأقل",
   "txt_error_at_least_one_option_must_be_correct": "يجب تمييز خيار واحد على الأقل كصحيح",
   "txt_error_image_required": "الصورة مطلوبة",
-  "txt_error_course_id_required": "معرف الدورة مطلوب",
+  "txt_error_course_id_required": "الدورة مطلوبة",
   "txt_error_order_must_be_number": "يجب أن يكون الترتيب رقمًا",
   "txt_error_order_must_be_positive_number": "يجب أن يكون الترتيب رقمًا موجبًا",
   "txt_error_column_text_required": "نص العمود مطلوب",
@@ -136,5 +136,12 @@
   "txt_error_text2_required": "النص الثاني مطلوب",
   "txt_error_at_least_one_tuple_required": "مطلوب زوج واحد على الأقل من القيم",
   "txt_error_sound_required": "الصوت مطلوب",
-  "txt_error_link_required": "الرابط مطلوب"
+  "txt_error_link_required": "الرابط مطلوب",
+  "txt_error_name_required": "الاسم مطلوب",
+  "txt_error_at_least_one_image_required": "يجب توفير صورة واحدة على الأقل",
+  "txt_error_content_required": "المحتوى مطلوب",
+  "txt_error_chapter_id_required": "الفصل مطلوب",
+  "txt_error_trimester_required": "الفصل الدراسي مطلوب",
+  "txt_error_matiere_id_required": "المادة مطلوبة",
+  "txt_error_completion_status_required": "حالة الإكمال مطلوبة"
 }

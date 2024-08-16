@@ -18,8 +18,8 @@ import { useDispatch } from "react-redux";
 import { createTrimester, getAllTrimesters } from "@/redux/trimesterSlice";
 import { getAllLevels } from "@/redux/levelSlice";
 import { TrimesterCreationProps } from "@/interfaces/trimestersCrudInterface";
-import { createTrimestreInputSchema } from "@/zod/trimestre";
 import { z } from "zod";
+import { createTrimesterInputSchema } from "@/zod/trimestre";
 
 const AddTrimester: React.FC<TrimesterCreationProps> = ({
   handleSubmit,
@@ -53,7 +53,8 @@ const AddTrimester: React.FC<TrimesterCreationProps> = ({
   //create a subject
   const handleCreateTrimester = async () => {
     try {
-      createTrimestreInputSchema.parse(formData);
+      const craeteTrimesterSchema = await createTrimesterInputSchema();
+      craeteTrimesterSchema.parse(formData);
       setUpdateLoading(true);
       const response = await dispatch(
         createTrimester({

@@ -16,7 +16,7 @@ import {
   sendActivationCode,
 } from "../../redux/adminSlice";
 import { FormData } from "../../interfaces/FormData";
-import { signUpArgsSchema } from "../../zod-model/auth";
+import { signUpArgsSchema } from "../../zod/auth";
 import { useTranslation } from "react-i18next";
 import SnackAlert from "../../components/snackAlert/SnackAlert";
 import { useEffect, useState } from "react";

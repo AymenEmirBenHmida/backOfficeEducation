@@ -27,7 +27,10 @@ import Video from "../addExercises/Video";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/Store";
 import { createExercice } from "@/redux/exerciceSlice";
-import { createExerciceInputSchema } from "@/zod/exercice";
+import {
+  createExerciceInputSchema,
+  validateExerciceInput,
+} from "@/zod/exercice";
 import { z } from "zod";
 
 interface ModalExerciceAddProps {
@@ -65,7 +68,7 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
   const handleSubmit = async ({ formData }: { formData: any }) => {
     console.log("Form Data:", formData);
     try {
-      createExerciceInputSchema.parse(formData);
+      await validateExerciceInput(formData);
       setLoading(true);
       const data = await dispatch(createExercice({ formData }));
       console.log("Exercise created:", data);

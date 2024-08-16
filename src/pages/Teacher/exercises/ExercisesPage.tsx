@@ -11,6 +11,7 @@ import {
   Pagination,
   Snackbar,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -47,6 +48,9 @@ const Exercises: React.FC = () => {
   const displayedTypes = questionTypes.slice(startIndex, endIndex);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  //breakpont for centering the different exercices when there wil be only a solo item per row
+  const screenSoloItemPerRow = useMediaQuery("(max-width: 864px)");
+
   //function that for each page change will smoothly return to the top of the list
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -116,7 +120,8 @@ const Exercises: React.FC = () => {
         display={"flex"}
         flexDirection={"row"}
         flexWrap={"wrap"}
-        justifyContent={"space-between"}
+        justifyContent={screenSoloItemPerRow ? "center" : "space-between"}
+        alignItems={"center"}
         sx={{ marginTop: "40px" }}
       >
         {displayedTypes.map((QuestionType) => {

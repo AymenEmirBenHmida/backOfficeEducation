@@ -19,8 +19,8 @@ import { useDispatch } from "react-redux";
 import { createSubject } from "@/redux/subjectsSlice";
 import { getAllTrimesters } from "@/redux/trimesterSlice";
 import { SubjectCreationProps } from "@/interfaces/subjectsCrudInterface";
-import { createMatiereInputSchema } from "@/zod/matiere";
 import { z } from "zod";
+import { createSubjectInputSchema } from "@/zod/matiere";
 
 const AddSubject: React.FC<SubjectCreationProps> = ({
   handleSubmit,
@@ -55,7 +55,8 @@ const AddSubject: React.FC<SubjectCreationProps> = ({
   //create a subject
   const handleCreateSubject = async () => {
     try {
-      createMatiereInputSchema.parse(formData);
+      const createSubejctValidation = await createSubjectInputSchema();
+      createSubejctValidation.parse(formData);
       setUpdateLoading(true);
       const response = await dispatch(
         createSubject({

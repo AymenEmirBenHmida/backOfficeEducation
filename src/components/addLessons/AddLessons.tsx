@@ -65,7 +65,9 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
   //cerating a lesson
   const handleCreatelesson = async () => {
     try {
-      createCourInputSchema.parse({ ...formData, images: images });
+      const createCourValidation = await createCourInputSchema();
+      console.log(images);
+      createCourValidation.parse({ ...formData, images: images });
       setUpdateLoading(true);
       const response = await dispatch(
         createLesson({
@@ -88,6 +90,7 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
           acc[curr.path[0]] = curr.message;
           return acc;
         }, {});
+        console.log(newErrors);
         setErrors(newErrors);
       } else {
         handleError!("error");
