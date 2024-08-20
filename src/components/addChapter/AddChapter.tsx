@@ -19,10 +19,7 @@ import { useDispatch } from "react-redux";
 import { createChapter } from "@/redux/chaptersSlice";
 import { ChapterCreationProps } from "@/interfaces/chaptersCrudInterface";
 import { getAllSubjects } from "@/redux/subjectsSlice";
-import {
-  createChapitreInputSchema,
-  createChapterInputSchema,
-} from "@/zod/chapitre";
+import { createChapterInputSchema } from "@/zod/chapitre";
 import { z } from "zod";
 
 const AddChapter: React.FC<ChapterCreationProps> = ({
@@ -120,7 +117,7 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
         </>
       ) : (
         <>
-          <FormControl fullWidth>
+          <FormControl fullWidth required>
             <InputLabel id="demo-simple-select-label">
               {t("txt_subject")}
             </InputLabel>
@@ -148,20 +145,23 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
           </FormControl>
 
           <TextField
-            className="!mt-[15px]"
-            label={t("txt_description")}
-            value={formData.description}
-            onChange={(e) => handleFormChange("description", e.target.value)}
-            fullWidth
-          />
-          <TextField
             label={t("txt_name")}
+            required
             value={formData.name}
             error={!!errors.name}
             helperText={errors.name}
             onChange={(e) => handleFormChange("name", e.target.value)}
             fullWidth
             className="!mt-[15px]"
+          />
+          <TextField
+            className="!mt-[15px]"
+            label={t("txt_description")}
+            error={!!errors.description}
+            helperText={errors.description}
+            value={formData.description}
+            onChange={(e) => handleFormChange("description", e.target.value)}
+            fullWidth
           />
           <Box
             sx={{
@@ -170,19 +170,7 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
               flexDirection: "column",
               gap: 2,
             }}
-          >
-            {/* <FormControl className="!mt-[5px]" fullWidth>
-              <FormLabel>{t("txt_images")}</FormLabel>
-              <input
-                type="file"
-                multiple
-                accept=".jpg, .jpeg, .png"
-                onChange={handleImageChange}
-                className="!mt-[15px]"
-                style={{ marginTop: "8px", marginBottom: "8px" }}
-              />
-            </FormControl> */}
-          </Box>
+          ></Box>
           <FormControlLabel
             className="!mt-[15px]"
             control={

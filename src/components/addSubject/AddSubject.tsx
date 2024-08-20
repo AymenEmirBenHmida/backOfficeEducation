@@ -114,7 +114,7 @@ const AddSubject: React.FC<SubjectCreationProps> = ({
         </>
       ) : (
         <>
-          <FormControl fullWidth>
+          <FormControl fullWidth required>
             <InputLabel id="demo-simple-select-label">
               {t("txt_trimester")}
             </InputLabel>
@@ -141,6 +141,7 @@ const AddSubject: React.FC<SubjectCreationProps> = ({
             )}
           </FormControl>
           <TextField
+            required
             label={t("txt_name")}
             value={formData.name}
             onChange={(e) => handleFormChange("name", e.target.value)}
@@ -153,6 +154,8 @@ const AddSubject: React.FC<SubjectCreationProps> = ({
             className="!mt-[15px]"
             label={t("txt_description")}
             value={formData.description}
+            error={!!errors.description}
+            helperText={errors.description}
             onChange={(e) => handleFormChange("description", e.target.value)}
             fullWidth
           />
@@ -163,19 +166,7 @@ const AddSubject: React.FC<SubjectCreationProps> = ({
               flexDirection: "column",
               gap: 2,
             }}
-          >
-            {/* <FormControl className="!mt-[5px]" fullWidth>
-              <FormLabel>{t("txt_images")}</FormLabel>
-              <input
-                type="file"
-                multiple
-                accept=".jpg, .jpeg, .png"
-                onChange={handleImageChange}
-                className="!mt-[15px]"
-                style={{ marginTop: "8px", marginBottom: "8px" }}
-              />
-            </FormControl> */}
-          </Box>
+          ></Box>
           <FormControlLabel
             className="!mt-[15px]"
             control={

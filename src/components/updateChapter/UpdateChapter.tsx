@@ -112,7 +112,7 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
         </>
       ) : (
         <>
-          <FormControl fullWidth>
+          <FormControl fullWidth required>
             <InputLabel id="demo-simple-select-label">
               {t("txt_subject")}
             </InputLabel>
@@ -132,20 +132,19 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
               ))}
             </Select>
           </FormControl>
-
-          <TextField
-            className="!mt-[15px]"
-            label={t("txt_description")}
-            value={formData.description}
-            onChange={(e) => handleFormChange("description", e.target.value)}
-            fullWidth
-          />
           <TextField
             label={t("txt_name")}
             value={formData.name}
             onChange={(e) => handleFormChange("name", e.target.value)}
             fullWidth
             className="!mt-[15px]"
+          />
+          <TextField
+            className="!mt-[15px]"
+            label={t("txt_description")}
+            value={formData.description}
+            onChange={(e) => handleFormChange("description", e.target.value)}
+            fullWidth
           />
           <Box
             sx={{

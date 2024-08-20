@@ -15,7 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
 import { useDispatch } from "react-redux";
-import { createTrimester, getAllTrimesters } from "@/redux/trimesterSlice";
+import { createTrimester } from "@/redux/trimesterSlice";
 import { getAllLevels } from "@/redux/levelSlice";
 import { TrimesterCreationProps } from "@/interfaces/trimestersCrudInterface";
 import { z } from "zod";
@@ -111,14 +111,14 @@ const AddTrimester: React.FC<TrimesterCreationProps> = ({
         </>
       ) : (
         <>
-          <FormControl fullWidth>
+          <FormControl required fullWidth>
             <InputLabel id="demo-simple-select-label">
-              {t("txt_trimester")}
+              {t("txt_level")}
             </InputLabel>
             <Select
               value={formData.niveauId}
               error={!!errors.niveauId}
-              label={t("txt_trimester")}
+              label={t("txt_level")}
               onChange={(e) => {
                 console.log("niveauId", e.target.value);
                 handleFormChange("niveauId", e.target.value);
@@ -138,6 +138,7 @@ const AddTrimester: React.FC<TrimesterCreationProps> = ({
             )}
           </FormControl>
           <TextField
+            required
             label={t("txt_name")}
             error={!!errors.name}
             helperText={errors.name}
@@ -147,6 +148,7 @@ const AddTrimester: React.FC<TrimesterCreationProps> = ({
             className="!mt-[15px]"
           />
           <TextField
+            required
             className="!mt-[15px]"
             label={t("txt_slug")}
             error={!!errors.slug}

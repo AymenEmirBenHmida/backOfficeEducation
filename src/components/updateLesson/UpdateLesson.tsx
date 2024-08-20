@@ -11,6 +11,8 @@ import {
   MenuItem,
   FormLabel,
   FormControl,
+  FormHelperText,
+  InputLabel,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
@@ -19,6 +21,8 @@ import { getLesson, updatLesson } from "@/redux/lessonSlice";
 import { getAllChapters } from "@/redux/chaptersSlice";
 import { LessonUpdateProps } from "@/interfaces/LessonCrudProps";
 import { CiCircleRemove } from "react-icons/ci";
+import { createCourInputSchema } from "@/zod/cour";
+import { z } from "zod";
 
 const UpdateLesson: React.FC<LessonUpdateProps> = ({
   handleSubmit,
@@ -40,6 +44,8 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
     video: "",
     audio: "",
   });
+  //the name of the lesson
+  const [lessonName, setLessonName] = useState("");
   //the chapters gotten from the backend
   const [chapters, setChapters] = useState([]);
   //variable responsible for the initial loading of info
@@ -50,6 +56,8 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
   const [addImageHidden, setAddImageHidden] = useState(true);
   //state variable used to manage adding newImages
   const [addImageText, setAddImageText] = useState("");
+  //state variable for form validation
+  const [errors, setErrors] = useState<any>({});
   //state variable responsible for the images actually being handled
   const [images, setImages] = useState<any[]>([]);
   const dispatch = useDispatch<AppDispatch>();
@@ -64,6 +72,11 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
   const handleUpdateLesson = async () => {
     try {
       const data = cleanFormData(formData);
+      const createCourValidation = await createCourInputSchema();
+      createCourValidation.parse({
+        ...data,
+        images: [...data.images, ...images.map((image: any) => String(image))],
+      });
       setUpdateLoading(true);
       const response = await dispatch(
         updatLesson({ formData: data, images: images })
@@ -77,8 +90,18 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
         handleError!("error");
       }
     } catch (error) {
-      handleError!("error");
-      console.error(error);
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const newErrors = error.errors.reduce((acc: any, curr: any) => {
+          acc[curr.path[0]] = curr.message;
+          return acc;
+        }, {});
+        console.log(newErrors);
+        setErrors(newErrors);
+      } else {
+        handleError!("error");
+        console.log(error);
+      }
     }
   };
   // getting the lesson to be updated
@@ -86,6 +109,7 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
     try {
       const response = await dispatch(getLesson(selectedLessonId));
       setFormData(response.payload.data);
+      setLessonName(response.payload.data.name);
       console.log(response);
       setLoading(false);
     } catch (error) {
@@ -164,48 +188,67 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
       ) : (
         <>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            {formData.name}
+            {lessonName}
           </Typography>
-          <Select
-            value={formData.chapitreId}
-            label={t("txt_lesson")}
-            onChange={(e) => {
-              console.log("lesson id", e.target.value);
-              handleFormChange("chapitreId", e.target.value);
-            }}
-            className="w-full"
-          >
-            {chapters.map((chapter) => (
-              <MenuItem key={chapter.id} value={chapter.id}>
-                {chapter.name}
-              </MenuItem>
-            ))}
-          </Select>
+          <FormControl fullWidth required>
+            <InputLabel id="demo-simple-select-label">
+              {t("txt_course")}
+            </InputLabel>
+            <Select
+              error={!!errors.chapitreId}
+              value={formData.chapitreId}
+              label={t("txt_lesson")}
+              onChange={(e) => {
+                console.log("lesson id", e.target.value);
+                handleFormChange("chapitreId", e.target.value);
+              }}
+              className="w-full"
+            >
+              {chapters.map((chapter) => (
+                <MenuItem key={chapter.id} value={chapter.id}>
+                  {chapter.name}
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.chapitreId && (
+              <FormHelperText sx={{ color: "red" }}>
+                {errors.chapitreId}
+              </FormHelperText>
+            )}
+          </FormControl>
+          <TextField
+            label={t("txt_name")}
+            required
+            value={formData.name}
+            error={!!errors.name}
+            helperText={errors.name}
+            onChange={(e) => handleFormChange("name", e.target.value)}
+            fullWidth
+            className="!mt-[15px]"
+          />
           <TextField
             className="!mt-[15px]"
             label={t("txt_description")}
             value={formData.description}
+            error={!!errors.description}
+            helperText={errors.description}
             onChange={(e) => handleFormChange("description", e.target.value)}
             fullWidth
-          />
-          <TextField
-            label={t("txt_name")}
-            value={formData.name}
-            onChange={(e) => handleFormChange("name", e.target.value)}
-            fullWidth
-            className="!mt-[15px]"
           />
           <TextField
             label={t("txt_content")}
             value={formData.content}
             onChange={(e) => handleFormChange("content", e.target.value)}
             fullWidth
+            required
             className="!mt-[15px]"
+            error={!!errors.content}
+            helperText={errors.content}
           />
           <div
             style={{ maxWidth: "100%", padding: "10px", overflow: "hidden" }}
           >
-            <FormLabel>{t("txt_images")}</FormLabel>
+            <FormLabel>{t("txt_images") + " *"}</FormLabel>
             {formData.images.map((image: string) => {
               return (
                 <div style={{ wordWrap: "break-word", whiteSpace: "pre-wrap" }}>
@@ -219,6 +262,11 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
                 </div>
               );
             })}
+            {errors.images && (
+              <FormHelperText sx={{ color: "red" }}>
+                {errors.images}
+              </FormHelperText>
+            )}
           </div>
           <div style={{ display: addImageHidden ? "none" : "" }}>
             <TextField

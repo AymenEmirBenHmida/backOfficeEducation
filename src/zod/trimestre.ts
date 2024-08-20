@@ -13,7 +13,7 @@ const checkI18nInitialization = async () => {
 const getTranslation = (key: string) => {
   return i18n.t(key);
 };
-export const validateChapterInput = async (data: any) => {
+export const validateTrimesterInput = async (data: any) => {
   if (!createTrimesterSchema) {
     await checkI18nInitialization();
     createTrimesterSchema = await createTrimesterInputSchema();
@@ -29,9 +29,17 @@ export const createTrimesterInputSchema = async () => {
   await checkI18nInitialization(); // Ensure i18n is initialized
   return z.object({
     isLocked: z.boolean().optional(), // Optional field, no validation needed
-    name: z.string().min(1, { message: "Name is required" }), // Custom error message for name
-    slug: z.string().min(1, { message: "Slug is required" }), // Custom error message for slug
-    niveauId: z.string().min(1, { message: "Niveau ID is required" }), // Custom error message for niveauId
+    name: z
+      .string()
+      .min(1, { message:  getTranslation("txt_error_name_required") }), // Custom error message for name
+    slug: z
+      .string()
+      .min(1, { message:  getTranslation("txt_error_slug_required") }), // Custom error message for slug
+    niveauId: z
+      .string()
+      .min(1, {
+        message:  getTranslation("txt_error_niveau_id_required"),
+      }), // Custom error message for niveauId
   });
 };
 

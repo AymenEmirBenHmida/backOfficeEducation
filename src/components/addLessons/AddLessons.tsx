@@ -66,7 +66,6 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
   const handleCreatelesson = async () => {
     try {
       const createCourValidation = await createCourInputSchema();
-      console.log(images);
       createCourValidation.parse({ ...formData, images: images });
       setUpdateLoading(true);
       const response = await dispatch(
@@ -148,7 +147,7 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
         </>
       ) : (
         <>
-          <FormControl fullWidth>
+          <FormControl fullWidth required>
             <InputLabel id="demo-simple-select-label">
               {t("txt_course")}
             </InputLabel>
@@ -226,7 +225,7 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
                 <FormHelperText sx={{ color: "red" }}>
                   {errors.images}
                 </FormHelperText>
-              )}{" "}
+              )}
             </FormControl>
           </Box>
           <FormControlLabel

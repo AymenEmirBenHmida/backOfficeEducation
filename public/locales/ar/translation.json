@@ -143,5 +143,7 @@
   "txt_error_chapter_id_required": "الفصل مطلوب",
   "txt_error_trimester_required": "الفصل الدراسي مطلوب",
   "txt_error_matiere_id_required": "المادة مطلوبة",
-  "txt_error_completion_status_required": "حالة الإكمال مطلوبة"
+  "txt_error_completion_status_required": "حالة الإكمال مطلوبة",
+  "txt_error_slug_required": "الرمز مطلوب",
+  "txt_error_niveau_id_required": "المستوى مطلوب"
 }

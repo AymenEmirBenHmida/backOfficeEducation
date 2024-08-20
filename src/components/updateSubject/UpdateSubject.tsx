@@ -11,15 +11,16 @@ import {
   Box,
   FormControl,
   InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
 import { useDispatch } from "react-redux";
-import {  getSubject, updatSubject } from "@/redux/subjectsSlice";
+import { getSubject, updatSubject } from "@/redux/subjectsSlice";
 import { getAllTrimesters } from "@/redux/trimesterSlice";
-import {
-  SubjectUpdateProps,
-} from "@/interfaces/subjectsCrudInterface";
+import { SubjectUpdateProps } from "@/interfaces/subjectsCrudInterface";
+import { createSubjectInputSchema } from "@/zod/matiere";
+import { z } from "zod";
 
 const UpdateSubject: React.FC<SubjectUpdateProps> = ({
   handleSubmit,
@@ -42,6 +43,8 @@ const UpdateSubject: React.FC<SubjectUpdateProps> = ({
   const [loading, setLoading] = useState(true);
   //used when updating database
   const [updateLoading, setUpdateLoading] = useState(false);
+  //state variable for form validation
+  const [errors, setErrors] = useState<any>({});
   const dispatch = useDispatch<AppDispatch>();
   //change formData direct attribute
   const handleFormChange = (field: string, value: any) => {
@@ -58,6 +61,8 @@ const UpdateSubject: React.FC<SubjectUpdateProps> = ({
   //update the subject
   const handleUpdateSubject = async () => {
     try {
+      const createSubejctValidation = await createSubjectInputSchema();
+      createSubejctValidation.parse(formData);
       setUpdateLoading(true);
       const data = cleanFormData(formData);
       console.log("data ", data);
@@ -73,8 +78,17 @@ const UpdateSubject: React.FC<SubjectUpdateProps> = ({
         handleError!("error");
       }
     } catch (error) {
-      handleError!("error");
-      console.log(error);
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const newErrors = error.errors.reduce((acc: any, curr: any) => {
+          acc[curr.path[0]] = curr.message;
+          return acc;
+        }, {});
+        setErrors(newErrors);
+      } else {
+        handleError!("error");
+        console.log(error);
+      }
     }
   };
   //getting list of subjects
@@ -119,13 +133,14 @@ const UpdateSubject: React.FC<SubjectUpdateProps> = ({
         </>
       ) : (
         <>
-          <FormControl fullWidth>
+          <FormControl fullWidth required>
             <InputLabel id="demo-simple-select-label">
               {t("txt_trimester")}
             </InputLabel>
             <Select
               value={formData.trimestreId}
               label={t("txt_trimester")}
+              error={!!errors.trimestreId}
               onChange={(e) => {
                 console.log("trimestreId", e.target.value);
                 handleFormChange("trimestreId", e.target.value);
@@ -138,14 +153,21 @@ const UpdateSubject: React.FC<SubjectUpdateProps> = ({
                 </MenuItem>
               ))}
             </Select>
+            {errors.trimestreId && (
+              <FormHelperText sx={{ color: "red" }}>
+                {errors.trimestreId}
+              </FormHelperText>
+            )}
           </FormControl>
-
           <TextField
             label={t("txt_name")}
             value={formData.name}
             onChange={(e) => handleFormChange("name", e.target.value)}
             fullWidth
+            required
             className="!mt-[15px]"
+            error={!!errors.name}
+            helperText={errors.name}
           />
           <TextField
             className="!mt-[15px]"

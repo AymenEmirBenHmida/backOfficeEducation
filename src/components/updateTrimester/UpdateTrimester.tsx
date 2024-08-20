@@ -11,6 +11,7 @@ import {
   Box,
   FormControl,
   InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
@@ -19,6 +20,8 @@ import { getTrimester, updateTrimester } from "@/redux/trimesterSlice";
 
 import { TrimesterUpdateProps } from "@/interfaces/trimestersCrudInterface";
 import { getAllLevels } from "@/redux/levelSlice";
+import { createTrimesterInputSchema } from "@/zod/trimestre";
+import { z } from "zod";
 
 const UpdateTrimester: React.FC<TrimesterUpdateProps> = ({
   handleSubmit,
@@ -37,6 +40,8 @@ const UpdateTrimester: React.FC<TrimesterUpdateProps> = ({
   });
   //list of subjects
   const [levels, setLevels] = useState([]);
+  //state variable for form validation
+  const [errors, setErrors] = useState<any>({});
   //used on initial loading
   const [loading, setLoading] = useState(true);
   //used when updating database
@@ -57,6 +62,8 @@ const UpdateTrimester: React.FC<TrimesterUpdateProps> = ({
   //update the subject
   const handleUpdateSubject = async () => {
     try {
+      const craeteTrimesterSchema = await createTrimesterInputSchema();
+      craeteTrimesterSchema.parse(formData);
       setUpdateLoading(true);
       const data = cleanFormData(formData);
       console.log("data ", data);
@@ -72,8 +79,17 @@ const UpdateTrimester: React.FC<TrimesterUpdateProps> = ({
         handleError!("error");
       }
     } catch (error) {
-      handleError!("error");
-      console.log(error);
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const newErrors = error.errors.reduce((acc: any, curr: any) => {
+          acc[curr.path[0]] = curr.message;
+          return acc;
+        }, {});
+        setErrors(newErrors);
+      } else {
+        handleError!("error");
+        console.log(error);
+      }
     }
   };
   //getting list of subjects
@@ -117,13 +133,14 @@ const UpdateTrimester: React.FC<TrimesterUpdateProps> = ({
         </>
       ) : (
         <>
-          <FormControl fullWidth>
+          <FormControl fullWidth required>
             <InputLabel id="demo-simple-select-label">
-              {t("txt_trimester")}
+              {t("txt_level")}
             </InputLabel>
             <Select
               value={formData.niveauId}
-              label={t("txt_trimester")}
+              error={!!errors.niveauId}
+              label={t("txt_level")}
               onChange={(e) => {
                 console.log("niveauId", e.target.value);
                 handleFormChange("niveauId", e.target.value);
@@ -136,11 +153,19 @@ const UpdateTrimester: React.FC<TrimesterUpdateProps> = ({
                 </MenuItem>
               ))}
             </Select>
+            {errors.niveauId && (
+              <FormHelperText sx={{ color: "red" }}>
+                {errors.niveauId}
+              </FormHelperText>
+            )}
           </FormControl>
 
           <TextField
             label={t("txt_name")}
+            required
             value={formData.name}
+            error={!!errors.name}
+            helperText={errors.name}
             onChange={(e) => handleFormChange("name", e.target.value)}
             fullWidth
             className="!mt-[15px]"
@@ -148,30 +173,13 @@ const UpdateTrimester: React.FC<TrimesterUpdateProps> = ({
           <TextField
             className="!mt-[15px]"
             label={t("txt_slug")}
+            required
             value={formData.slug}
+            error={!!errors.slug}
+            helperText={errors.slug}
             onChange={(e) => handleFormChange("slug", e.target.value)}
             fullWidth
           />
-          <Box
-            sx={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-            }}
-          >
-            {/* <FormControl className="!mt-[5px]" fullWidth>
-              <FormLabel>{t("txt_images")}</FormLabel>
-              <input
-                type="file"
-                multiple
-                accept=".jpg, .jpeg, .png"
-                onChange={handleImageChange}
-                className="!mt-[15px]"
-                style={{ marginTop: "8px", marginBottom: "8px" }}
-              />
-            </FormControl> */}
-          </Box>
           <FormControlLabel
             className="!mt-[15px]"
             control={
