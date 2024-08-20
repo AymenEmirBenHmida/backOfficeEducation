@@ -11,6 +11,7 @@ import {
   Box,
   FormControl,
   InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/redux/Store";
@@ -18,6 +19,8 @@ import { useDispatch } from "react-redux";
 import { getChapter, updateChapter } from "@/redux/chaptersSlice";
 import { ChapterUpdateProps } from "@/interfaces/chaptersCrudInterface";
 import { getAllSubjects } from "@/redux/subjectsSlice";
+import { z } from "zod";
+import { createChapterInputSchema } from "@/zod/chapitre";
 
 const AddLessons: React.FC<ChapterUpdateProps> = ({
   handleSubmit,
@@ -33,6 +36,8 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
     matiereId: "",
     isLocked: false,
   });
+  //state variable for form validation
+  const [errors, setErrors] = useState<any>({});
   //list of subjects
   const [subjects, setSubjects] = useState([]);
   //used when the initial loading is done
@@ -50,6 +55,8 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
   //update chapter
   const handleUpdateChapter = async () => {
     try {
+      const createChapterValidation = await createChapterInputSchema();
+      createChapterValidation.parse(formData);
       setUpdateLoading(true);
       const response = await dispatch(
         updateChapter({
@@ -66,8 +73,19 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
         handleError!("error");
       }
     } catch (error) {
-      handleError!("error");
-      console.log(error);
+      console.log("error help");
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const newErrors = error.errors.reduce((acc: any, curr: any) => {
+          acc[curr.path[0]] = curr.message;
+          console.log(acc.message);
+          return acc;
+        }, {});
+        setErrors(newErrors);
+      } else {
+        handleError!("error");
+        console.log(error);
+      }
     }
   };
   //getting subjects
@@ -84,6 +102,7 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
   //get the chosen chapters data to be modified
   const getChapterUpdate = async () => {
     try {
+      setLoading(true);
       const result = await dispatch(getChapter(chapterId)).unwrap();
       console.log("chapters :", result);
       setFormData(result.data);
@@ -119,6 +138,7 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
             <Select
               value={formData.matiereId}
               label={t("txt_subject")}
+              error={!!errors.matiereId}
               onChange={(e) => {
                 console.log("matiereId", e.target.value);
                 handleFormChange("matiereId", e.target.value);
@@ -131,10 +151,18 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
                 </MenuItem>
               ))}
             </Select>
+            {errors.matiereId && (
+              <FormHelperText sx={{ color: "red" }}>
+                {errors.matiereId}
+              </FormHelperText>
+            )}
           </FormControl>
           <TextField
+            required
             label={t("txt_name")}
             value={formData.name}
+            error={!!errors.name}
+            helperText={errors.name}
             onChange={(e) => handleFormChange("name", e.target.value)}
             fullWidth
             className="!mt-[15px]"

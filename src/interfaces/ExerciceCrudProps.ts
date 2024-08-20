@@ -4,12 +4,16 @@ export interface ExerciceCreationProps {
   selectedLessonId?: string;
   description?: string;
   errors?: any;
-  loading?:boolean;
+  loading?: boolean;
 }
 export interface ExerciceUpdateProps {
-  handleSubmit?: () => void;
-  getExercices: () => void;
-  handleError?: (message: string) => void;
+  handleSubmit: (
+    formData: any,
+    selectedExerciceId: string,
+    cleanFormData: (formData: any) => void
+  ) => void;
   selectedExerciceId: string;
   exerciceData?: any;
+  errors?: any;
+  updateLoading?: boolean;
 }

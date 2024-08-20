@@ -19,9 +19,9 @@ import { getAllLessons } from "@/redux/lessonSlice";
 
 const Read: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
+  updateLoading,
   selectedExerciceId,
-  handleError,
-  getExercices,
+  errors,
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
@@ -36,9 +36,8 @@ const Read: React.FC<ExerciceUpdateProps> = ({
     description: "",
     isLocked: false,
   });
+  //loading animation variable
   const [loading, setLoading] = useState(true);
-  //update loading variable
-  const [updateLoading, setUpdateLoading] = useState(false);
   //lessons variable
   const [lessons, setLessons] = useState<LessonInterface[]>([]);
   //change content attribute
@@ -70,26 +69,7 @@ const Read: React.FC<ExerciceUpdateProps> = ({
     return cleanedData;
   };
   //update exercice
-  const handleUpdateExercice = async () => {
-    try {
-      const data = cleanFormData(formData);
-      setUpdateLoading(true);
-      const response = await dispatch(
-        updatExercice({ formData: data, id: selectedExerciceId })
-      ).unwrap();
-      setUpdateLoading(false);
-      if (response && response.statusText === "OK") {
-        console.log("response update ", response);
-        handleSubmit!();
-        await getExercices();
-      } else {
-        handleError!("error");
-      }
-    } catch (error) {
-      handleError!("error");
-      console.log(error);
-    }
-  };
+
   //get exercice
   const handleGetExercice = async () => {
     const response = await dispatch(getExercice(selectedExerciceId));
@@ -161,7 +141,7 @@ const Read: React.FC<ExerciceUpdateProps> = ({
         color="primary"
         onClick={async () => {
           console.log(formData);
-          await handleUpdateExercice();
+          await handleSubmit(formData, selectedExerciceId, cleanFormData);
         }}
         className="!mt-[15px]"
       >

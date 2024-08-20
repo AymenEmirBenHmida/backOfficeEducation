@@ -55,7 +55,6 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
   //create chapter
   const handleCreateChapter = async () => {
     try {
-      console.log("hello here");
       const createChapterValidation = await createChapterInputSchema();
       createChapterValidation.parse(formData);
       setUpdateLoading(true);

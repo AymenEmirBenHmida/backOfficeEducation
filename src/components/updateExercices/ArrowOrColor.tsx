@@ -23,17 +23,15 @@ import { useDispatch } from "react-redux";
 
 const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
+  updateLoading,
   selectedExerciceId,
-  handleError,
-  getExercices,
+  errors,
 }) => {
   const { t } = useTranslation();
   //lessons variable
   const [lessons, setLessons] = useState<LessonInterface[]>([]);
   //initial loading variable
   const [loading, setLoading] = useState(true);
-  //update loading variable
-  const [updateLoading, setUpdateLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   //form inputs variable
   const [formData, setFormData] = useState<any>({
@@ -106,26 +104,7 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
     }));
   };
   //handle updating exercice
-  const handleUpdateExercice = async () => {
-    try {
-      const data = cleanFormData(formData);
-      setUpdateLoading(true);
-      const response = await dispatch(
-        updatExercice({ formData: data, id: selectedExerciceId })
-      ).unwrap();
-      setUpdateLoading(false);
-      if (response && response.statusText === "OK") {
-        console.log("response update ", response);
-        handleSubmit!();
-        await getExercices();
-      } else {
-        handleError!("error");
-      }
-    } catch (error) {
-      handleError!("error");
-      console.log(error);
-    }
-  };
+
   //getting exercice
   const handleGetExercice = async () => {
     try {
@@ -180,21 +159,30 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
           <Typography id="modal-modal-title" variant="h6" component="h2">
             {formData.typeQuestion}
           </Typography>
-          <Select
-            value={formData.courId}
-            label={t("txt_lesson")}
-            onChange={(e) => {
-              console.log("lesson id", e.target.value);
-              handleFormChange("courId", e.target.value);
-            }}
-            className="w-full"
-          >
-            {lessons.map((lesson) => (
-              <MenuItem key={lesson.id} value={lesson.id}>
-                {lesson.name}
-              </MenuItem>
-            ))}
-          </Select>
+          <FormControl required fullWidth className="!mt-[15px]">
+            <InputLabel>{t("txt_lesson")}</InputLabel>
+            <Select
+              value={formData.courId}
+              error={!!errors[`courId`]}
+              label={t("txt_lesson")}
+              onChange={(e) => {
+                console.log("lesson id", e.target.value);
+                handleFormChange("courId", e.target.value);
+              }}
+              className="w-full"
+            >
+              {lessons.map((lesson) => (
+                <MenuItem key={lesson.id} value={lesson.id}>
+                  {lesson.name}
+                </MenuItem>
+              ))}
+            </Select>
+            {!!errors[`courId`] && (
+              <FormHelperText sx={{ color: "red" }}>
+                {errors[`courId`]}
+              </FormHelperText>
+            )}
+          </FormControl>
           <TextField
             label={t("txt_text")}
             value={formData.content.text || ""}
@@ -270,7 +258,7 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
             color="primary"
             onClick={async () => {
               console.log(formData);
-              await handleUpdateExercice();
+              await handleSubmit(formData, selectedExerciceId, cleanFormData);
             }}
           >
             {updateLoading ? (

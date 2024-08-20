@@ -20,7 +20,11 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/Store";
-import { deleteExercice, getAllExercices } from "@/redux/exerciceSlice";
+import {
+  deleteExercice,
+  getAllExercices,
+  updatExercice,
+} from "@/redux/exerciceSlice";
 import QcmText from "@/components/updateExercices/QcmText";
 import QcmImages from "@/components/updateExercices/QcmImages";
 import QcmImageWords from "@/components/updateExercices/QcmImageWords";
@@ -34,6 +38,8 @@ import ArrowSound from "@/components/updateExercices/ArrowSound";
 import ArrowOrColor from "@/components/updateExercices/ArrowOrColor";
 import SelectTable from "@/components/updateExercices/SelectTable";
 import { useNavigate } from "react-router-dom";
+import { validateExerciceInput } from "@/zod/cour";
+import { z } from "zod";
 
 // Define the types for your data
 interface Option {
@@ -67,6 +73,8 @@ const AllExercises: React.FC = () => {
   const [exercices, setExercices] = useState<Exercice[]>([]);
   // variable responsible for the initial loading animation
   const [loading, setLoading] = useState<boolean>(true);
+  // variable responsible for the update animation
+  const [updateLoading, setUpdateLoading] = useState<boolean>(true);
   const dispatch = useDispatch<AppDispatch>();
   //variable responsible for opening modal edit
   const [openModalEdit, setOpenModalEdit] = useState(false);
@@ -76,6 +84,8 @@ const AllExercises: React.FC = () => {
   const [selectedExercice, setSelectedExercice] = useState("");
   //selected type of question
   const [selectedTypeId, setSelectedTypeId] = useState("");
+  //state variable for form validation
+  const [errors, setErrors] = useState<any>({});
   //variable responsible for opening snackbar
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   //variable for snack bar message
@@ -145,6 +155,44 @@ const AllExercises: React.FC = () => {
       setLoading(false);
     }
   };
+
+  //handle updating exercice
+  const handleUpdateExercice = async (
+    formData: any,
+    selectedExerciceId: string,
+    cleanFormData: (formData: any) => void
+  ) => {
+    try {
+      await validateExerciceInput(formData);
+      const data = cleanFormData(formData);
+      setUpdateLoading(true);
+      const response = await dispatch(
+        updatExercice({ formData: data, id: selectedExerciceId })
+      ).unwrap();
+      setUpdateLoading(false);
+      if (response && response.statusText === "OK") {
+        console.log("response update ", response);
+        handleCloseModalEdit!();
+        await handleGetExercices();
+      } else {
+        handleSnackbarOpen!("error");
+      }
+    } catch (error) {
+      setUpdateLoading(false);
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const newErrors = error.errors.reduce((acc: any, curr: any) => {
+          acc[curr.path.join(".")] = curr.message;
+          return acc;
+        }, {});
+        console.log(newErrors);
+        setErrors(newErrors);
+      } else {
+        handleSnackbarOpen(t("txt_error"));
+        console.log("failed to create exercice ", error);
+      }
+    }
+  };
   //responsible for the components to be displayed depending on the type of the question
   const renderContentFields = (exerciceId: string, selectedTypeId: string) => {
     switch (selectedTypeId) {
@@ -159,127 +207,127 @@ const AllExercises: React.FC = () => {
       case "QCM_MULTI_ANSWER_PHRASE_SMALL":
         return (
           <QcmText
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "QCM_MULTI_ANSWER_IMAGES":
         return (
           <QcmImages
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "QCM_MULTI_ANSWER_WORDS_IMAGES":
         return (
           <QcmImageWords
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "DRAG_DROP_WORDS_TO_IMAGE":
         return (
           <DragDropWordsImages
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "DRAG_DROP_IN_TABLE_IMAGES":
         return (
           <DragDropTableImages
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "SELECT_TABLE":
         return (
           <SelectTable
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "COLOR":
         return (
           <ArrowOrColor
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "ARROW":
         return (
           <ArrowOrColor
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "ARROW_SOUND":
         return (
           <ArrowSound
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "READ":
         return (
           <Read
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "READ_IMAGE":
         return (
           <ReadImage
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "MAKE_PHRASE":
         return (
           <MakePhrase
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "MAKE_PHRASE_FROM_TABLE":
         return (
           <MakePhrase
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       case "VIDEO":
         return (
           <Video
-            getExercices={handleGetExercices}
             selectedExerciceId={exerciceId}
-            handleSubmit={handleCloseModalEdit}
-            handleError={handleSnackbarOpen}
+            handleSubmit={handleUpdateExercice}
+            updateLoading={updateLoading}
+            errors={errors}
           />
         );
       default:

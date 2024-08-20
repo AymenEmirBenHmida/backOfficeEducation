@@ -11,6 +11,9 @@ import {
   Typography,
   Select,
   MenuItem,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
@@ -23,9 +26,9 @@ import { getAllLessons } from "@/redux/lessonSlice";
 
 const QcmText: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
+  updateLoading,
   selectedExerciceId,
-  handleError,
-  getExercices,
+  errors,
 }) => {
   const { t } = useTranslation();
   //form inputs variable
@@ -44,8 +47,6 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
   const [lessons, setLessons] = useState<LessonInterface[]>([]);
   //initial loading variable
   const [loading, setLoading] = useState(true);
-  //update loading variable
-  const [updateLoading, setUpdateLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   //handle changing the options attribute
   const handleOptionChange = (index: number, field: string, value: any) => {
@@ -105,27 +106,7 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
       [field]: value,
     }));
   };
-  //handle updating exercice
-  const handleUpdateExercice = async () => {
-    try {
-      const data = cleanFormData(formData);
-      setUpdateLoading(true);
-      const response = await dispatch(
-        updatExercice({ formData: data, id: selectedExerciceId })
-      ).unwrap();
-      setUpdateLoading(false);
-      if (response && response.statusText === "OK") {
-        console.log("response update ", response);
-        handleSubmit!();
-        await getExercices();
-      } else {
-        handleError!("error");
-      }
-    } catch (error) {
-      handleError!("error");
-      console.log(error);
-    }
-  };
+
   //getting exercice
   const handleGetExercice = async () => {
     try {
@@ -180,21 +161,30 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
           <Typography id="modal-modal-title" variant="h6" component="h2">
             {formData.typeQuestion}
           </Typography>
-          <Select
-            value={formData.courId}
-            label={t("txt_lesson")}
-            onChange={(e) => {
-              console.log("lesson id", e.target.value);
-              handleFormChange("courId", e.target.value);
-            }}
-            className="w-full"
-          >
-            {lessons.map((lesson) => (
-              <MenuItem key={lesson.id} value={lesson.id}>
-                {lesson.name}
-              </MenuItem>
-            ))}
-          </Select>
+          <FormControl required fullWidth className="!mt-[15px]">
+            <InputLabel>{t("txt_lesson")}</InputLabel>
+            <Select
+              value={formData.courId}
+              error={!!errors[`courId`]}
+              label={t("txt_lesson")}
+              onChange={(e) => {
+                console.log("lesson id", e.target.value);
+                handleFormChange("courId", e.target.value);
+              }}
+              className="w-full"
+            >
+              {lessons.map((lesson) => (
+                <MenuItem key={lesson.id} value={lesson.id}>
+                  {lesson.name}
+                </MenuItem>
+              ))}
+            </Select>
+            {!!errors[`courId`] && (
+              <FormHelperText sx={{ color: "red" }}>
+                {errors[`courId`]}
+              </FormHelperText>
+            )}
+          </FormControl>
           <TextField
             className="!mt-[15px]"
             label={t("txt_description")}
@@ -205,6 +195,9 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
           <TextField
             label={t("txt_text")}
             value={formData.content.text}
+            required
+            error={!!errors["content.text"]}
+            helperText={errors["content.text"]}
             onChange={(e) => handleContentChange("text", e.target.value)}
             fullWidth
             className="!mt-[15px]"
@@ -220,6 +213,9 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
                 className="!mr-[5px]"
                 label={`${t("txt_text")} ${index + 1}`}
                 value={option.text}
+                required
+                error={!!errors[`content.options.${index}.text`]}
+                helperText={errors[`content.options.${index}.text`]}
                 onChange={(e) =>
                   handleOptionChange(index, "text", e.target.value)
                 }
@@ -242,6 +238,11 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
               </IconButton>
             </Box>
           ))}
+          {!!errors[`content.options`] && (
+            <FormHelperText sx={{ color: "red" }}>
+              {errors[`content.options`]}
+            </FormHelperText>
+          )}
           <FormControlLabel
             className="!mt-[15px]"
             control={
@@ -262,7 +263,7 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
             color="primary"
             onClick={async () => {
               console.log(formData);
-              await handleUpdateExercice();
+              await handleSubmit(formData, selectedExerciceId, cleanFormData);
             }}
           >
             {updateLoading ? (
