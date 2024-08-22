@@ -13,7 +13,7 @@ const checkI18nInitialization = async () => {
 const getTranslation = (key: string) => {
   return i18n.t(key);
 };
-export const validateExerciceInput = async (data: any) => {
+export const validateCourInput = async (data: any) => {
   if (!createCourSchema) {
     await checkI18nInitialization();
     createCourSchema = await createCourInputSchema();

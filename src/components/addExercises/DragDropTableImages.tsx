@@ -60,7 +60,7 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
       },
     }));
   };
-
+  //changing the columns
   const handleColumnChange = (index: number, field: string, value: any) => {
     const newColumns = [...formData.content.columns];
     newColumns[index] = { ...newColumns[index], [field]: value };
@@ -251,7 +251,6 @@ const DragDropTableImages: React.FC<ExerciceCreationProps> = ({
           {t("txt_add_option")}
         </Button>
       </Box>
-
       <FormControlLabel
         className="!mt-[15px]"
         control={

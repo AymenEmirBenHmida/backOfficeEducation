@@ -10,6 +10,9 @@ import {
   Typography,
   Select,
   MenuItem,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ExerciceUpdateProps } from "@/interfaces/ExerciceCrudProps";
@@ -21,6 +24,7 @@ import { getAllLessons } from "@/redux/lessonSlice";
 
 const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
+  setErrors,
   updateLoading,
   selectedExerciceId,
   errors,
@@ -138,6 +142,7 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
     handleGetExercice();
     getLessons();
     console.log("entered use effect");
+    setErrors({});
   }, []);
   return (
     <>
@@ -180,6 +185,9 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
             )}
           </FormControl>
           <TextField
+            required
+            error={!!errors["content.text"]}
+            helperText={errors["content.text"]}
             label={t("txt_text")}
             value={formData.content.text || ""}
             onChange={(e) => handleContentChange("text", e.target.value)}
@@ -191,6 +199,9 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
               <TextField
                 label={`${t("txt_text")} ${index + 1}`}
                 value={option.text}
+                error={!!errors[`content.options.${index}.text`]}
+                helperText={errors[`content.options.${index}.text`]}
+                required
                 onChange={(e) =>
                   handleOptionChange(index, "text", e.target.value)
                 }
@@ -199,6 +210,9 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
               <TextField
                 label={`${t("text_image")} ${index + 1}`}
                 value={option.image}
+                required
+                error={!!errors[`content.options.${index}.image`]}
+                helperText={errors[`content.options.${index}.image`]}
                 onChange={(e) =>
                   handleOptionChange(index, "image", e.target.value)
                 }
@@ -207,9 +221,16 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
               <TextField
                 label={`${t("txt_order")} ${index + 1}`}
                 value={option.order}
+                required
+                error={!!errors[`content.options.${index}.order`]}
+                helperText={errors[`content.options.${index}.order`]}
                 type="number"
                 onChange={(e) =>
-                  handleOptionChange(index, "order", e.target.value)
+                  handleOptionChange(
+                    index,
+                    "order",
+                    e.target.value === "" ? "" : parseInt(e.target.value)
+                  )
                 }
                 fullWidth
               />
@@ -219,6 +240,11 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
               </Button>
             </Box>
           ))}
+          {!!errors[`content.options`] && (
+            <FormHelperText sx={{ color: "red" }}>
+              {errors[`content.options`]}
+            </FormHelperText>
+          )}
           <FormControlLabel
             className="!mt-[15px]"
             control={
@@ -238,7 +264,6 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
             variant="contained"
             color="primary"
             onClick={async () => {
-              console.log(formData);
               await handleSubmit(formData, selectedExerciceId, cleanFormData);
             }}
           >

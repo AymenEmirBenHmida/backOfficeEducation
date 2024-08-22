@@ -8,6 +8,9 @@ import {
   Typography,
   Select,
   MenuItem,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ExerciceUpdateProps } from "@/interfaces/ExerciceCrudProps";
@@ -19,6 +22,7 @@ import { getAllLessons } from "@/redux/lessonSlice";
 
 const Read: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
+  setErrors,
   updateLoading,
   selectedExerciceId,
   errors,
@@ -89,6 +93,7 @@ const Read: React.FC<ExerciceUpdateProps> = ({
     handleGetExercice();
     getLessons();
     console.log("entered use effect");
+    setErrors({});
   }, []);
 
   return (
@@ -96,31 +101,45 @@ const Read: React.FC<ExerciceUpdateProps> = ({
       <Typography id="modal-modal-title" variant="h6" component="h2">
         {formData.typeQuestion}
       </Typography>
-      <Select
-        value={formData.courId}
-        label={t("txt_lesson")}
-        onChange={(e) => {
-          console.log("lesson id", e.target.value);
-          handleFormChange("courId", e.target.value);
-        }}
-        className="w-full"
-      >
-        {lessons.map((lesson) => (
-          <MenuItem key={lesson.id} value={lesson.id}>
-            {lesson.name}
-          </MenuItem>
-        ))}
-      </Select>
+      <FormControl required fullWidth className="!mt-[15px]">
+        <InputLabel>{t("txt_lesson")}</InputLabel>
+        <Select
+          value={formData.courId}
+          label={t("txt_lesson")}
+          onChange={(e) => {
+            console.log("lesson id", e.target.value);
+            handleFormChange("courId", e.target.value);
+          }}
+          className="w-full"
+        >
+          {lessons.map((lesson) => (
+            <MenuItem key={lesson.id} value={lesson.id}>
+              {lesson.name}
+            </MenuItem>
+          ))}
+        </Select>
+        {!!errors[`courId`] && (
+          <FormHelperText sx={{ color: "red" }}>
+            {errors[`courId`]}
+          </FormHelperText>
+        )}
+      </FormControl>
       <TextField
         label={t("txt_text")}
         value={formData.content.text || ""}
+        required
+        error={!!errors[`content.text`]}
+        helperText={errors[`content.text`]}
         onChange={(e) => handleContentChange("text", e.target.value)}
         fullWidth
         className="!mt-[15px]"
       />
       <TextField
         label={t("txt_image")}
-        value={formData.content.text || ""}
+        value={formData.content.image || ""}
+        required
+        error={!!errors[`content.image`]}
+        helperText={errors[`content.image`]}
         onChange={(e) => handleContentChange("image", e.target.value)}
         fullWidth
         className="!mt-[15px]"

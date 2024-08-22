@@ -1,3 +1,5 @@
+import { Dispatch } from "react";
+
 export interface ExerciceCreationProps {
   selectedTypeId: string;
   handleSubmit: ({ formData }: { formData: any }) => void;
@@ -16,4 +18,5 @@ export interface ExerciceUpdateProps {
   exerciceData?: any;
   errors?: any;
   updateLoading?: boolean;
+  setErrors: Dispatch<any>;
 }

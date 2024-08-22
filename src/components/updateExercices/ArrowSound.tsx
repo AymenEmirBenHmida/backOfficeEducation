@@ -11,6 +11,9 @@ import {
   Typography,
   Skeleton,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
@@ -24,6 +27,7 @@ import { getExercice, updatExercice } from "@/redux/exerciceSlice";
 const ArrowSound: React.FC<ExerciceUpdateProps> = ({
   selectedExerciceId,
   handleSubmit,
+  setErrors,
   errors,
 }) => {
   const { t } = useTranslation();
@@ -137,6 +141,7 @@ const ArrowSound: React.FC<ExerciceUpdateProps> = ({
     handleGetExercice();
     getLessons();
     console.log("entered use effect");
+    setErrors({});
   }, []);
   return (
     <>
@@ -181,6 +186,9 @@ const ArrowSound: React.FC<ExerciceUpdateProps> = ({
           <TextField
             label={t("txt_text")}
             value={formData.content.text || ""}
+            required
+            error={!!errors[`content.text`]}
+            helperText={errors[`content.text`]}
             onChange={(e) => handleContentChange("text", e.target.value)}
             fullWidth
             className="!mt-[15px]"
@@ -196,6 +204,9 @@ const ArrowSound: React.FC<ExerciceUpdateProps> = ({
                 className="!mr-[5px]"
                 label={`${t("txt_text")} ${index + 1}`}
                 value={tuple.text}
+                required
+                error={!!errors[`content.tuples.${index}.text`]}
+                helperText={errors[`content.tuples.${index}.text`]}
                 onChange={(e) =>
                   handleTupleChange(index, "text", e.target.value)
                 }
@@ -205,8 +216,15 @@ const ArrowSound: React.FC<ExerciceUpdateProps> = ({
                 className="!mr-[5px]"
                 label={`${t("txt_order")} ${index + 1}`}
                 value={tuple.textOrder}
+                required
+                error={!!errors[`content.tuples.${index}.textOrder`]}
+                helperText={errors[`content.tuples.${index}.textOrder`]}
                 onChange={(e) =>
-                  handleTupleChange(index, "textOrder", e.target.value)
+                  handleTupleChange(
+                    index,
+                    "textOrder",
+                    e.target.value === "" ? "" : parseInt(e.target.value)
+                  )
                 }
                 fullWidth
               />
@@ -214,6 +232,9 @@ const ArrowSound: React.FC<ExerciceUpdateProps> = ({
                 className="!mr-[5px]"
                 label={`${t("txt_sound")} ${index + 1}`}
                 value={tuple.sound}
+                required
+                error={!!errors[`content.tuples.${index}.sound`]}
+                helperText={errors[`content.tuples.${index}.sound`]}
                 onChange={(e) =>
                   handleTupleChange(index, "sound", e.target.value)
                 }
@@ -223,8 +244,15 @@ const ArrowSound: React.FC<ExerciceUpdateProps> = ({
                 className="!mr-[5px]"
                 label={`${t("txt_sound_order")} ${index + 1}`}
                 value={tuple.soundOrder}
+                required
+                error={!!errors[`content.tuples.${index}.soundOrder`]}
+                helperText={errors[`content.tuples.${index}.soundOrder`]}
                 onChange={(e) =>
-                  handleTupleChange(index, "soundOrder", e.target.value)
+                  handleTupleChange(
+                    index,
+                    "soundOrder",
+                    e.target.value === "" ? "" : parseInt(e.target.value)
+                  )
                 }
                 fullWidth
               />
@@ -233,6 +261,11 @@ const ArrowSound: React.FC<ExerciceUpdateProps> = ({
               </IconButton>
             </Box>
           ))}
+          {!!errors[`content.tuples`] && (
+            <FormHelperText sx={{ color: "red" }}>
+              {errors[`content.tuples`]}
+            </FormHelperText>
+          )}
           <FormControlLabel
             className="!mt-[15px]"
             control={

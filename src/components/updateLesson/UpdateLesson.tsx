@@ -21,7 +21,7 @@ import { getLesson, updatLesson } from "@/redux/lessonSlice";
 import { getAllChapters } from "@/redux/chaptersSlice";
 import { LessonUpdateProps } from "@/interfaces/LessonCrudProps";
 import { CiCircleRemove } from "react-icons/ci";
-import { createCourInputSchema } from "@/zod/cour";
+import { createCourInputSchema, validateCourInput } from "@/zod/cour";
 import { z } from "zod";
 
 const UpdateLesson: React.FC<LessonUpdateProps> = ({
@@ -72,8 +72,7 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
   const handleUpdateLesson = async () => {
     try {
       const data = cleanFormData(formData);
-      const createCourValidation = await createCourInputSchema();
-      createCourValidation.parse({
+      const createCourValidation = await validateCourInput({
         ...data,
         images: [...data.images, ...images.map((image: any) => String(image))],
       });

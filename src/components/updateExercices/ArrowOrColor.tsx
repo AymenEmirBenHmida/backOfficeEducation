@@ -11,6 +11,9 @@ import {
   Typography,
   Skeleton,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
@@ -23,6 +26,7 @@ import { useDispatch } from "react-redux";
 
 const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
+  setErrors,
   updateLoading,
   selectedExerciceId,
   errors,
@@ -141,6 +145,7 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
     handleGetExercice();
     getLessons();
     console.log("entered use effect");
+    setErrors({});
   }, []);
   return (
     <>
@@ -184,6 +189,9 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
             )}
           </FormControl>
           <TextField
+            required
+            error={!!errors[`content.text`]}
+            helperText={errors[`content.text`]}
             label={t("txt_text")}
             value={formData.content.text || ""}
             onChange={(e) => handleContentChange("text", e.target.value)}
@@ -201,6 +209,9 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
                 className="!mr-[5px]"
                 label={`1.${t("txt_text")} ${index + 1}`}
                 value={tuple.text1}
+                required
+                error={!!errors[`content.tuples.${index}.text1`]}
+                helperText={errors[`content.tuples.${index}.text1`]}
                 onChange={(e) =>
                   handleTupleChange(index, "text1", e.target.value, "text1")
                 }
@@ -210,8 +221,16 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
                 className="!mr-[5px]"
                 label={`1.${t("txt_order")} ${index + 1}`}
                 value={tuple.order1}
+                required
+                error={!!errors[`content.tuples.${index}.order1`]}
+                helperText={errors[`content.tuples.${index}.order1`]}
                 onChange={(e) =>
-                  handleTupleChange(index, "order1", e.target.value, "order1")
+                  handleTupleChange(
+                    index,
+                    "order1",
+                    e.target.value === "" ? "" : parseInt(e.target.value),
+                    "order1"
+                  )
                 }
                 fullWidth
               />
@@ -219,6 +238,9 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
                 className="!mr-[5px]"
                 label={`2.${t("txt_text")} ${index + 1}`}
                 value={tuple.text2}
+                required
+                error={!!errors[`content.tuples.${index}.text2`]}
+                helperText={errors[`content.tuples.${index}.text2`]}
                 onChange={(e) =>
                   handleTupleChange(index, "text2", e.target.value, "text2")
                 }
@@ -228,8 +250,16 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
                 className="!mr-[5px]"
                 label={`2.${t("txt_order")} ${index + 1}`}
                 value={tuple.order2}
+                required
+                error={!!errors[`content.tuples.${index}.order2`]}
+                helperText={errors[`content.tuples.${index}.order2`]}
                 onChange={(e) =>
-                  handleTupleChange(index, "order2", e.target.value, "order2")
+                  handleTupleChange(
+                    index,
+                    "order2",
+                    e.target.value === "" ? "" : parseInt(e.target.value),
+                    "order2"
+                  )
                 }
                 fullWidth
               />

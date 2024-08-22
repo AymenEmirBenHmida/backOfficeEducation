@@ -9,6 +9,9 @@ import {
   MenuItem,
   Typography,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ExerciceUpdateProps } from "@/interfaces/ExerciceCrudProps";
@@ -22,6 +25,7 @@ const Video: React.FC<ExerciceUpdateProps> = ({
   selectedExerciceId,
   handleSubmit,
   errors,
+  setErrors,
 }) => {
   const { t } = useTranslation();
   //variabl for the lessons gotten
@@ -98,6 +102,7 @@ const Video: React.FC<ExerciceUpdateProps> = ({
     handleGetExercice();
     getLessons();
     console.log("entered use effect");
+    setErrors({});
   }, []);
   return (
     <>
@@ -142,6 +147,9 @@ const Video: React.FC<ExerciceUpdateProps> = ({
           <TextField
             label={t("txt_text")}
             value={formData.content.text || ""}
+            required
+            error={!!errors[`content.text`]}
+            helperText={errors[`content.text`]}
             onChange={(e) => handleContentChange("text", e.target.value)}
             fullWidth
             className="!mt-[15px]"
@@ -149,6 +157,9 @@ const Video: React.FC<ExerciceUpdateProps> = ({
           <TextField
             label={t("txt_link")}
             value={formData.content.text || ""}
+            required
+            error={!!errors[`content.link`]}
+            helperText={errors[`content.link`]}
             onChange={(e) => handleContentChange("link", e.target.value)}
             fullWidth
             className="!mt-[15px]"

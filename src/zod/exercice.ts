@@ -28,8 +28,8 @@ const handleLanguageChange = async () => {
 i18n.on("languageChanged", handleLanguageChange);
 export const createExerciceInputSchema = async () => {
   await checkI18nInitialization(); // Ensure i18n is initialized
-  return z
-    .union([
+  return (
+    z.union([
       z.object({
         typeQuestion: z.union([
           z.literal("QCM_COMPLETE_PHRASE_WITH_WORD"),
@@ -345,17 +345,83 @@ export const createExerciceInputSchema = async () => {
             .min(1, { message: getTranslation("txt_error_link_required") }),
         }),
       }),
-    ])
-    .and(
-      z.object({
-        isLocked: z.boolean().optional(),
-        courId: z
-          .string()
-          .min(1, { message: getTranslation("txt_error_course_id_required") }),
-        order: z.number().optional(),
-        description: z.string().optional(),
+    ]),
+    z.object({
+      typeQuestion: z.literal("READ"),
+      content: z.object({
+        text: z.string().min(1, {
+          message: getTranslation("txt_error_text_required"),
+        }),
+        image: z.string().min(1, {
+          message: getTranslation("txt_error_image_required"),
+        }),
+      }),
+    }),
+    z.object({
+      typeQuestion: z.literal("READ_IMAGE"),
+      content: z.object({
+        text: z.string().min(1, {
+          message: getTranslation("txt_error_text_required"),
+        }),
+        image: z.string().min(1, {
+          message: getTranslation("txt_error_image_required"),
+        }),
+      }),
+    }),
+    z
+      .object({
+        typeQuestion: z.union([
+          z.literal("MAKE_PHRASE"),
+          z.literal("MAKE_PHRASE_FROM_TABLE"),
+        ]),
+        content: z.object({
+          text: z.string().min(1, {
+            message: getTranslation("txt_error_text_required"),
+          }),
+          words: z
+            .array(
+              z.object({
+                text: z.string().min(1, {
+                  message: getTranslation("txt_error_word_text_required"),
+                }),
+                order: z
+                  .union([z.number(), z.string()])
+                  .refine((value) => typeof value === "number", {
+                    message: getTranslation("txt_error_order_must_be_number"),
+                  })
+                  .refine((value) => typeof value === "number" && value >= 0, {
+                    message: getTranslation(
+                      "txt_error_order_must_be_positive_number"
+                    ),
+                  }),
+                correctOrder: z
+                  .union([z.number(), z.string()])
+                  .refine((value) => typeof value === "number", {
+                    message: getTranslation("txt_error_order_must_be_number"),
+                  })
+                  .refine((value) => typeof value === "number" && value >= 0, {
+                    message: getTranslation(
+                      "txt_error_order_must_be_positive_number"
+                    ),
+                  }),
+              })
+            )
+            .min(1, {
+              message: getTranslation("txt_error_at_least_one_word_required"),
+            }),
+        }),
       })
-    );
+      .and(
+        z.object({
+          isLocked: z.boolean().optional(),
+          courId: z.string().min(1, {
+            message: getTranslation("txt_error_course_id_required"),
+          }),
+          order: z.number().optional(),
+          description: z.string().optional(),
+        })
+      )
+  );
 };
 export const getExerciceByIdSchema = z.object({
   id: z.string(),

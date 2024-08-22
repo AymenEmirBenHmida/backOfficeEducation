@@ -11,6 +11,9 @@ import {
   MenuItem,
   Skeleton,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
@@ -23,6 +26,7 @@ import { getExercice, updatExercice } from "@/redux/exerciceSlice";
 
 const QcmImages: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
+  setErrors,
   updateLoading,
   selectedExerciceId,
   errors,
@@ -140,6 +144,7 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
     handleGetExercice();
     getLessons();
     console.log("entered use effect");
+    setErrors({});
   }, []);
 
   return (
@@ -185,6 +190,9 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
           <TextField
             label={t("txt_text")}
             value={formData.content.text || ""}
+            required
+            error={!!errors["content.text"]}
+            helperText={errors["content.text"]}
             onChange={(e) => handleContentChange("text", e.target.value)}
             fullWidth
             className="!mt-[15px]"
@@ -197,6 +205,9 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
               flexDirection={"row"}
             >
               <TextField
+                required
+                error={!!errors[`content.options.${index}.image`]}
+                helperText={errors[`content.options.${index}.image`]}
                 className="!mr-[5px]"
                 label={`${t("txt_image")} ${index + 1}`}
                 value={option.image}
@@ -222,6 +233,11 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
               </IconButton>
             </Box>
           ))}
+          {!!errors[`content.options`] && (
+            <FormHelperText sx={{ color: "red" }}>
+              {errors[`content.options`]}
+            </FormHelperText>
+          )}
           <FormControlLabel
             className="!mt-[15px]"
             control={

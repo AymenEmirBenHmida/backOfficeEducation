@@ -38,7 +38,7 @@ import ArrowSound from "@/components/updateExercices/ArrowSound";
 import ArrowOrColor from "@/components/updateExercices/ArrowOrColor";
 import SelectTable from "@/components/updateExercices/SelectTable";
 import { useNavigate } from "react-router-dom";
-import { validateExerciceInput } from "@/zod/cour";
+import { validateExerciceInput } from "@/zod/exercice";
 import { z } from "zod";
 
 // Define the types for your data
@@ -74,7 +74,7 @@ const AllExercises: React.FC = () => {
   // variable responsible for the initial loading animation
   const [loading, setLoading] = useState<boolean>(true);
   // variable responsible for the update animation
-  const [updateLoading, setUpdateLoading] = useState<boolean>(true);
+  const [updateLoading, setUpdateLoading] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   //variable responsible for opening modal edit
   const [openModalEdit, setOpenModalEdit] = useState(false);
@@ -163,6 +163,7 @@ const AllExercises: React.FC = () => {
     cleanFormData: (formData: any) => void
   ) => {
     try {
+      console.log(formData);
       await validateExerciceInput(formData);
       const data = cleanFormData(formData);
       setUpdateLoading(true);
@@ -211,6 +212,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "QCM_MULTI_ANSWER_IMAGES":
@@ -220,6 +222,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "QCM_MULTI_ANSWER_WORDS_IMAGES":
@@ -229,6 +232,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "DRAG_DROP_WORDS_TO_IMAGE":
@@ -238,6 +242,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "DRAG_DROP_IN_TABLE_IMAGES":
@@ -247,6 +252,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "SELECT_TABLE":
@@ -256,6 +262,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "COLOR":
@@ -265,6 +272,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "ARROW":
@@ -274,6 +282,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "ARROW_SOUND":
@@ -283,6 +292,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "READ":
@@ -292,6 +302,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "READ_IMAGE":
@@ -301,6 +312,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "MAKE_PHRASE":
@@ -310,6 +322,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "MAKE_PHRASE_FROM_TABLE":
@@ -319,6 +332,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       case "VIDEO":
@@ -328,6 +342,7 @@ const AllExercises: React.FC = () => {
             handleSubmit={handleUpdateExercice}
             updateLoading={updateLoading}
             errors={errors}
+            setErrors={setErrors}
           />
         );
       default:

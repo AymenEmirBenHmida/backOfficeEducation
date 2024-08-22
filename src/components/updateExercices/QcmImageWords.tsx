@@ -11,6 +11,9 @@ import {
   Typography,
   Select,
   MenuItem,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ExerciceUpdateProps } from "@/interfaces/ExerciceCrudProps";
@@ -22,6 +25,7 @@ import { getExercice, updatExercice } from "@/redux/exerciceSlice";
 
 const QcmImageWords: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
+  setErrors,
   updateLoading,
   selectedExerciceId,
   errors,
@@ -139,6 +143,7 @@ const QcmImageWords: React.FC<ExerciceUpdateProps> = ({
     handleGetExercice();
     getLessons();
     console.log("entered use effect");
+    setErrors({});
   }, []);
   return (
     <>
@@ -181,6 +186,9 @@ const QcmImageWords: React.FC<ExerciceUpdateProps> = ({
             )}
           </FormControl>
           <TextField
+            required
+            error={!!errors["content.text"]}
+            helperText={errors["content.text"]}
             label={t("txt_text")}
             value={formData.content.text || ""}
             onChange={(e) => handleContentChange("text", e.target.value)}
@@ -190,6 +198,9 @@ const QcmImageWords: React.FC<ExerciceUpdateProps> = ({
           {formData.content.options.map((option: any, index: number) => (
             <Box key={index} className="!mt-[15px]">
               <TextField
+                required
+                error={!!errors[`content.options.${index}.text`]}
+                helperText={errors[`content.options.${index}.text`]}
                 label={`${t("txt_text")} ${index + 1}`}
                 value={option.text}
                 onChange={(e) =>
@@ -198,6 +209,9 @@ const QcmImageWords: React.FC<ExerciceUpdateProps> = ({
                 fullWidth
               />
               <TextField
+                error={!!errors[`content.options.${index}.image`]}
+                helperText={errors[`content.options.${index}.image`]}
+                required
                 label={`${t("txt_image")} ${index + 1}`}
                 value={option.image}
                 onChange={(e) =>
@@ -222,6 +236,11 @@ const QcmImageWords: React.FC<ExerciceUpdateProps> = ({
               </IconButton>
             </Box>
           ))}
+          {!!errors[`content.options`] && (
+            <FormHelperText sx={{ color: "red" }}>
+              {errors[`content.options`]}
+            </FormHelperText>
+          )}
           <FormControlLabel
             className="!mt-[15px]"
             control={

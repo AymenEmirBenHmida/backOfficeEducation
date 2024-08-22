@@ -11,6 +11,9 @@ import {
   Typography,
   Skeleton,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CiCircleRemove } from "react-icons/ci";
@@ -23,6 +26,7 @@ import { getAllLessons } from "@/redux/lessonSlice";
 
 const MakePhrase: React.FC<ExerciceUpdateProps> = ({
   selectedExerciceId,
+  setErrors,
   handleSubmit,
   errors,
 }) => {
@@ -135,6 +139,7 @@ const MakePhrase: React.FC<ExerciceUpdateProps> = ({
     handleGetExercice();
     getLessons();
     console.log("entered use effect");
+    setErrors({});
   }, []);
   return (
     <>
@@ -181,6 +186,9 @@ const MakePhrase: React.FC<ExerciceUpdateProps> = ({
             value={formData.content.text || ""}
             onChange={(e) => handleContentChange("text", e.target.value)}
             fullWidth
+            required
+            error={!!errors[`content.text`]}
+            helperText={errors[`content.text`]}
             className="!mt-[15px]"
           />
           {formData.content.words.map((word: any, index: number) => (
@@ -194,6 +202,9 @@ const MakePhrase: React.FC<ExerciceUpdateProps> = ({
                 className="!mr-[5px]"
                 label={`${t("txt_text")} ${index + 1}`}
                 value={word.text}
+                required
+                error={!!errors[`content.words.${index}.text`]}
+                helperText={errors[`content.words.${index}.text`]}
                 onChange={(e) =>
                   handleWordChange(index, "text", e.target.value)
                 }
@@ -203,8 +214,15 @@ const MakePhrase: React.FC<ExerciceUpdateProps> = ({
                 className="!mr-[5px]"
                 label={`${t("txt_order")} ${index + 1}`}
                 value={word.order}
+                required
+                error={!!errors[`content.words.${index}.order`]}
+                helperText={errors[`content.words.${index}.order`]}
                 onChange={(e) =>
-                  handleWordChange(index, "order", e.target.value)
+                  handleWordChange(
+                    index,
+                    "order",
+                    e.target.value === "" ? "" : parseInt(e.target.value)
+                  )
                 }
                 fullWidth
               />
@@ -212,8 +230,15 @@ const MakePhrase: React.FC<ExerciceUpdateProps> = ({
                 className="!mr-[5px]"
                 label={`${t("txt_correct_order")} ${index + 1}`}
                 value={word.correctOrder}
+                required
+                error={!!errors[`content.words.${index}.correctOrder`]}
+                helperText={errors[`content.words.${index}.correctOrder`]}
                 onChange={(e) =>
-                  handleWordChange(index, "correctOrder", e.target.value)
+                  handleWordChange(
+                    index,
+                    "correctOrder",
+                    e.target.value === "" ? "" : parseInt(e.target.value)
+                  )
                 }
                 fullWidth
               />
@@ -222,6 +247,11 @@ const MakePhrase: React.FC<ExerciceUpdateProps> = ({
               </IconButton>
             </Box>
           ))}
+          {!!errors[`content.words`] && (
+            <FormHelperText sx={{ color: "red" }}>
+              {errors[`content.words`]}
+            </FormHelperText>
+          )}
           <div className="!mt-[15px]">
             <FormControlLabel
               control={
@@ -233,7 +263,7 @@ const MakePhrase: React.FC<ExerciceUpdateProps> = ({
                   }
                 />
               }
-              label={t("txt_lcoked")}
+              label={t("txt_locked")}
             />
             <Button onClick={addWord}>{t("txt_add_word")}</Button>
             <Button

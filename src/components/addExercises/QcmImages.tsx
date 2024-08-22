@@ -179,7 +179,6 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
       <Button onClick={addOption} className="!mt-[15px]">
         {t("txt_add")}
       </Button>
-
       <Button
         className="!mt-[15px]"
         variant="contained"

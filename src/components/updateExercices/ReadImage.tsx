@@ -9,6 +9,9 @@ import {
   MenuItem,
   Skeleton,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ExerciceUpdateProps } from "@/interfaces/ExerciceCrudProps";
@@ -21,6 +24,7 @@ import { getAllLessons } from "@/redux/lessonSlice";
 const ReadImage: React.FC<ExerciceUpdateProps> = ({
   selectedExerciceId,
   handleSubmit,
+  setErrors,
   errors,
 }) => {
   const { t } = useTranslation();
@@ -97,6 +101,7 @@ const ReadImage: React.FC<ExerciceUpdateProps> = ({
     handleGetExercice();
     getLessons();
     console.log("entered use effect");
+    setErrors({});
   }, []);
 
   return (
@@ -142,6 +147,9 @@ const ReadImage: React.FC<ExerciceUpdateProps> = ({
           <TextField
             label={t("txt_text")}
             value={formData.content.text || ""}
+            required
+            error={!!errors[`content.text`]}
+            helperText={errors[`content.text`]}
             onChange={(e) => handleContentChange("text", e.target.value)}
             fullWidth
             className="!mt-[15px]"
@@ -149,6 +157,9 @@ const ReadImage: React.FC<ExerciceUpdateProps> = ({
           <TextField
             label={t("txt_image")}
             value={formData.content.image || ""}
+            required
+            error={!!errors[`content.image`]}
+            helperText={errors[`content.image`]}
             onChange={(e) => handleContentChange("image", e.target.value)}
             fullWidth
             className="!mt-[15px]"

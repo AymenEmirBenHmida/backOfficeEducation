@@ -26,6 +26,7 @@ import { getAllLessons } from "@/redux/lessonSlice";
 
 const QcmText: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
+  setErrors,
   updateLoading,
   selectedExerciceId,
   errors,
@@ -143,6 +144,7 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
     handleGetExercice();
     getLessons();
     console.log("entered use effect");
+    setErrors({});
   }, []);
 
   return (
