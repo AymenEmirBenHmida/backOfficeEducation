@@ -119,7 +119,7 @@ export const createLesson = createAsyncThunk(
       //   );
       // }
       const response = await createLessonService({
-        formData: { ...formData, images: imagesUrl },
+        formData: { ...formData, images: [...imagesUrl, ...formData.images] },
       });
       return response;
     } catch (error) {

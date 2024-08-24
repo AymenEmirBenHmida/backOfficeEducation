@@ -65,11 +65,12 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
       ).unwrap();
       setUpdateLoading(false);
       if (response && response.statusText === "OK") {
+        handleError!(t("txt_success"), true);
         console.log("response create ", response);
         handleSubmit!();
         await getChapters();
       } else {
-        handleError!("error");
+        handleError!(t("txt_error"), false);
       }
     } catch (error) {
       console.log("error help");
@@ -82,7 +83,7 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
         }, {});
         setErrors(newErrors);
       } else {
-        handleError!("error");
+        handleError!(t("txt_error"), false);
         console.log(error);
       }
     }

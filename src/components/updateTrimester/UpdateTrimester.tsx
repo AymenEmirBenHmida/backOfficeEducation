@@ -72,11 +72,12 @@ const UpdateTrimester: React.FC<TrimesterUpdateProps> = ({
       ).unwrap();
       setUpdateLoading(false);
       if (response && response.statusText === "OK") {
+        handleError!(t("txt_success"), true);
         console.log("response create ", response);
         handleSubmit!();
         await getTrimesters();
       } else {
-        handleError!("error");
+        handleError!(t("txt_error"), false);
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -87,7 +88,7 @@ const UpdateTrimester: React.FC<TrimesterUpdateProps> = ({
         }, {});
         setErrors(newErrors);
       } else {
-        handleError!("error");
+        handleError!(t("txt_error"), false);
         console.log(error);
       }
     }

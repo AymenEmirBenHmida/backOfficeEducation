@@ -95,6 +95,7 @@ const ArrowSound: React.FC<ExerciceCreationProps> = ({
       ["description"]: description,
     }));
   }, [selectedLessonId, description]);
+
   return (
     <>
       <TextField

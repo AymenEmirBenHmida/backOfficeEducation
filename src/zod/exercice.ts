@@ -3,7 +3,7 @@ import { z } from "zod";
 import i18n from "../i18n";
 
 let createExerciceSchema: z.ZodType | null;
-
+//check the initialization of i18
 const checkI18nInitialization = async () => {
   if (!i18n.isInitialized) {
     await new Promise((resolve) => {
@@ -11,25 +11,29 @@ const checkI18nInitialization = async () => {
     });
   }
 };
+//getting the translations
 const getTranslation = (key: string) => {
   return i18n.t(key);
 };
+//this is used to validate and to control the instanciation of the schema
 export const validateExerciceInput = async (data: any) => {
   if (!createExerciceSchema) {
     await checkI18nInitialization();
     createExerciceSchema = await createExerciceInputSchema();
   }
+  console.log(data);
   return createExerciceSchema.parse(data);
 };
 // Regenerate schema when language changes
 const handleLanguageChange = async () => {
   createExerciceSchema = await createExerciceInputSchema();
 };
+//on each language change update schema for the translations
 i18n.on("languageChanged", handleLanguageChange);
 export const createExerciceInputSchema = async () => {
   await checkI18nInitialization(); // Ensure i18n is initialized
-  return (
-    z.union([
+  return z
+    .union([
       z.object({
         typeQuestion: z.union([
           z.literal("QCM_COMPLETE_PHRASE_WITH_WORD"),
@@ -345,31 +349,29 @@ export const createExerciceInputSchema = async () => {
             .min(1, { message: getTranslation("txt_error_link_required") }),
         }),
       }),
-    ]),
-    z.object({
-      typeQuestion: z.literal("READ"),
-      content: z.object({
-        text: z.string().min(1, {
-          message: getTranslation("txt_error_text_required"),
-        }),
-        image: z.string().min(1, {
-          message: getTranslation("txt_error_image_required"),
-        }),
-      }),
-    }),
-    z.object({
-      typeQuestion: z.literal("READ_IMAGE"),
-      content: z.object({
-        text: z.string().min(1, {
-          message: getTranslation("txt_error_text_required"),
-        }),
-        image: z.string().min(1, {
-          message: getTranslation("txt_error_image_required"),
+      z.object({
+        typeQuestion: z.literal("READ"),
+        content: z.object({
+          text: z.string().min(1, {
+            message: getTranslation("txt_error_text_required"),
+          }),
+          image: z.string().min(1, {
+            message: getTranslation("txt_error_image_required"),
+          }),
         }),
       }),
-    }),
-    z
-      .object({
+      z.object({
+        typeQuestion: z.literal("READ_IMAGE"),
+        content: z.object({
+          text: z.string().min(1, {
+            message: getTranslation("txt_error_text_required"),
+          }),
+          image: z.string().min(1, {
+            message: getTranslation("txt_error_image_required"),
+          }),
+        }),
+      }),
+      z.object({
         typeQuestion: z.union([
           z.literal("MAKE_PHRASE"),
           z.literal("MAKE_PHRASE_FROM_TABLE"),
@@ -410,18 +412,18 @@ export const createExerciceInputSchema = async () => {
               message: getTranslation("txt_error_at_least_one_word_required"),
             }),
         }),
+      }),
+    ])
+    .and(
+      z.object({
+        isLocked: z.boolean().optional(),
+        courId: z.string().min(1, {
+          message: getTranslation("txt_error_course_id_required"),
+        }),
+        order: z.number().optional(),
+        description: z.string().optional(),
       })
-      .and(
-        z.object({
-          isLocked: z.boolean().optional(),
-          courId: z.string().min(1, {
-            message: getTranslation("txt_error_course_id_required"),
-          }),
-          order: z.number().optional(),
-          description: z.string().optional(),
-        })
-      )
-  );
+    );
 };
 export const getExerciceByIdSchema = z.object({
   id: z.string(),

@@ -1,4 +1,3 @@
-import { getAllLessons } from "../../../redux/lessonSlice";
 import QuestionTypes from "../../../constants";
 import {
   Alert,
@@ -17,7 +16,6 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import ModalExerciceAdd from "../../../components/modalExerciceAdd/ModalExerciceAdd";
-import { LessonInterface } from "@/interfaces/LessonInterface";
 import { AppDispatch } from "@/redux/Store";
 import { useNavigate } from "react-router-dom";
 const Exercises: React.FC = () => {
@@ -30,8 +28,6 @@ const Exercises: React.FC = () => {
   const [selectedTypeImage, setSelectedTypeImage] = useState("");
   // the selected question type id
   const [selectedTypeId, setSelectedTypeId] = useState("");
-  //lessons
-  const [lessons, setLessons] = useState<LessonInterface[]>([]);
   //number of items per page
   const itemPerpage = 6;
   //start index for each page
@@ -44,6 +40,8 @@ const Exercises: React.FC = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   //snackbar opening state
   const [snackBarOpen, setSnackBarOpen] = useState(false);
+  //snackbar success or error
+  const [snackBarSuccess, setSnackBarSuccess] = useState(true);
   //the questions types to be actually displayed
   const displayedTypes = questionTypes.slice(startIndex, endIndex);
   const dispatch = useDispatch<AppDispatch>();
@@ -76,30 +74,14 @@ const Exercises: React.FC = () => {
     setSnackBarOpen(false);
   };
   //opening snack bar and setting it's message
-  const handleSnackbarOpen = (message: string) => {
+  const handleSnackbarOpen = (message: string, success: boolean) => {
+    setSnackBarSuccess(success);
     setSnackbarMessage(message);
     setSnackBarOpen(true);
   };
   //closing the add modal
   const handleClose = () => setOpen(false);
-  //getting all lessons
-  const getLessons = async () => {
-    try {
-      const result = await dispatch(getAllLessons());
-      if (getAllLessons.fulfilled.match(result)) {
-        setLessons(result.payload as LessonInterface[]);
-      } else {
-        console.error("Failed to fetch lessons");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  // initially launching the functions necessary
-  useEffect(() => {
-    getLessons();
-  }, []);
-
+ 
   return (
     <>
       <Box
@@ -156,7 +138,6 @@ const Exercises: React.FC = () => {
       <ModalExerciceAdd
         handleStartErrorMessage={handleSnackbarOpen}
         handleClose={handleClose}
-        lessons={lessons}
         open={open}
         selectedTypeId={selectedTypeId}
         selectedTypeImage={selectedTypeImage}
@@ -180,7 +161,7 @@ const Exercises: React.FC = () => {
       >
         <Alert
           onClose={handleSnackbarClose}
-          severity="error"
+          severity={snackBarSuccess ? "success" : "error"}
           sx={{ width: "100%" }}
         >
           {snackbarMessage}

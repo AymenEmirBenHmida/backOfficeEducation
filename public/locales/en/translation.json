@@ -145,5 +145,7 @@
   "txt_error_matiere_id_required": "Matiere ID is required",
   "txt_error_completion_status_required": "Completion status is required",
   "txt_error_slug_required": "Slug is required",
-  "txt_error_niveau_id_required": "Level is required"
+  "txt_error_niveau_id_required": "Level is required",
+  "txt_column_text":"Column text",
+  "txt_success":"Success"
 }

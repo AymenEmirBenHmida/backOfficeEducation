@@ -21,7 +21,7 @@ import { getLesson, updatLesson } from "@/redux/lessonSlice";
 import { getAllChapters } from "@/redux/chaptersSlice";
 import { LessonUpdateProps } from "@/interfaces/LessonCrudProps";
 import { CiCircleRemove } from "react-icons/ci";
-import { createCourInputSchema, validateCourInput } from "@/zod/cour";
+import { validateCourInput } from "@/zod/cour";
 import { z } from "zod";
 
 const UpdateLesson: React.FC<LessonUpdateProps> = ({
@@ -82,11 +82,12 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
       ).unwrap();
       setUpdateLoading(false);
       if (response && response.statusText === "OK") {
+        handleError!(t("txt_success"), true);
         console.log("response update ", response);
         handleSubmit!();
         await getLessons();
       } else {
-        handleError!("error");
+        handleError!(t("txt_error"), false);
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -98,7 +99,7 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
         console.log(newErrors);
         setErrors(newErrors);
       } else {
-        handleError!("error");
+        handleError!(t("txt_error"), false);
         console.log(error);
       }
     }

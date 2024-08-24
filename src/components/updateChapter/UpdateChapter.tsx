@@ -66,11 +66,12 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
       ).unwrap();
       setUpdateLoading(false);
       if (response && response.statusText === "OK") {
+        handleError!(t("txt_success"), true);
         console.log("response create ", response);
         handleSubmit!();
         await getChapters();
       } else {
-        handleError!("error");
+        handleError!(t("txt_error"), false);
       }
     } catch (error) {
       console.log("error help");
@@ -83,7 +84,7 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
         }, {});
         setErrors(newErrors);
       } else {
-        handleError!("error");
+        handleError!(t("txt_error"), false);
         console.log(error);
       }
     }
@@ -181,19 +182,7 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
               flexDirection: "column",
               gap: 2,
             }}
-          >
-            {/* <FormControl className="!mt-[5px]" fullWidth>
-              <FormLabel>{t("txt_images")}</FormLabel>
-              <input
-                type="file"
-                multiple
-                accept=".jpg, .jpeg, .png"
-                onChange={handleImageChange}
-                className="!mt-[15px]"
-                style={{ marginTop: "8px", marginBottom: "8px" }}
-              />
-            </FormControl> */}
-          </Box>
+          ></Box>
           <FormControlLabel
             className="!mt-[15px]"
             control={

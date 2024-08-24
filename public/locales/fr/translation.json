@@ -146,5 +146,7 @@
   "txt_error_matiere_id_required": "L'ID de la matière est requis",
   "txt_error_completion_status_required": "Le statut de complétion est requis",
   "txt_error_slug_required": "Le slug est requis",
-  "txt_error_niveau_id_required": "Niveau est requis"
+  "txt_error_niveau_id_required": "Niveau est requis",
+  "txt_column_text": "Texte de la colonne",
+  "txt_success": "Succès"
 }

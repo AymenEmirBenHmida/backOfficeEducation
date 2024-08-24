@@ -45,11 +45,8 @@ const AllChapters: React.FC = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   //variable for the snackbar message
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  //opening snack bar and setting it's message
-  const handleSnackbarOpen = (message: string) => {
-    setSnackbarMessage(message);
-    setSnackbarOpen(true);
-  };
+  //variable for the snackbar message
+  const [snackbarSuccess, setSnackbarSuccess] = useState(false);
   // styling for the modal
   const style = {
     overflowX: "auto",
@@ -65,6 +62,12 @@ const AllChapters: React.FC = () => {
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
+  };
+  //opening snack bar and setting it's message
+  const handleSnackbarOpen = (message: string, success: boolean) => {
+    setSnackbarSuccess(success);
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
   };
   //snack bar close
   const handleSnackbarClose = () => {
@@ -292,7 +295,7 @@ const AllChapters: React.FC = () => {
       >
         <Alert
           onClose={handleSnackbarClose}
-          severity="error"
+          severity={snackbarSuccess ? "error" : "success"}
           sx={{ width: "100%" }}
         >
           {snackbarMessage}

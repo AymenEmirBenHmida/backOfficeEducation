@@ -82,7 +82,7 @@ const DragDropTableImages: React.FC<ExerciceUpdateProps> = ({
       setFormData((prev: any) => ({
         ...prev,
         content: {
-          // ...prev.content,
+          ...prev.content,
           columns: newColumns,
           options: newOptions,
         },
@@ -92,7 +92,7 @@ const DragDropTableImages: React.FC<ExerciceUpdateProps> = ({
       setFormData((prev: any) => ({
         ...prev,
         content: {
-          // ...prev.content,
+          ...prev.content,
           options: newOptions,
           columns: newColumns,
         },

@@ -41,6 +41,8 @@ const AllTrimesters: React.FC = () => {
   //variable snackbar opening varibale
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   //variable for the snackbar message
+  const [snackbarSuccess, setSnackbarSuccess] = useState(false);
+  //variable for the snackbar message
   const [snackbarMessage, setSnackbarMessage] = useState("");
   // styling for the modal
   const style = {
@@ -59,7 +61,8 @@ const AllTrimesters: React.FC = () => {
     p: 4,
   };
   //opening snack bar and setting it's message
-  const handleSnackbarOpen = (message: string) => {
+  const handleSnackbarOpen = (message: string, success: boolean) => {
+    setSnackbarSuccess(success);
     setSnackbarMessage(message);
     setSnackbarOpen(true);
   };
@@ -112,7 +115,7 @@ const AllTrimesters: React.FC = () => {
       }
     } catch (error) {
       console.error("An error occurred while fetching trimesters:", error);
-      handleSnackbarOpen(t("txt_error"));
+      handleSnackbarOpen(t("txt_error"), false);
       setTrimesters([]);
     } finally {
       setLoading(false);
@@ -268,7 +271,7 @@ const AllTrimesters: React.FC = () => {
       >
         <Alert
           onClose={handleSnackbarClose}
-          severity="error"
+          severity={snackbarSuccess ? "error" : "success"}
           sx={{ width: "100%" }}
         >
           {snackbarMessage}

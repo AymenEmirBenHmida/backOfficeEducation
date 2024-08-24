@@ -44,6 +44,8 @@ const AllLessons: React.FC = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   //variable for the snackbar message
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  //variable for the snackbar message
+  const [snackbarSuccess, setSnackbarSuccess] = useState(false);
   // styling for the modal
   const style = {
     overflowX: "auto",
@@ -61,7 +63,8 @@ const AllLessons: React.FC = () => {
     p: 4,
   };
   //opening snack bar and setting it's message
-  const handleSnackbarOpen = (message: string) => {
+  const handleSnackbarOpen = (message: string, success: boolean) => {
+    setSnackbarSuccess(success);
     setSnackbarMessage(message);
     setSnackbarOpen(true);
   };
@@ -108,7 +111,7 @@ const AllLessons: React.FC = () => {
     } catch (error) {
       console.error("An error occurred while fetching Lessons:", error);
       setLessons([]);
-      handleSnackbarOpen(t("txt_error"));
+      handleSnackbarOpen(t("txt_error"), false);
     } finally {
       setLoading(false);
     }
@@ -289,7 +292,7 @@ const AllLessons: React.FC = () => {
       >
         <Alert
           onClose={handleSnackbarClose}
-          severity="error"
+          severity={snackbarSuccess?"success":"error"}
           sx={{ width: "100%" }}
         >
           {snackbarMessage}

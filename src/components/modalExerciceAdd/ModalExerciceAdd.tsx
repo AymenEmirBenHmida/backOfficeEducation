@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import {
   Select,
   MenuItem,
@@ -32,18 +32,18 @@ import {
   validateExerciceInput,
 } from "@/zod/exercice";
 import { z } from "zod";
+import { getAllLessons } from "@/redux/lessonSlice";
 
 interface ModalExerciceAddProps {
-  lessons: LessonInterface[];
+  lessons?: LessonInterface[];
   open: boolean;
   handleClose: () => void;
   selectedTypeImage: string;
   selectedTypeId: string;
-  handleStartErrorMessage: (message: string) => void;
+  handleStartErrorMessage: (message: string, success: boolean) => void;
 }
 
 const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
-  lessons,
   open,
   handleClose,
   selectedTypeImage,
@@ -52,6 +52,8 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  //lessons
+  const [lessons, setLessons] = useState<LessonInterface[]>([]);
   //loading animation
   const [loading, setLoading] = useState(false);
   //variable for the description
@@ -60,6 +62,22 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
   const [selectedLessonId, setSelectedLessonId] = useState("");
   //state variable for form validation
   const [errors, setErrors] = useState<any>({});
+  // styling for the modal
+  const style = {
+    overflowX: "auto",
+    overflowY: "auto",
+    position: "relative",
+    top: "50%",
+    left: "50%",
+    maxHeight: "100%",
+    transform: "translate(-50%, -50%)",
+    width: "90%", // Default to 90% of the screen width
+    maxWidth: 600, // Maximum width for larger screens
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
   //handles changing the state variable for the description
   const handleInputChange = (value: any) => {
     setDescription(value);
@@ -71,8 +89,10 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
       await validateExerciceInput(formData);
       setLoading(true);
       const data = await dispatch(createExercice({ formData }));
+      handleStartErrorMessage(t("txt_success"), true);
       console.log("Exercise created:", data);
       setLoading(false);
+      setErrors({});
       // handleClose();
     } catch (error) {
       setLoading(false);
@@ -85,7 +105,7 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
         console.log(newErrors);
         setErrors(newErrors);
       } else {
-        handleStartErrorMessage(t("txt_error"));
+        handleStartErrorMessage(t("txt_error"), false);
         console.log("failed to create exercice ", error);
       }
     }
@@ -259,22 +279,28 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
         return null;
     }
   };
-  // styling for the modal
-  const style = {
-    overflowX: "auto",
-    overflowY: "auto",
-    position: "relative",
-    top: "50%",
-    left: "50%",
-    maxHeight: "100%",
-    transform: "translate(-50%, -50%)",
-    width: "90%", // Default to 90% of the screen width
-    maxWidth: 600, // Maximum width for larger screens
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
+  //getting all lessons
+  const getLessons = async () => {
+    try {
+      const result = await dispatch(getAllLessons());
+      if (getAllLessons.fulfilled.match(result)) {
+        setLessons(result.payload as LessonInterface[]);
+      } else {
+        console.error("Failed to fetch lessons");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
+  // initially launching the functions necessary
+  useEffect(() => {
+    getLessons();
+    console.log("use effect");
+  }, []);
+  useEffect(() => {
+    setDescription("");
+    setSelectedLessonId("");
+  }, [selectedTypeId]);
 
   return (
     <Modal

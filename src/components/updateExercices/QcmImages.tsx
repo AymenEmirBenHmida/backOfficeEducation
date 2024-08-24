@@ -62,7 +62,7 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
     setFormData((prev: any) => ({
       ...prev,
       content: {
-        // ...prev.content,
+        ...prev.content,
         options: newOptions,
       },
     }));
