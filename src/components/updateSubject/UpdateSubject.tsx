@@ -21,6 +21,8 @@ import { getAllTrimesters } from "@/redux/trimesterSlice";
 import { SubjectUpdateProps } from "@/interfaces/subjectsCrudInterface";
 import { createSubjectInputSchema } from "@/zod/matiere";
 import { z } from "zod";
+import { Subject } from "@/interfaces/Subject";
+import { Trimester } from "@/interfaces/Trimester";
 
 const UpdateSubject: React.FC<SubjectUpdateProps> = ({
   handleSubmit,
@@ -30,15 +32,15 @@ const UpdateSubject: React.FC<SubjectUpdateProps> = ({
 }) => {
   const { t } = useTranslation();
   //the form state variable
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<Subject>({
     name: "",
     description: "",
-    matiereId: "",
+    id: subjectId,
+    trimestreId: "",
     isLocked: false,
-    estTermine: false,
   });
   //list of subjects
-  const [trimesters, setTrimesters] = useState([]);
+  const [trimesters, setTrimesters] = useState<Trimester[]>([]);
   //used on initial loading
   const [loading, setLoading] = useState(true);
   //used when updating database
@@ -67,7 +69,7 @@ const UpdateSubject: React.FC<SubjectUpdateProps> = ({
       const data = cleanFormData(formData);
       console.log("data ", data);
       const response = await dispatch(
-        updatSubject({ id: subjectId, formData: data })
+        updatSubject({ formData: data })
       ).unwrap();
       setUpdateLoading(false);
       if (response && response.statusText === "OK") {

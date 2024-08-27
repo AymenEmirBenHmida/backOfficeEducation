@@ -9,7 +9,7 @@ export interface AdminState {
     phone?: string;
   };
   isLoading: boolean;
-  error: string | null;
+  error: any;
   data: any;
   totalPercentage: Record<string, number> | null;
   chapitreId: string; // Ajouter la propriété chapitreId

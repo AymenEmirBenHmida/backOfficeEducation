@@ -20,14 +20,22 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
   selectedLessonId,
   errors,
   loading,
+  numberOfOptions,
 }) => {
   const { t } = useTranslation();
+  //initialise the options depending on the number specified in the props
+  const initialTuples = Array.from({ length: numberOfOptions }, () => ({
+    text1: "",
+    order1: 0,
+    text2: "",
+    order2: 0,
+  }));
   //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
       text: "",
-      tuples: [{ text1: "", order1: 0, text2: "", order2: 0 }],
+      tuples: initialTuples,
     },
     courId: selectedLessonId || "",
     description: description || "",
@@ -179,9 +187,9 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
             type="number"
             fullWidth
           />
-          <IconButton onClick={() => removeTuple(index)}>
+          {/* <IconButton onClick={() => removeTuple(index)}>
             <CiCircleRemove />
-          </IconButton>
+          </IconButton> */}
         </Box>
       ))}
       {!!errors[`content.content.tuples`] && (
@@ -198,11 +206,11 @@ const ArrowOrColor: React.FC<ExerciceCreationProps> = ({
             onChange={(e) => handleFormChange("isLocked", e.target.checked)}
           />
         }
-        label={t("txt_add")}
+        label={t("txt_locked")}
       />
-      <Button onClick={addTuple} className="!mt-[15px]">
+      {/* <Button onClick={addTuple} className="!mt-[15px]">
         {t("txt_add_tuple")}
-      </Button>
+      </Button> */}
       <Button
         variant="contained"
         color="primary"

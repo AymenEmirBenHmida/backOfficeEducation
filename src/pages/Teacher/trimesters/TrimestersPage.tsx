@@ -22,11 +22,12 @@ import React from "react";
 import { deleteTrimester, getAllTrimesters } from "@/redux/trimesterSlice";
 import AddTrimester from "@/components/addTrimester/AddTrimester";
 import UpdateTrimester from "@/components/updateTrimester/UpdateTrimester";
+import { Trimester } from "@/interfaces/Trimester";
 
 const AllTrimesters: React.FC = () => {
   const { t } = useTranslation();
   //trimesters
-  const [trimesters, setTrimesters] = useState<any[]>([]);
+  const [trimesters, setTrimesters] = useState<Trimester[]>([]);
   //variable responsible for the intial loading animation
   const [loading, setLoading] = useState<boolean>(true);
   const dispatch = useDispatch<AppDispatch>();
@@ -184,7 +185,7 @@ const AllTrimesters: React.FC = () => {
                             (trimester.isLocked ? t("txt_yes") : t("txt_no"))}
                         </Typography>
                         <Typography variant="body2">
-                          {t("txt_level") + " : " + trimester.niveau.name}
+                          {t("txt_level") + " : " + trimester.niveau!.name}
                         </Typography>
                       </CardContent>
                       <CardActions>
@@ -192,7 +193,7 @@ const AllTrimesters: React.FC = () => {
                           sx={{ color: "red" }}
                           size="small"
                           onClick={() => {
-                            handleClickDelete(trimester.id);
+                            handleClickDelete(trimester.id!);
                           }}
                         >
                           {t("txt_delete")}
@@ -200,7 +201,7 @@ const AllTrimesters: React.FC = () => {
                         <Button
                           size="small"
                           onClick={async () => {
-                            setSelectedTrimester(trimester.id);
+                            setSelectedTrimester(trimester.id!);
                             await handleOpenModal();
                           }}
                         >
@@ -271,7 +272,7 @@ const AllTrimesters: React.FC = () => {
       >
         <Alert
           onClose={handleSnackbarClose}
-          severity={snackbarSuccess ? "error" : "success"}
+          severity={snackbarSuccess ? "success" : "error"}
           sx={{ width: "100%" }}
         >
           {snackbarMessage}

@@ -1,3 +1,4 @@
+import { Subject } from "@/interfaces/Subject";
 import axios from "../config/axiosConfig";
 
 export const getAllSubjectsService = async () => {
@@ -29,7 +30,7 @@ export const getSubjectService = async (id: string) => {
   }
 };
 
-export const createSubjectService = async ({ formData }: { formData: any }) => {
+export const createSubjectService = async ({ formData }: { formData: Subject }) => {
   console.log("create matiere ", formData);
   try {
     const response = await axios.post("/api/matiere/create", formData);
@@ -39,7 +40,7 @@ export const createSubjectService = async ({ formData }: { formData: any }) => {
   }
 };
 
-export const updateSubjectService = async ({ formData }: { formData: any }) => {
+export const updateSubjectService = async ({ formData }: { formData: Subject }) => {
   console.log("update matiere ", formData);
   try {
     const response = await axios.put(

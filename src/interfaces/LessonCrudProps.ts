@@ -5,3 +5,9 @@ export interface LessonUpdateProps {
   selectedLessonId: string;
   lessonData?: any;
 }
+export interface LessonCreationProps {
+  handleSubmit?: () => void;
+  getLessons: () => void;
+  handleError?: (message: string, success: boolean) => void;
+}
+

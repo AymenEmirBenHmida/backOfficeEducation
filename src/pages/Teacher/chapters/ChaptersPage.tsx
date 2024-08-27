@@ -23,11 +23,12 @@ import React from "react";
 import ChapterInformation from "@/components/chapterInformation/ChapterInformation";
 import AddChapter from "@/components/addChapter/AddChapter";
 import UpdateChapter from "@/components/updateChapter/UpdateChapter";
+import { Chapter } from "@/interfaces/Chapter";
 
 const AllChapters: React.FC = () => {
   const { t } = useTranslation();
   //chapters
-  const [chapters, setChapters] = useState<any[]>([]);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
   //variable responsible for the intial loading animation
   const [loading, setLoading] = useState<boolean>(true);
   const dispatch = useDispatch<AppDispatch>();
@@ -119,7 +120,7 @@ const AllChapters: React.FC = () => {
     } catch (error) {
       console.error("An error occurred while fetching Chapters:", error);
       setChapters([]);
-      handleSnackbarOpen(t("txt_error"));
+      handleSnackbarOpen(t("txt_error"), false);
     } finally {
       setLoading(false);
     }
@@ -190,6 +191,10 @@ const AllChapters: React.FC = () => {
                             (chapter.estTermine
                               ? t("txt_completed")
                               : t("txt_not_completed"))}
+                          <br />
+                          {t("txt_locked") +
+                            " : " +
+                            (chapter.isLocked ? t("txt_yes") : t("txt_no"))}
                         </Typography>
                       </CardContent>
                       <CardActions>
@@ -197,7 +202,7 @@ const AllChapters: React.FC = () => {
                           size="small"
                           onClick={() => {
                             setOpenModalInfo(true);
-                            setSelectedChapter(chapter.id);
+                            setSelectedChapter(chapter.id!);
                           }}
                         >
                           {t("txt_learn_more")}
@@ -206,7 +211,7 @@ const AllChapters: React.FC = () => {
                           sx={{ color: "red" }}
                           size="small"
                           onClick={() => {
-                            handleClickDelete(chapter.id);
+                            handleClickDelete(chapter.id!);
                           }}
                         >
                           {t("txt_delete")}
@@ -214,7 +219,7 @@ const AllChapters: React.FC = () => {
                         <Button
                           size="small"
                           onClick={async () => {
-                            setSelectedChapter(chapter.id);
+                            setSelectedChapter(chapter.id!);
                             await handleOpenModal();
                           }}
                         >
@@ -295,7 +300,7 @@ const AllChapters: React.FC = () => {
       >
         <Alert
           onClose={handleSnackbarClose}
-          severity={snackbarSuccess ? "error" : "success"}
+          severity={snackbarSuccess ? "success" : "error"}
           sx={{ width: "100%" }}
         >
           {snackbarMessage}

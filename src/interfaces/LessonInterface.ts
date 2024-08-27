@@ -1,3 +1,5 @@
+import { Chapter } from "./Chapter";
+
 export interface LessonInterface {
   id: string;
   name: string;
@@ -5,8 +7,8 @@ export interface LessonInterface {
   chapitreId: string;
   description: string;
   isLocked: boolean;
-  images: [string];
-  video: string | null;
+  images: string[];
+  video?: string | null;
   audio?: string;
-  chapitre?: any;
+  chapitre?: Chapter;
 }

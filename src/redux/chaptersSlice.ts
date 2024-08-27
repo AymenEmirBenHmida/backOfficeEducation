@@ -7,6 +7,7 @@ import {
   getChapterService,
   updateChapitreService,
 } from "@/services/chaptersService";
+import { Chapter } from "@/interfaces/Chapter";
 
 //getting all chapters
 export const getAllChapters = createAsyncThunk(
@@ -26,7 +27,7 @@ export const getAllChapters = createAsyncThunk(
 //creating chapter
 export const createChapter = createAsyncThunk(
   "chapters/create",
-  async ({ formData }: { formData: any }) => {
+  async ({ formData }: { formData: Chapter }) => {
     try {
       console.log("create chapter redux ", formData);
       const response = await createChapterService({ formData });
@@ -61,7 +62,7 @@ export const getChapter = createAsyncThunk(
 //updating exercice
 export const updateChapter = createAsyncThunk(
   "chapter/update",
-  async ({ formData, id }: { formData: any; id: string }) => {
+  async ({ formData, id }: { formData: Chapter; id: string }) => {
     try {
       console.log("update exercice redux ", formData);
       const response = await updateChapitreService({ formData, id });

@@ -40,7 +40,7 @@ const SideDrawer: React.FC = () => {
         <div className="mt-[10px]">{t("txt_profile")}</div>
       </div>
       <div className="flex flex-col items-start mr-10 ml-[20px]">
-        <Button
+        {/* <Button
           className="tab "
           aria-label="Home"
           startIcon={<FaHome />}
@@ -57,7 +57,7 @@ const SideDrawer: React.FC = () => {
           }}
         >
           {t("txt_profile")}
-        </Button>
+        </Button> */}
 
         <Button
           className="tab"

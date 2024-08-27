@@ -56,23 +56,23 @@ const SignupPage: React.FC = ({}) => {
       const userResponse = await dispatch(
         createCompteUser({
           email: data.email,
-
           password: data.password,
           phone: data.phone,
         })
       );
-      console.log(userResponse.payload);
+      console.log(userResponse);
 
-      if (createCompteUser.fulfilled.match(userResponse)) {
-        if (userResponse.payload.data.message) {
+      if (createCompteUser.rejected.match(userResponse)) {
+        if (userResponse.payload.message) {
+          console.log("entereds");
           const error = userResponse.payload as {
             message: string;
             status?: string;
           };
+          console.log("error", error);
           if (error.status === "EMAIL_ALREADY_EXIST") {
             setErrorMessage("txt_email_already");
             console.log("1", errorMessage);
-
             handleErreur(true);
             return;
           } else if (error.status === "PHONE_ALREADY_EXIST") {
@@ -84,7 +84,10 @@ const SignupPage: React.FC = ({}) => {
         }
       }
 
-      if (userResponse.payload?.data.status === "OK") {
+      if (
+        userResponse.payload?.data &&
+        userResponse.payload?.data.status === "OK"
+      ) {
         if (!userResponse.payload.data.data.app_metadata.phone_confirm) {
           const response = await dispatch(
             sendActivationCode({
@@ -123,6 +126,7 @@ const SignupPage: React.FC = ({}) => {
     } catch (error) {
       console.error(error);
       handleErreur(true);
+      setErrorMessage(t("txt_message_error_signup"));
     }
   };
 

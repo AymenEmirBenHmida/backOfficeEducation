@@ -297,17 +297,17 @@ export const activateUser = createAsyncThunk(
     } catch (error) {}
   }
 );
+
 export const createCompteUser = createAsyncThunk(
   "admin/createCompteUser",
-  async ({
-    email,
-    password,
-    phone,
-  }: {
-    email: string;
-    password: string;
-    phone: string;
-  }) => {
+  async (
+    {
+      email,
+      password,
+      phone,
+    }: { email: string; password: string; phone: string },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/auth/signup",
@@ -323,11 +323,32 @@ export const createCompteUser = createAsyncThunk(
 
       if (data.status === "OK") {
         return { data, email, password, phone };
+      } else {
+        // Ensure the error is correctly passed using rejectWithValue
+        return rejectWithValue({
+          message: data.message || "An error occurred while creating the user",
+          status: data.status || "Unknown Error",
+        });
       }
-      return data; // Ensure the response contains an object with a payload property
-    } catch (error) {
-      console.error("Error creating user:", error);
-      throw error; // Rethrow the error to handle it in Redux thunk dispatch
+    } catch (error: any) {
+      if (error.response) {
+        return rejectWithValue({
+          message:
+            error.response.data.message ||
+            "An error occurred while creating the user",
+          status: error.response.data.status || "Unknown Error",
+        });
+      } else if (error instanceof Error) {
+        return rejectWithValue({
+          message: error.message || "An unexpected error occurred",
+          status: "Unexpected Error",
+        });
+      } else {
+        return rejectWithValue({
+          message: "An unknown error occurred",
+          status: "Unknown Error",
+        });
+      }
     }
   }
 );
@@ -391,6 +412,7 @@ const adminState = createSlice({
     loading: false,
     status: "idle",
     totalUsers: 0,
+    userInfo: { password: "", email: "", phone: "" },
   } as AdminState,
   reducers: {
     logout: (state) => {
@@ -570,6 +592,7 @@ const adminState = createSlice({
             phone: string;
           }>
         ) => {
+          console.log(action.payload);
           state.isLoading = false;
           state.userInfo!.password = action.payload.password;
           state.userInfo!.email = action.payload.email;
@@ -579,12 +602,20 @@ const adminState = createSlice({
       )
       .addCase(createCompteUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message as string;
-        console.error(
-          "Erreur lors de la création d'utilisateur :",
-          action.error
-        );
-      })
+        console.log(action);
+        // // Check if the payload is available and has the expected structure
+        // if (action.payload && typeof action.payload === "object") {
+        //   state.error = action.payload as {
+        //     message: string;
+        //     status: string;
+        //   };
+        // } else {
+        //   state.error = {
+        //     message: action.error.message || "An unexpected error occurred",
+        //     status: "Unknown Error",
+        //   };
+        // }
+        })
       .addCase(CountUsers.fulfilled, (state, action) => {
         state.loading = false;
         state.totalUsers = action.payload.totalUsers; // Stockez le nombre total d'utilisateurs dans l'état global

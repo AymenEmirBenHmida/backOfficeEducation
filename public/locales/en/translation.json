@@ -147,5 +147,6 @@
   "txt_error_slug_required": "Slug is required",
   "txt_error_niveau_id_required": "Level is required",
   "txt_column_text":"Column text",
-  "txt_success":"Success"
+  "txt_success":"Success",
+  "txt_slug":"Slug"
 }

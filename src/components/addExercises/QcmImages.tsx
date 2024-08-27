@@ -21,8 +21,14 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
   description,
   errors,
   loading,
+  numberOfOptions,
 }) => {
   const { t } = useTranslation();
+  //initialise the options depending on the number specified in the props
+  const initialOptions = Array.from({ length: numberOfOptions }, () => ({
+    image: "",
+    isCorrect: false,
+  }));
   // State for error message
   const [validationError, setValidationError] = useState<string>("");
   //form inputs variable
@@ -30,7 +36,7 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
     typeQuestion: selectedTypeId,
     content: {
       text: "",
-      options: [{ image: "", isCorrect: false }],
+      options: initialOptions,
     },
     courId: selectedLessonId || "",
     description: description || "",
@@ -155,9 +161,9 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
               />
             }
           />
-          <IconButton onClick={() => removeOption(index)}>
+          {/* <IconButton onClick={() => removeOption(index)}>
             <CiCircleRemove />
-          </IconButton>
+          </IconButton> */}
         </Box>
       ))}
       {!!errors[`content.options`] && (
@@ -176,9 +182,9 @@ const QcmImages: React.FC<ExerciceCreationProps> = ({
         }
         label={t("txt_locked")}
       />
-      <Button onClick={addOption} className="!mt-[15px]">
+      {/* <Button onClick={addOption} className="!mt-[15px]">
         {t("txt_add")}
-      </Button>
+      </Button> */}
       <Button
         className="!mt-[15px]"
         variant="contained"

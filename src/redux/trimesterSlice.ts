@@ -7,19 +7,23 @@ import {
   getTrimesterService,
   updateTrimesterService,
 } from "@/services/trimesterService";
+import { Trimester } from "@/interfaces/Trimester";
 
-//creating trimester
+// Creating a trimester
 export const createTrimester = createAsyncThunk(
   "trimester/create",
-  async ({ formData }: { formData: any }) => {
+  async ({ formData }: { formData: Trimester }) => {
     try {
       console.log("create trimester redux ", formData);
       const response = await createTrimesterService({ formData });
       return response;
-    } catch (error) {}
+    } catch (error) {
+      // Handle error (e.g., return a specific error action)
+    }
   }
 );
-//getting all trimesters
+
+// Getting all trimesters
 export const getAllTrimesters = createAsyncThunk(
   "trimester/getAll",
   async () => {
@@ -28,10 +32,13 @@ export const getAllTrimesters = createAsyncThunk(
       const response = await getAllTrimestersService();
       console.log("redux ", response.data);
       return response.data;
-    } catch (error) {}
+    } catch (error) {
+      // Handle error (e.g., return a specific error action)
+    }
   }
 );
-//deleting all trimesters
+
+// Deleting a trimester
 export const deleteTrimester = createAsyncThunk(
   "trimester/delete",
   async (id: string) => {
@@ -40,10 +47,13 @@ export const deleteTrimester = createAsyncThunk(
       const response = await deleteTrimesterService(id);
       console.log("redux ", response.data);
       return response.data;
-    } catch (error) {}
+    } catch (error) {
+      // Handle error (e.g., return a specific error action)
+    }
   }
 );
-//getting trimester
+
+// Getting a trimester
 export const getTrimester = createAsyncThunk(
   "trimester/get",
   async (id: string) => {
@@ -52,27 +62,34 @@ export const getTrimester = createAsyncThunk(
       const response = await getTrimesterService(id);
       console.log("redux ", response.data);
       return response.data;
-    } catch (error) {}
+    } catch (error) {
+      // Handle error (e.g., return a specific error action)
+    }
   }
 );
-//updating trimester
+
+// Updating a trimester
 export const updateTrimester = createAsyncThunk(
   "trimester/update",
-  async ({ formData, id }: { formData: any; id: string }) => {
+  async ({ formData, id }: { formData: Trimester; id: string }) => {
     try {
       console.log("update trimester redux ", formData);
       const response = await updateTrimesterService({ formData, id });
       return response;
-    } catch (error) {}
+    } catch (error) {
+      // Handle error (e.g., return a specific error action)
+    }
   }
 );
 
-// Définir le slice Redux pour gérer l'état
+// Define the Redux slice to manage state
 const trimesterState = createSlice({
   name: "trimester",
   initialState: {} as AdminState,
   reducers: {},
-  extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    // Handle extra reducers here (e.g., loading, success, failure states)
+  },
 });
 
 export default trimesterState.reducer;

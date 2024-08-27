@@ -34,27 +34,9 @@ export const createSubjectInputSchema = async () => {
       .string()
       .min(1, { message: getTranslation("txt_error_name_required") }),
     description: z.string().optional(),
-    trimestreId: z
-      .string()
-      .min(1, {
-        message: getTranslation("txt_error_trimester_required"),
-      }),
+    trimestreId: z.string().min(1, {
+      message: getTranslation("txt_error_trimester_required"),
+    }),
     isLocked: z.boolean().optional(),
   });
 };
-
-export const getMatiereByIdSchema = z.object({
-  id: z.string(),
-});
-
-export const deleteMatiereByIdSchema = z.object({
-  id: z.string(),
-});
-
-export const updateMatiereByIdSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().optional(),
-  description: z.string().optional(),
-  trimestreId: z.string(),
-  isLocked: z.boolean().optional(),
-});

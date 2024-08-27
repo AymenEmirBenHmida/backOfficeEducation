@@ -147,5 +147,6 @@
   "txt_error_slug_required": "الرمز مطلوب",
   "txt_error_niveau_id_required": "المستوى مطلوب",
   "txt_column_text": "نص العمود",
-  "txt_success": "نجاح"
+  "txt_success": "نجاح",
+  "txt_slug": "Slug"
 }

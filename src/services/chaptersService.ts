@@ -1,3 +1,4 @@
+import { Chapter } from "@/interfaces/Chapter";
 import axios from "../config/axiosConfig";
 
 //get all chapters
@@ -11,7 +12,7 @@ export const getAllChaptersService = async () => {
 };
 
 //create a chapter
-export const createChapterService = async ({ formData }: { formData: any }) => {
+export const createChapterService = async ({ formData }: { formData: Chapter }) => {
   console.log("create chapter ", formData);
   try {
     const response = await axios.post("/api/chapitre/create", formData);
@@ -43,7 +44,7 @@ export const updateChapitreService = async ({
   formData,
   id,
 }: {
-  formData: any;
+  formData: Chapter;
   id: string;
 }) => {
   console.log("update chapitre ", formData);

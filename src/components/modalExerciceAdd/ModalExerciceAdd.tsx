@@ -115,12 +115,56 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
     switch (selectedTypeId) {
       case "QCM_COMPLETE_PHRASE_WITH_WORD":
       case "QCM_COMPLETE_PHRASE_WITH_PHRASE":
+        return (
+          <QcmText
+            selectedTypeId={selectedTypeId}
+            selectedLessonId={selectedLessonId}
+            description={description}
+            handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
+            numberOfOptions={2}
+          />
+        );
       case "QCM_CHOOSE_PHRASE":
+        return (
+          <QcmText
+            selectedTypeId={selectedTypeId}
+            selectedLessonId={selectedLessonId}
+            description={description}
+            handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
+            numberOfOptions={3}
+          />
+        );
       case "QCM_CHOOSE_WORD":
       case "QCM_OPTION":
       case "QCM_DRAG_SMALL":
       case "QCM_DRAG_BIG":
+        return (
+          <QcmText
+            selectedTypeId={selectedTypeId}
+            selectedLessonId={selectedLessonId}
+            description={description}
+            handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
+            numberOfOptions={5}
+          />
+        );
       case "QCM_MULTI_ANSWER_WORDS":
+        return (
+          <QcmText
+            selectedTypeId={selectedTypeId}
+            selectedLessonId={selectedLessonId}
+            description={description}
+            handleSubmit={handleSubmit}
+            errors={errors}
+            loading={loading}
+            numberOfOptions={4}
+          />
+        );
       case "QCM_MULTI_ANSWER_PHRASE_SMALL":
         return (
           <QcmText
@@ -130,6 +174,7 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             handleSubmit={handleSubmit}
             errors={errors}
             loading={loading}
+            numberOfOptions={6}
           />
         );
       case "QCM_MULTI_ANSWER_IMAGES":
@@ -141,6 +186,7 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             handleSubmit={handleSubmit}
             errors={errors}
             loading={loading}
+            numberOfOptions={4}
           />
         );
       case "QCM_MULTI_ANSWER_WORDS_IMAGES":
@@ -152,6 +198,7 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             handleSubmit={handleSubmit}
             errors={errors}
             loading={loading}
+            numberOfOptions={4}
           />
         );
       case "DRAG_DROP_WORDS_TO_IMAGE":
@@ -163,6 +210,7 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             handleSubmit={handleSubmit}
             errors={errors}
             loading={loading}
+            numberOfOptions={4}
           />
         );
       case "DRAG_DROP_IN_TABLE_IMAGES":
@@ -196,6 +244,7 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             handleSubmit={handleSubmit}
             errors={errors}
             loading={loading}
+            numberOfOptions={3}
           />
         );
       case "ARROW":
@@ -207,6 +256,7 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             handleSubmit={handleSubmit}
             errors={errors}
             loading={loading}
+            numberOfOptions={3}
           />
         );
       case "ARROW_SOUND":
@@ -218,6 +268,7 @@ const ModalExerciceAdd: React.FC<ModalExerciceAddProps> = ({
             handleSubmit={handleSubmit}
             errors={errors}
             loading={loading}
+            numberOfOptions={4}
           />
         );
       case "READ":

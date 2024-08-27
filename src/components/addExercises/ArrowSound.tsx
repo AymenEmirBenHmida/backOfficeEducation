@@ -20,14 +20,21 @@ const ArrowSound: React.FC<ExerciceCreationProps> = ({
   selectedLessonId,
   errors,
   loading,
+  numberOfOptions,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(); //initialise the options depending on the number specified in the props
+  const initialTuples = Array.from({ length: numberOfOptions }, () => ({
+    text: "",
+    textOrder: 0,
+    sound: "",
+    soundOrder: 0,
+  }));
   //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
       text: "",
-      tuples: [{ text: "", textOrder: 0, sound: "", soundOrder: 0 }],
+      tuples: initialTuples,
     },
     courId: selectedLessonId || "",
     description: description || "",

@@ -40,33 +40,34 @@ import SelectTable from "@/components/updateExercices/SelectTable";
 import { useNavigate } from "react-router-dom";
 import { validateExerciceInput } from "@/zod/exercice";
 import { z } from "zod";
+import { Exercice } from "@/interfaces/Exercice";
 
-// Define the types for your data
-interface Option {
-  text: string;
-  isCorrect: boolean;
-  image?: string;
-}
+// // Define the types for your data
+// interface Option {
+//   text: string;
+//   isCorrect: boolean;
+//   image?: string;
+// }
 
-interface Content {
-  [key: string]: any;
-}
+// interface Content {
+//   [key: string]: any;
+// }
 
-interface Cour {
-  id: string;
-  description: string;
-  name: string;
-  isLocked: boolean;
-}
+// interface Cour {
+//   id: string;
+//   description: string;
+//   name: string;
+//   isLocked: boolean;
+// }
 
-interface Exercice {
-  id: string;
-  description: string;
-  typeQuestion: string;
-  content: Content;
-  isLocked: boolean;
-  cour: Cour;
-}
+// interface Exercice {
+//   id: string;
+//   description: string;
+//   typeQuestion: string;
+//   content: Content;
+//   isLocked: boolean;
+//   cour: Cour;
+// }
 const AllExercises: React.FC = () => {
   const { t } = useTranslation();
   // exercices variable
@@ -436,7 +437,7 @@ const AllExercises: React.FC = () => {
                           className="!mr-3"
                           color="primary"
                           onClick={async () => {
-                            setSelectedExercice(exercice.id);
+                            setSelectedExercice(exercice.id!);
                             setSelectedTypeId(exercice.typeQuestion);
                             await handleOpenModal();
                           }}
@@ -448,7 +449,7 @@ const AllExercises: React.FC = () => {
                           color="secondary"
                           onClick={async () => {
                             // await deleteExerciceHandler(exercice.id);
-                            handleClickOpen(exercice.id);
+                            handleClickOpen(exercice.id!);
                           }}
                         >
                           {t("txt_delete")}

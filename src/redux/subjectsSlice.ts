@@ -7,6 +7,7 @@ import {
   getSubjectService,
   updateSubjectService,
 } from "@/services/subjectsService";
+import { Subject } from "@/interfaces/Subject";
 //creating subject
 export const createSubject = createAsyncThunk(
   "subject/create",
@@ -54,10 +55,12 @@ export const getSubject = createAsyncThunk(
 //updating subject
 export const updatSubject = createAsyncThunk(
   "subject/update",
-  async ({ formData, id }: { formData: any; id: string }) => {
+  async ({ formData }: { formData: Subject }) => {
     try {
       console.log("update subject redux ", formData);
-      const response = await updateSubjectService({ formData });
+      const response = await updateSubjectService({
+        formData: formData,
+      });
       return response;
     } catch (error) {}
   }

@@ -202,7 +202,7 @@ const AllLessons: React.FC = () => {
                         {lesson.content}
                       </TableCell>
                       <TableCell>{lesson.description}</TableCell>
-                      <TableCell>{lesson.chapitre.name}</TableCell>
+                      <TableCell>{lesson.chapitre!.name}</TableCell>
                       <TableCell>
                         {lesson.isLocked ? t("txt_yes") : t("txt_no")}
                       </TableCell>
@@ -278,7 +278,6 @@ const AllLessons: React.FC = () => {
           <Box sx={style}>
             <AddLessons
               getLessons={handleGetLessons}
-              selectedLessonId={selectedLesson}
               handleSubmit={handleCloseModalAdd}
               handleError={handleSnackbarOpen}
             ></AddLessons>

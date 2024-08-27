@@ -7,6 +7,7 @@ export interface ExerciceCreationProps {
   description?: string;
   errors?: any;
   loading?: boolean;
+  numberOfOptions: number;
 }
 export interface ExerciceUpdateProps {
   handleSubmit: (

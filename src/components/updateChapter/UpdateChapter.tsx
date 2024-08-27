@@ -21,6 +21,8 @@ import { ChapterUpdateProps } from "@/interfaces/chaptersCrudInterface";
 import { getAllSubjects } from "@/redux/subjectsSlice";
 import { z } from "zod";
 import { createChapterInputSchema } from "@/zod/chapitre";
+import { Chapter } from "@/interfaces/Chapter";
+import { Subject } from "@/interfaces/Subject";
 
 const AddLessons: React.FC<ChapterUpdateProps> = ({
   handleSubmit,
@@ -30,16 +32,18 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
 }) => {
   const { t } = useTranslation();
   //the form state variable
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<Chapter>({
+    id: chapterId,
     name: "",
     description: "",
     matiereId: "",
     isLocked: false,
+    estTermine: false,
   });
   //state variable for form validation
   const [errors, setErrors] = useState<any>({});
   //list of subjects
-  const [subjects, setSubjects] = useState([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   //used when the initial loading is done
   const [loading, setLoading] = useState(true);
   //used when the update is happening
@@ -194,6 +198,24 @@ const AddLessons: React.FC<ChapterUpdateProps> = ({
             }
             label={t("txt_locked")}
           />
+          <FormControl error={!!errors.estTermine}>
+            <FormControlLabel
+              className="!mt-[15px]"
+              control={
+                <Checkbox
+                  value={formData.estTermine}
+                  checked={formData.estTermine}
+                  onChange={(e) =>
+                    handleFormChange("estTermine", e.target.checked)
+                  }
+                />
+              }
+              label={t("txt_completed")}
+            />
+            {errors.estTermine && (
+              <FormHelperText>{errors.estTermine}</FormHelperText>
+            )}
+          </FormControl>
 
           <Button
             className="!mt-[15px]"

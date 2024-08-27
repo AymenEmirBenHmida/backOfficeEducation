@@ -21,6 +21,8 @@ import { getAllTrimesters } from "@/redux/trimesterSlice";
 import { SubjectCreationProps } from "@/interfaces/subjectsCrudInterface";
 import { z } from "zod";
 import { createSubjectInputSchema } from "@/zod/matiere";
+import { Subject } from "@/interfaces/Subject";
+import { Trimester } from "@/interfaces/Trimester";
 
 const AddSubject: React.FC<SubjectCreationProps> = ({
   handleSubmit,
@@ -29,15 +31,14 @@ const AddSubject: React.FC<SubjectCreationProps> = ({
 }) => {
   const { t } = useTranslation();
   //the form state variable
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<Subject>({
     name: "",
     description: "",
-    matiereId: "",
+    trimestreId: "",
     isLocked: false,
-    estTermine: false,
   });
   //list of subjects
-  const [trimesters, setTrimesters] = useState([]);
+  const [trimesters, setTrimesters] = useState<Trimester[]>([]);
   //used on initial loading
   const [loading, setLoading] = useState(false);
   //state variable for form validation

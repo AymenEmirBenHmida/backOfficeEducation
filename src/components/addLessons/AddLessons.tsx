@@ -19,12 +19,14 @@ import { AppDispatch } from "@/redux/Store";
 import { useDispatch } from "react-redux";
 import { createLesson } from "@/redux/lessonSlice";
 import { getAllChapters } from "@/redux/chaptersSlice";
-import { LessonUpdateProps } from "@/interfaces/LessonCrudProps";
-import { createCourInputSchema, validateCourInput } from "@/zod/cour";
+import { LessonCreationProps } from "@/interfaces/LessonCrudProps";
+import { validateCourInput } from "@/zod/cour";
 import { z } from "zod";
 import { CiCircleRemove } from "react-icons/ci";
+import { Chapter } from "@/interfaces/Chapter";
+import { LessonInterface } from "@/interfaces/LessonInterface";
 
-const AddLessons: React.FC<LessonUpdateProps> = ({
+const AddLessons: React.FC<LessonCreationProps> = ({
   handleSubmit,
   handleError,
   getLessons,
@@ -38,19 +40,17 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
   const [audio, setAudio] = useState<any[]>([]);
   //state variable for form validation
   const [errors, setErrors] = useState<any>({});
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<LessonInterface>({
+    id: "",
     name: "",
     content: "",
-    chapitre: "",
     chapitreId: "",
     description: "",
     isLocked: false,
-    images: [],
-    video: "",
-    audio: "",
+    images: [], // Initialized as an empty array
   });
   //chaptres
-  const [chapters, setChapters] = useState<any>([]);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
   //initial loading variable
   const [loading, setLoading] = useState(false);
   //state variable used to manage adding newImages
@@ -142,20 +142,20 @@ const AddLessons: React.FC<LessonUpdateProps> = ({
       setImages(Array.from(event.target.files));
     }
   };
-  //function handeling setting the audio files selected to be manipulated
-  const handleAudioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      console.log("audio files inputted");
-      setAudio(Array.from(event.target.files));
-    }
-  };
-  //function handeling setting the video files selected to be manipulated
-  const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      console.log("videos inputted");
-      setVideos(Array.from(event.target.files));
-    }
-  };
+  // //function handeling setting the audio files selected to be manipulated
+  // const handleAudioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.files) {
+  //     console.log("audio files inputted");
+  //     setAudio(Array.from(event.target.files));
+  //   }
+  // };
+  // //function handeling setting the video files selected to be manipulated
+  // const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.files) {
+  //     console.log("videos inputted");
+  //     setVideos(Array.from(event.target.files));
+  //   }
+  // };
   useEffect(() => {
     getChapters();
     setChapters([]);

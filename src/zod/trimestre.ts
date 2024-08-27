@@ -42,17 +42,3 @@ export const createTrimesterInputSchema = async () => {
       }), // Custom error message for niveauId
   });
 };
-
-export const getTrimestreByIdSchema = z.object({
-  id: z.string(),
-});
-
-export const deleteTrimestreByIdSchema = z.object({
-  id: z.string(),
-});
-
-export const updateTrimestreByIdSchema = z.object({
-  id: z.string(),
-  name: z.string().optional(),
-  slug: z.string().optional(),
-});

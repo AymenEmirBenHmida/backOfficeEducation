@@ -20,6 +20,8 @@ import { getAllLevels } from "@/redux/levelSlice";
 import { TrimesterCreationProps } from "@/interfaces/trimestersCrudInterface";
 import { z } from "zod";
 import { createTrimesterInputSchema } from "@/zod/trimestre";
+import { Trimester } from "@/interfaces/Trimester";
+import { Level } from "@/interfaces/level";
 
 const AddTrimester: React.FC<TrimesterCreationProps> = ({
   handleSubmit,
@@ -28,14 +30,14 @@ const AddTrimester: React.FC<TrimesterCreationProps> = ({
 }) => {
   const { t } = useTranslation();
   //the form state variable
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<Trimester>({
     name: "",
     slug: "",
-    levelId: "",
+    niveauId: "",
     isLocked: false,
   });
   //list of levels
-  const [levels, setLevels] = useState([]);
+  const [levels, setLevels] = useState<Level[]>([]);
   //used on initial loading
   const [loading, setLoading] = useState(false);
   //used when updating database

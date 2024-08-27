@@ -23,6 +23,8 @@ import { LessonUpdateProps } from "@/interfaces/LessonCrudProps";
 import { CiCircleRemove } from "react-icons/ci";
 import { validateCourInput } from "@/zod/cour";
 import { z } from "zod";
+import { LessonInterface } from "@/interfaces/LessonInterface";
+import { Chapter } from "@/interfaces/Chapter";
 
 const UpdateLesson: React.FC<LessonUpdateProps> = ({
   handleSubmit,
@@ -32,11 +34,10 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
 }) => {
   const { t } = useTranslation();
   //the variable responsible for the inputs
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<LessonInterface>({
     id: "",
     name: "",
     content: "",
-    chapitre: "",
     chapitreId: "",
     description: "",
     isLocked: false,
@@ -47,7 +48,7 @@ const UpdateLesson: React.FC<LessonUpdateProps> = ({
   //the name of the lesson
   const [lessonName, setLessonName] = useState("");
   //the chapters gotten from the backend
-  const [chapters, setChapters] = useState([]);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
   //variable responsible for the initial loading of info
   const [loading, setLoading] = useState(true);
   //variable responsible the update loading

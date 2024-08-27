@@ -20,14 +20,20 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
   description,
   errors,
   loading,
+  numberOfOptions,
 }) => {
   const { t } = useTranslation();
+  //initialise the options depending on the number specified in the props
+  const initialOptions = Array.from({ length: numberOfOptions }, () => ({
+    text: "",
+    isCorrect: false,
+  }));
   //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
       text: "",
-      options: [{ text: "", isCorrect: false }],
+      options: initialOptions,
     },
     courId: selectedLessonId || "",
     description: description || "",
@@ -141,10 +147,10 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
               />
             }
           />
-
+          {/* 
           <IconButton onClick={() => removeOption(index)}>
             <CiCircleRemove />
-          </IconButton>
+          </IconButton> */}
         </Box>
       ))}
       {!!errors[`content.options`] && (
@@ -163,9 +169,9 @@ const QcmText: React.FC<ExerciceCreationProps> = ({
         }
         label={t("txt_locked")}
       />
-      <Button onClick={addOption} className="!mt-[15px]">
+      {/* <Button onClick={addOption} className="!mt-[15px]">
         {t("txt_add")}
-      </Button>
+      </Button> */}
       <Button
         className="!mt-[15px]"
         variant="contained"

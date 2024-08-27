@@ -18,14 +18,22 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
   selectedLessonId,
   errors,
   loading,
+  numberOfOptions,
 }) => {
   const { t } = useTranslation();
+  //initialise the options depending on the number specified in the props
+  const initialOptions = Array.from({ length: numberOfOptions }, () => ({
+    text: "",
+    isCorrect: false,
+    order: 0,
+    image: "",
+  }));
   //form inputs variable
   const [formData, setFormData] = useState<any>({
     typeQuestion: selectedTypeId,
     content: {
       text: "",
-      options: [{ text: "", isCorrect: false, order: 0, image: "" }],
+      options: initialOptions,
     },
     courId: selectedLessonId || "",
     description: description || "",
@@ -125,6 +133,7 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
           />
           <TextField
             label={`${t("text_image")} ${index + 1}`}
+            className="!mt-[5px]"
             required
             error={!!errors[`content.options.${index}.image`]}
             helperText={errors[`content.options.${index}.image`]}
@@ -135,6 +144,7 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
           <TextField
             label={`${t("txt_order")} ${index + 1}`}
             value={option.order}
+            className="!mt-[5px]"
             required
             error={!!errors[`content.options.${index}.order`]}
             helperText={errors[`content.options.${index}.order`]}
@@ -149,7 +159,7 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
             fullWidth
           />
 
-          <Button onClick={() => removeOption(index)}>{t("txt_remove")}</Button>
+          {/* <Button onClick={() => removeOption(index)}>{t("txt_remove")}</Button> */}
         </Box>
       ))}
       {!!errors[`content.options`] && (
@@ -168,9 +178,9 @@ const DragDropWordsImages: React.FC<ExerciceCreationProps> = ({
         }
         label={t("txt_locked")}
       />
-      <Button onClick={addOption} className="!mt-[15px]">
+      {/* <Button onClick={addOption} className="!mt-[15px]">
         {t("txt_add")}
-      </Button>
+      </Button> */}
       <Button
         className="!mt-[15px]"
         variant="contained"

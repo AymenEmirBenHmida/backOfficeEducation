@@ -21,6 +21,8 @@ import { ChapterCreationProps } from "@/interfaces/chaptersCrudInterface";
 import { getAllSubjects } from "@/redux/subjectsSlice";
 import { createChapterInputSchema } from "@/zod/chapitre";
 import { z } from "zod";
+import { Chapter } from "@/interfaces/Chapter";
+import { Subject } from "@/interfaces/Subject";
 
 const AddChapter: React.FC<ChapterCreationProps> = ({
   handleSubmit,
@@ -29,7 +31,7 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
 }) => {
   const { t } = useTranslation();
   //the form state variable
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<Chapter>({
     name: "",
     description: "",
     matiereId: "",
@@ -37,7 +39,7 @@ const AddChapter: React.FC<ChapterCreationProps> = ({
     estTermine: false,
   });
   //list of subjects
-  const [subjects, setSubjects] = useState([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   //used on initial loading
   const [loading, setLoading] = useState(false);
   //state variable for form validation

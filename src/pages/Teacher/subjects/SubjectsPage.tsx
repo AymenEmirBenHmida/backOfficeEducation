@@ -23,11 +23,12 @@ import { deleteSubject, getAllSubjects } from "@/redux/subjectsSlice";
 import SubjectInformation from "@/components/subjectInformation/ChapterInformation";
 import AddSubject from "@/components/addSubject/AddSubject";
 import UpdateSubject from "@/components/updateSubject/UpdateSubject";
+import { Subject } from "@/interfaces/Subject";
 
 const AllSubjects: React.FC = () => {
   const { t } = useTranslation();
   //subjects
-  const [subjects, setSubjects] = useState<any[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   //variable responsible for the intial loading animation
   const [loading, setLoading] = useState<boolean>(true);
   const dispatch = useDispatch<AppDispatch>();
@@ -195,7 +196,7 @@ const AllSubjects: React.FC = () => {
                           size="small"
                           onClick={() => {
                             setOpenModalInfo(true);
-                            setSelectedChapter(subject.id);
+                            setSelectedChapter(subject.id!);
                           }}
                         >
                           {t("txt_learn_more")}
@@ -204,7 +205,7 @@ const AllSubjects: React.FC = () => {
                           sx={{ color: "red" }}
                           size="small"
                           onClick={() => {
-                            handleClickDelete(subject.id);
+                            handleClickDelete(subject.id!);
                           }}
                         >
                           {t("txt_delete")}
@@ -212,7 +213,7 @@ const AllSubjects: React.FC = () => {
                         <Button
                           size="small"
                           onClick={async () => {
-                            setSelectedChapter(subject.id);
+                            setSelectedChapter(subject.id!);
                             await handleOpenModal();
                           }}
                         >
@@ -293,7 +294,7 @@ const AllSubjects: React.FC = () => {
       >
         <Alert
           onClose={handleSnackbarClose}
-          severity={snackbarSuccess ? "error" : "success"}
+          severity={snackbarSuccess ? "success" : "error"}
           sx={{ width: "100%" }}
         >
           {snackbarMessage}
