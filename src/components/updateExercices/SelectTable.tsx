@@ -241,6 +241,16 @@ const SelectTable: React.FC<ExerciceUpdateProps> = ({
               </FormHelperText>
             )}
           </FormControl>
+          <FormControl fullWidth className="!mt-[15px]">
+            <TextField
+              error={!!errors[`description`]}
+              helperText={errors[`description`]}
+              label={t("txt_description")}
+              value={formData.description}
+              onChange={(e) => handleFormChange("description", e.target.value)}
+              fullWidth
+            />
+          </FormControl>
           {formData.content.columns.map((column: any, indexColumn: number) => (
             <Box key={indexColumn} className="!mt-[15px]">
               <TextField

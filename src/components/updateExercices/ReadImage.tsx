@@ -144,6 +144,16 @@ const ReadImage: React.FC<ExerciceUpdateProps> = ({
               </FormHelperText>
             )}
           </FormControl>
+          <FormControl fullWidth className="!mt-[15px]">
+            <TextField
+              error={!!errors[`description`]}
+              helperText={errors[`description`]}
+              label={t("txt_description")}
+              value={formData.description}
+              onChange={(e) => handleFormChange("description", e.target.value)}
+              fullWidth
+            />
+          </FormControl>
           <TextField
             label={t("txt_text")}
             value={formData.content.text || ""}

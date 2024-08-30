@@ -3,9 +3,7 @@ import axios from "../config/axiosConfig";
 
 export const getAllCours = async () => {
   try {
-    const response = await axios.get<{ data: LessonInterface[] }>(
-      "/api/cours/getAll"
-    );
+    const response = await axios.get("/api/cours/getAllByTeacher");
     return response;
   } catch (error) {
     throw error;

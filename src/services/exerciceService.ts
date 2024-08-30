@@ -16,7 +16,7 @@ export const createExerciceService = async ({
 //get all exercices
 export const getAllExercicesService = async () => {
   try {
-    const response = await axios.get("/api/exercice/getAll");
+    const response = await axios.get("/api/exercice/getAllByTeacher");
     return response;
   } catch (error) {
     throw error;

@@ -249,11 +249,15 @@ export const loginUser = createAsyncThunk(
           },
         }
       );
-
+      var role = "guest";
       const data = response.data;
-
+      if (data.data?.user?.user_metadata?.teacherId) {
+        role = "Teacher";
+      } else if (data.data?.user?.user_metadata?.adminId) {
+        role = "Admin";
+      }
       // Store tokens and role in localStorage
-      const role = data.data?.user?.user_metadata?.role || "guest";
+      // const role = data.data?.user?.user_metadata?.role || "guest";
       localStorage.setItem("accessToken", data.data.accessToken);
       localStorage.setItem("refreshToken", data.data.refreshToken);
 
@@ -615,7 +619,7 @@ const adminState = createSlice({
         //     status: "Unknown Error",
         //   };
         // }
-        })
+      })
       .addCase(CountUsers.fulfilled, (state, action) => {
         state.loading = false;
         state.totalUsers = action.payload.totalUsers; // Stockez le nombre total d'utilisateurs dans l'état global
@@ -673,5 +677,6 @@ export default adminState.reducer;
 export const { logout } = adminState.actions;
 export const selectUserRole = (state: { admin: AdminState }) =>
   state.admin.role; // Sélecteur pour accéder au rôle
+export const selectUser = (state: { admin: AdminState }) => state.admin.user; // Sélecteur pour accéder au user
 export const selectUserInfo = (state: { admin: AdminState }) =>
   state.admin.userInfo!; // Sélecteur pour accéder au rôle

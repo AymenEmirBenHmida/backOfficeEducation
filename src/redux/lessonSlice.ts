@@ -5,18 +5,18 @@ import axios from "../config/axiosConfig";
 import {
   createLessonService,
   deleteLessonService,
+  getAllCours,
   getLessonService,
   updateLessonService,
 } from "@/services/lessonService";
 import { getUrlFileService, uploadFileService } from "@/services/fileService";
 //getting all lessons
-export const getAllLessons = createAsyncThunk<LessonInterface[]>(
+export const getAllLessons = createAsyncThunk(
   "courses/getAll", // Utilisez le bon nom pour l'action
   async () => {
     try {
-      const response = await axios.get<{ data: LessonInterface[] }>(
-        "/api/cours/getAll"
-      );
+      const response = await getAllCours();
+      console.log("redux ", response.data);
       return response.data.data;
     } catch (error) {
       throw error;

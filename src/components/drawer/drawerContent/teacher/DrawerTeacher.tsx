@@ -11,13 +11,18 @@ import profile from "/images/profile.svg";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import "./DrawerTeacher.css";
-import { useDispatch } from "react-redux";
-import { logout as logoutRedux } from "../../../../redux/adminSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  logout as logoutRedux,
+  selectUserRole,
+} from "../../../../redux/adminSlice";
 
 const SideDrawer: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  //getting the current user
+  const userRole = useSelector(selectUserRole);
   //logout
   const logout = () => {
     dispatch(logoutRedux());
@@ -80,17 +85,18 @@ const SideDrawer: React.FC = () => {
         >
           {t("txt_manage_lessons")}
         </Button>
-        <Button
-          className="tab"
-          aria-label="teachers"
-          startIcon={<GiBookCover />}
-          onClick={() => {
-            navigate("/teacher/subjects");
-          }}
-        >
-          {t("txt_manage_subjects")}
-        </Button>
-
+        {userRole === "Admin" && (
+          <Button
+            className="tab"
+            aria-label="teachers"
+            startIcon={<GiBookCover />}
+            onClick={() => {
+              navigate("/teacher/subjects");
+            }}
+          >
+            {t("txt_manage_subjects")}
+          </Button>
+        )}
         <Button
           className="tab"
           aria-label="absence"
@@ -101,17 +107,19 @@ const SideDrawer: React.FC = () => {
         >
           {t("txt_manage_chapters")}
         </Button>
-        <Button
-          //variant="outlined"
-          className="tab"
-          aria-label="matieres"
-          startIcon={<GrScorecard />}
-          onClick={() => {
-            navigate("/teacher/trimesters");
-          }}
-        >
-          {t("txt_manage_trimesters")}
-        </Button>
+        {userRole === "Admin" && (
+          <Button
+            //variant="outlined"
+            className="tab"
+            aria-label="matieres"
+            startIcon={<GrScorecard />}
+            onClick={() => {
+              navigate("/teacher/trimesters");
+            }}
+          >
+            {t("txt_manage_trimesters")}
+          </Button>
+        )}
         <div className="w-full mt-[15px]">
           <div className="flex justify-center items-center">
             <Button

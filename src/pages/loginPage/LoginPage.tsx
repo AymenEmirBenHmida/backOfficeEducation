@@ -80,7 +80,7 @@ const LogingPage: React.FC = ({}) => {
   useEffect(() => {
     if (userRole === "Teacher") navigate("/teacher/exercises");
   }, [userRole]);
- 
+
   return (
     <>
       <div className="bg-[#fffff] h-[90vh] w-full relative flex items-center justify-center">

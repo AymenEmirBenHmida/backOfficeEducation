@@ -4,7 +4,7 @@ import axios from "../config/axiosConfig";
 //get all chapters
 export const getAllChaptersService = async () => {
   try {
-    const response = await axios.get("/api/chapitre/getAll");
+    const response = await axios.get("/api/chapitre/getAllByTeacher");
     return response;
   } catch (error) {
     throw error;
@@ -12,7 +12,11 @@ export const getAllChaptersService = async () => {
 };
 
 //create a chapter
-export const createChapterService = async ({ formData }: { formData: Chapter }) => {
+export const createChapterService = async ({
+  formData,
+}: {
+  formData: Chapter;
+}) => {
   console.log("create chapter ", formData);
   try {
     const response = await axios.post("/api/chapitre/create", formData);

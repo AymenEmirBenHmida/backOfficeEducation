@@ -150,5 +150,6 @@
   "txt_success": "Success",
   "txt_slug": "Slug",
   "txt_error_word_text_required": "Text is required",
-  "txt_search":"Search"
+  "txt_search": "Search",
+  "txt_chapter": "chapter"
 }

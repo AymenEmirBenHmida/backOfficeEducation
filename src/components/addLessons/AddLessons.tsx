@@ -177,12 +177,12 @@ const AddLessons: React.FC<LessonCreationProps> = ({
         <>
           <FormControl fullWidth required>
             <InputLabel id="demo-simple-select-label">
-              {t("txt_course")}
+              {t("txt_chapter")}
             </InputLabel>
             <Select
               error={!!errors.chapitreId}
               value={formData.chapitreId}
-              label={t("txt_course")}
+              label={t("txt_chapter")}
               onChange={(e) => {
                 console.log("chapter id", e.target.value);
                 handleFormChange("chapitreId", e.target.value);

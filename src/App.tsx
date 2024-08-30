@@ -42,7 +42,7 @@ const routes: RouteConfig[] = [
   {
     path: "/teacher/subjects",
     component: <AllSubjects />,
-    requiredRoles: ["Teacher"],
+    requiredRoles: ["Admin"],
   },
   {
     path: "/teacher/chapters",
@@ -52,7 +52,7 @@ const routes: RouteConfig[] = [
   {
     path: "/teacher/trimesters",
     component: <AllTrimesters />,
-    requiredRoles: ["Teacher"],
+    requiredRoles: ["Admin"],
   },
 ];
 
