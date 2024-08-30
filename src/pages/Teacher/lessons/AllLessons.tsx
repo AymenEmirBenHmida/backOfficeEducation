@@ -16,7 +16,12 @@ import {
   Modal,
   Snackbar,
   Alert,
+  Pagination,
+  IconButton,
+  Divider,
+  InputBase,
 } from "@mui/material";
+import { GoSearch } from "react-icons/go";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -29,6 +34,10 @@ const AllLessons: React.FC = () => {
   const { t } = useTranslation();
   //lessons
   const [lessons, setLessons] = useState<LessonInterface[]>([]);
+  //the elssons after the filter
+  const [filteredLessons, setFilteredLessons] = useState<LessonInterface[]>([]);
+  //the search value
+  const [searchQuery, setSearchQuery] = useState<string>("");
   //variable responsible for the intial loading animation
   const [loading, setLoading] = useState<boolean>(true);
   const dispatch = useDispatch<AppDispatch>();
@@ -46,6 +55,12 @@ const AllLessons: React.FC = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   //variable for the snackbar message
   const [snackbarSuccess, setSnackbarSuccess] = useState(false);
+  // Pagination state
+  const itemsPerPage = 10; // You can adjust this value
+  const [page, setPage] = useState(1);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(itemsPerPage);
+  const displayedLessons = filteredLessons.slice(startIndex, endIndex);
   // styling for the modal
   const style = {
     overflowX: "auto",
@@ -61,6 +76,20 @@ const AllLessons: React.FC = () => {
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
+  };
+
+  // Handle page change
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+    setStartIndex((value - 1) * itemsPerPage);
+    setEndIndex(value * itemsPerPage);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
   //opening snack bar and setting it's message
   const handleSnackbarOpen = (message: string, success: boolean) => {
@@ -104,6 +133,7 @@ const AllLessons: React.FC = () => {
       const data: LessonInterface[] = result;
       if (data) {
         setLessons(data);
+        setFilteredLessons(data);
       } else {
         console.error("No Lessons found");
         setLessons([]);
@@ -124,6 +154,21 @@ const AllLessons: React.FC = () => {
   const handleCloseModalAdd = async () => {
     setOpenModalAdd(false);
   };
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    const filtered = lessons.filter((lesson) =>
+      [
+        lesson.name,
+        lesson.content,
+        lesson.description,
+        lesson.chapitre?.name,
+      ].some((attr) => attr?.toLowerCase().includes(query.toLowerCase()))
+    );
+    setFilteredLessons(filtered);
+    setStartIndex(0);
+    setEndIndex(itemsPerPage);
+    setPage(1); // Reset to first page when filtering
+  };
   // getting lessons initially
   useEffect(() => {
     handleGetLessons();
@@ -134,8 +179,35 @@ const AllLessons: React.FC = () => {
       <Box
         sx={{ marginTop: "40px", width: "100%" }}
         display={"flex"}
-        justifyContent={"end"}
+        justifyContent={"space-between"}
       >
+        <Paper
+          component="form"
+          sx={{
+            p: "2px 4px",
+            display: "flex",
+            alignItems: "center",
+            width: 250,
+          }}
+        >
+          <InputBase
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            sx={{ ml: 1, flex: 1 }}
+            placeholder={t("txt_search")}
+            inputProps={{ "aria-label": t("txt_search") }}
+          />
+          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+            <GoSearch />
+          </IconButton>
+        </Paper>
+        {/* <TextField
+          label={t("txt_search")}
+          variant="outlined"
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)}
+          sx={{ marginBottom: "20px", width: "30%" }}
+        /> */}
         <Button
           variant="contained"
           sx={{ marginRight: "10px" }}
@@ -195,7 +267,7 @@ const AllLessons: React.FC = () => {
                       </TableCell>
                     </TableRow>
                   ))
-                : lessons.map((lesson) => (
+                : displayedLessons.map((lesson) => (
                     <TableRow key={lesson.id}>
                       <TableCell>{lesson.name}</TableCell>
                       <TableCell sx={{ maxWidth: "400px" }}>
@@ -234,6 +306,19 @@ const AllLessons: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <Pagination
+          count={Math.ceil(filteredLessons.length / itemsPerPage)}
+          page={page}
+          onChange={handlePageChange}
+          color="primary"
+          sx={{
+            width: "100%",
+            paddingTop: "40px",
+            paddingBottom: "40px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        />
         <Dialog
           open={openAlertDelete}
           onClose={handleClose}
@@ -243,7 +328,6 @@ const AllLessons: React.FC = () => {
           <DialogTitle id="alert-dialog-title">
             {t("txt_lesson_delete_alert")}
           </DialogTitle>
-
           <DialogActions>
             <Button onClick={handleClose}>{t("txt_disagree")}</Button>
             <Button
@@ -291,7 +375,7 @@ const AllLessons: React.FC = () => {
       >
         <Alert
           onClose={handleSnackbarClose}
-          severity={snackbarSuccess?"success":"error"}
+          severity={snackbarSuccess ? "success" : "error"}
           sx={{ width: "100%" }}
         >
           {snackbarMessage}

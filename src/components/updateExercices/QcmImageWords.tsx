@@ -231,9 +231,9 @@ const QcmImageWords: React.FC<ExerciceUpdateProps> = ({
                   />
                 }
               />
-              <IconButton onClick={() => removeOption(index)}>
+              {/* <IconButton onClick={() => removeOption(index)}>
                 {t("txt_remove")}
-              </IconButton>
+              </IconButton> */}
             </Box>
           ))}
           {!!errors[`content.options`] && (

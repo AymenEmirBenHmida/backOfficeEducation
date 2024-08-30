@@ -13,6 +13,10 @@ import {
   Typography,
   CardActions,
   Grid,
+  Pagination,
+  IconButton,
+  Paper,
+  InputBase,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,6 +27,7 @@ import { deleteTrimester, getAllTrimesters } from "@/redux/trimesterSlice";
 import AddTrimester from "@/components/addTrimester/AddTrimester";
 import UpdateTrimester from "@/components/updateTrimester/UpdateTrimester";
 import { Trimester } from "@/interfaces/Trimester";
+import { GoSearch } from "react-icons/go";
 
 const AllTrimesters: React.FC = () => {
   const { t } = useTranslation();
@@ -60,6 +65,29 @@ const AllTrimesters: React.FC = () => {
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
+  };
+  //filtered subjects
+  const [filteredTrimesters, setFilteredTrimesters] = useState<Trimester[]>([]);
+  //filter key word
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  // Pagination state
+  const itemsPerPage = 9; // You can adjust this value
+  const [page, setPage] = useState(1);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(itemsPerPage);
+  const displayedTrimesters = filteredTrimesters.slice(startIndex, endIndex);
+  // Handle page change
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+    setStartIndex((value - 1) * itemsPerPage);
+    setEndIndex(value * itemsPerPage);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
   //opening snack bar and setting it's message
   const handleSnackbarOpen = (message: string, success: boolean) => {
@@ -110,6 +138,7 @@ const AllTrimesters: React.FC = () => {
       const data: any[] = result.data;
       if (data) {
         setTrimesters(data);
+        setFilteredTrimesters(data);
       } else {
         console.error("No trimesters found");
         setTrimesters([]);
@@ -139,6 +168,19 @@ const AllTrimesters: React.FC = () => {
   const handleCloseModalAdd = async () => {
     setOpenModalAdd(false);
   };
+  //filter the trimesters
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    const filtered = trimesters.filter((trimester) =>
+      [trimester.name, trimester.slug, trimester.niveau!.name].some((attr) =>
+        attr?.toLowerCase().includes(query.toLowerCase())
+      )
+    );
+    setFilteredTrimesters(filtered);
+    setStartIndex(0);
+    setEndIndex(itemsPerPage);
+    setPage(1); // Reset to first page when filtering
+  };
   // getting trimesters initially
   useEffect(() => {
     handleGetTrimesters();
@@ -149,8 +191,28 @@ const AllTrimesters: React.FC = () => {
       <Box
         sx={{ marginTop: "40px", width: "100%" }}
         display={"flex"}
-        justifyContent={"end"}
+        justifyContent={"space-between"}
       >
+        <Paper
+          component="form"
+          sx={{
+            p: "2px 4px",
+            display: "flex",
+            alignItems: "center",
+            width: 250,
+          }}
+        >
+          <InputBase
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            sx={{ ml: 1, flex: 1 }}
+            placeholder={t("txt_search")}
+            inputProps={{ "aria-label": t("txt_search") }}
+          />
+          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+            <GoSearch />
+          </IconButton>
+        </Paper>
         <Button variant="contained" onClick={() => handleOpenModalAdd()}>
           {t("txt_add_a_trimester")}
         </Button>
@@ -163,7 +225,7 @@ const AllTrimesters: React.FC = () => {
                   <Skeleton variant="rectangular" width="100%" height={150} />
                 </Grid>
               ))
-            : trimesters.map((trimester) => (
+            : displayedTrimesters.map((trimester) => (
                 <Grid item xs={12} sm={6} md={4} key={trimester.id}>
                   <Card variant="outlined" sx={{ height: "100%" }}>
                     <React.Fragment>
@@ -213,6 +275,19 @@ const AllTrimesters: React.FC = () => {
                 </Grid>
               ))}
         </Grid>
+        <Pagination
+          count={Math.ceil(filteredTrimesters.length / itemsPerPage)}
+          page={page}
+          onChange={handlePageChange}
+          color="primary"
+          sx={{
+            width: "100%",
+            paddingTop: "40px",
+            paddingBottom: "40px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        />
         <Dialog
           open={openAlertDelete}
           onClose={handleClose}

@@ -1,3 +1,5 @@
+import { Subject } from "./Subject";
+
 export interface Chapter {
   id?: string;
   name: string;
@@ -5,4 +7,5 @@ export interface Chapter {
   matiereId: string;
   isLocked?: boolean;
   estTermine: boolean;
+  matiere?: Subject;
 }

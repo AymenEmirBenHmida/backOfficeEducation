@@ -13,6 +13,10 @@ import {
   Typography,
   CardActions,
   Grid,
+  Pagination,
+  Paper,
+  InputBase,
+  IconButton,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -24,6 +28,7 @@ import ChapterInformation from "@/components/chapterInformation/ChapterInformati
 import AddChapter from "@/components/addChapter/AddChapter";
 import UpdateChapter from "@/components/updateChapter/UpdateChapter";
 import { Chapter } from "@/interfaces/Chapter";
+import { GoSearch } from "react-icons/go";
 
 const AllChapters: React.FC = () => {
   const { t } = useTranslation();
@@ -63,6 +68,30 @@ const AllChapters: React.FC = () => {
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
+  };
+  //filtered subjects
+  const [filteredChapters, setFilteredChapters] = useState<Chapter[]>([]);
+  //filter key word
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  // Pagination state
+  const itemsPerPage = 9; // You can adjust this value
+  const [page, setPage] = useState(1);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(itemsPerPage);
+  const displayedChapters = filteredChapters.slice(startIndex, endIndex);
+
+  // Handle page change
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+    setStartIndex((value - 1) * itemsPerPage);
+    setEndIndex(value * itemsPerPage);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
   //opening snack bar and setting it's message
   const handleSnackbarOpen = (message: string, success: boolean) => {
@@ -113,6 +142,7 @@ const AllChapters: React.FC = () => {
       const data: any[] = result.data;
       if (data) {
         setChapters(data);
+        setFilteredChapters(data);
       } else {
         console.error("No chapters found");
         setChapters([]);
@@ -147,6 +177,19 @@ const AllChapters: React.FC = () => {
   const handleCloseModalAdd = async () => {
     setOpenModalAdd(false);
   };
+  //function  for searching
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    const filtered = chapters.filter((chapter) =>
+      [chapter.name, chapter.description, chapter.matiere?.name].some((attr) =>
+        attr?.toLowerCase().includes(query.toLowerCase())
+      )
+    );
+    setFilteredChapters(filtered);
+    setStartIndex(0);
+    setEndIndex(itemsPerPage);
+    setPage(1); // Reset to first page when filtering
+  };
   // getting chapters initially
   useEffect(() => {
     handleGetChapters();
@@ -157,8 +200,28 @@ const AllChapters: React.FC = () => {
       <Box
         sx={{ marginTop: "40px", width: "100%" }}
         display={"flex"}
-        justifyContent={"end"}
+        justifyContent={"space-between"}
       >
+        <Paper
+          component="form"
+          sx={{
+            p: "2px 4px",
+            display: "flex",
+            alignItems: "center",
+            width: 250,
+          }}
+        >
+          <InputBase
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            sx={{ ml: 1, flex: 1 }}
+            placeholder={t("txt_search")}
+            inputProps={{ "aria-label": t("txt_search") }}
+          />
+          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+            <GoSearch />
+          </IconButton>
+        </Paper>
         <Button variant="contained" onClick={() => handleOpenModalAdd()}>
           {t("txt_add_a_chapter")}
         </Button>
@@ -171,7 +234,7 @@ const AllChapters: React.FC = () => {
                   <Skeleton variant="rectangular" width="100%" height={150} />
                 </Grid>
               ))
-            : chapters.map((chapter) => (
+            : displayedChapters.map((chapter) => (
                 <Grid item xs={12} sm={6} md={4} key={chapter.id}>
                   <Card variant="outlined" sx={{ height: "100%" }}>
                     <React.Fragment>
@@ -191,6 +254,8 @@ const AllChapters: React.FC = () => {
                             (chapter.estTermine
                               ? t("txt_completed")
                               : t("txt_not_completed"))}
+                          <br />
+                          {t("txt_subject") + " : " + chapter.matiere?.name}
                           <br />
                           {t("txt_locked") +
                             " : " +
@@ -231,6 +296,19 @@ const AllChapters: React.FC = () => {
                 </Grid>
               ))}
         </Grid>
+        <Pagination
+          count={Math.ceil(filteredChapters.length / itemsPerPage)}
+          page={page}
+          onChange={handlePageChange}
+          color="primary"
+          sx={{
+            width: "100%",
+            paddingTop: "40px",
+            paddingBottom: "40px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        />
         <Dialog
           open={openAlertDelete}
           onClose={handleClose}
@@ -240,7 +318,6 @@ const AllChapters: React.FC = () => {
           <DialogTitle id="alert-dialog-title">
             {t("txt_chapter_delete_alert")}
           </DialogTitle>
-
           <DialogActions>
             <Button onClick={handleClose}>{t("txt_disagree")}</Button>
             <Button

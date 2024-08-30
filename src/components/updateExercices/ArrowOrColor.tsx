@@ -263,9 +263,9 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
                 }
                 fullWidth
               />
-              <IconButton onClick={() => removeTuple(index)}>
+              {/* <IconButton onClick={() => removeTuple(index)}>
                 <CiCircleRemove />
-              </IconButton>
+              </IconButton> */}
             </Box>
           ))}
           <FormControlLabel

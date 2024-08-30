@@ -22,7 +22,8 @@ const ArrowSound: React.FC<ExerciceCreationProps> = ({
   loading,
   numberOfOptions,
 }) => {
-  const { t } = useTranslation(); //initialise the options depending on the number specified in the props
+  const { t } = useTranslation();
+   //initialise the options depending on the number specified in the props
   const initialTuples = Array.from({ length: numberOfOptions }, () => ({
     text: "",
     textOrder: 0,

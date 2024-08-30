@@ -13,6 +13,10 @@ import {
   Typography,
   CardActions,
   Grid,
+  Pagination,
+  Paper,
+  InputBase,
+  IconButton,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -24,6 +28,7 @@ import SubjectInformation from "@/components/subjectInformation/ChapterInformati
 import AddSubject from "@/components/addSubject/AddSubject";
 import UpdateSubject from "@/components/updateSubject/UpdateSubject";
 import { Subject } from "@/interfaces/Subject";
+import { GoSearch } from "react-icons/go";
 
 const AllSubjects: React.FC = () => {
   const { t } = useTranslation();
@@ -63,6 +68,30 @@ const AllSubjects: React.FC = () => {
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
+  };
+  //filtered subjects
+  const [filteredSubjects, setFilteredSubjects] = useState<Subject[]>([]);
+  //filter key word
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  // Pagination state
+  const itemsPerPage = 9; // You can adjust this value
+  const [page, setPage] = useState(1);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(itemsPerPage);
+  const displayedSubject = filteredSubjects.slice(startIndex, endIndex);
+
+  // Handle page change
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+    setStartIndex((value - 1) * itemsPerPage);
+    setEndIndex(value * itemsPerPage);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
   //opening snack bar and setting it's message
   const handleSnackbarOpen = (message: string, success: boolean) => {
@@ -113,6 +142,7 @@ const AllSubjects: React.FC = () => {
       const data: any[] = result.data;
       if (data) {
         setSubjects(data);
+        setFilteredSubjects(data);
       } else {
         console.error("No Lessons found");
         setSubjects([]);
@@ -147,6 +177,18 @@ const AllSubjects: React.FC = () => {
   const handleCloseModalAdd = async () => {
     setOpenModalAdd(false);
   };
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    const filtered = subjects.filter((subject) =>
+      [subject.name, subject.description, subject.trimestre?.name].some(
+        (attr) => attr?.toLowerCase().includes(query.toLowerCase())
+      )
+    );
+    setFilteredSubjects(filtered);
+    setStartIndex(0);
+    setEndIndex(itemsPerPage);
+    setPage(1); // Reset to first page when filtering
+  };
   // getting subjects initially
   useEffect(() => {
     handleGetSubjects();
@@ -157,8 +199,28 @@ const AllSubjects: React.FC = () => {
       <Box
         sx={{ marginTop: "40px", width: "100%" }}
         display={"flex"}
-        justifyContent={"end"}
+        justifyContent={"space-between"}
       >
+        <Paper
+          component="form"
+          sx={{
+            p: "2px 4px",
+            display: "flex",
+            alignItems: "center",
+            width: 250,
+          }}
+        >
+          <InputBase
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            sx={{ ml: 1, flex: 1 }}
+            placeholder={t("txt_search")}
+            inputProps={{ "aria-label": t("txt_search") }}
+          />
+          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+            <GoSearch />
+          </IconButton>
+        </Paper>
         <Button variant="contained" onClick={() => handleOpenModalAdd()}>
           {t("txt_add_a_subject")}
         </Button>
@@ -171,7 +233,7 @@ const AllSubjects: React.FC = () => {
                   <Skeleton variant="rectangular" width="100%" height={150} />
                 </Grid>
               ))
-            : subjects.map((subject) => (
+            : displayedSubject.map((subject) => (
                 <Grid item xs={12} sm={6} md={4} key={subject.id}>
                   <Card variant="outlined" sx={{ height: "100%" }}>
                     <React.Fragment>
@@ -185,6 +247,8 @@ const AllSubjects: React.FC = () => {
                         </Typography>
                         <Typography variant="body2">
                           {t("txt_description") + " : " + subject.description}
+                          <br />
+                          {t("txt_trimester") + " : " + subject.trimestre?.name}
                           <br />
                           {t("txt_locked") +
                             " : " +
@@ -225,6 +289,19 @@ const AllSubjects: React.FC = () => {
                 </Grid>
               ))}
         </Grid>
+        <Pagination
+          count={Math.ceil(filteredSubjects.length / itemsPerPage)}
+          page={page}
+          onChange={handlePageChange}
+          color="primary"
+          sx={{
+            width: "100%",
+            paddingTop: "40px",
+            paddingBottom: "40px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        />
         <Dialog
           open={openAlertDelete}
           onClose={handleClose}

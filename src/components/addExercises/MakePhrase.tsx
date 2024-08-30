@@ -174,7 +174,7 @@ const MakePhrase: React.FC<ExerciceCreationProps> = ({
               onChange={(e) => handleFormChange("isLocked", e.target.checked)}
             />
           }
-          label={t("txt_lcoked")}
+          label={t("txt_locked")}
         />
         <Button onClick={addWord}>{t("txt_add_word")}</Button>
         <Button

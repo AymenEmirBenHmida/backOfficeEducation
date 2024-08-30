@@ -256,9 +256,9 @@ const ArrowSound: React.FC<ExerciceUpdateProps> = ({
                 }
                 fullWidth
               />
-              <IconButton onClick={() => removeTuple(index)}>
+              {/* <IconButton onClick={() => removeTuple(index)}>
                 <CiCircleRemove />
-              </IconButton>
+              </IconButton> */}
             </Box>
           ))}
           {!!errors[`content.tuples`] && (

@@ -208,6 +208,7 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
                 fullWidth
               />
               <TextField
+                className="!mt-[5px]"
                 label={`${t("text_image")} ${index + 1}`}
                 value={option.image}
                 required
@@ -219,6 +220,7 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
                 fullWidth
               />
               <TextField
+                className="!mt-[5px]"
                 label={`${t("txt_order")} ${index + 1}`}
                 value={option.order}
                 required
@@ -235,9 +237,9 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
                 fullWidth
               />
 
-              <Button onClick={() => removeOption(index)}>
+              {/* <Button onClick={() => removeOption(index)}>
                 {t("txt_remove")}
-              </Button>
+              </Button> */}
             </Box>
           ))}
           {!!errors[`content.options`] && (

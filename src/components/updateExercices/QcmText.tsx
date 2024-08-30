@@ -235,9 +235,9 @@ const QcmText: React.FC<ExerciceUpdateProps> = ({
                 }
               />
 
-              <IconButton onClick={() => removeOption(index)}>
+              {/* <IconButton onClick={() => removeOption(index)}>
                 <CiCircleRemove />
-              </IconButton>
+              </IconButton> */}
             </Box>
           ))}
           {!!errors[`content.options`] && (

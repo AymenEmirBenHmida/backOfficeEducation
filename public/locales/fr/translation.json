@@ -149,5 +149,7 @@
   "txt_error_niveau_id_required": "Niveau est requis",
   "txt_column_text": "Texte de la colonne",
   "txt_success": "Succès",
-  "txt_slug": "Slug"
+  "txt_slug": "Slug",
+  "txt_error_word_text_required": "Le texte est requis",
+  "txt_search": "Recherche"
 }

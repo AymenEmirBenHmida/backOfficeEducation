@@ -146,7 +146,9 @@
   "txt_error_completion_status_required": "Completion status is required",
   "txt_error_slug_required": "Slug is required",
   "txt_error_niveau_id_required": "Level is required",
-  "txt_column_text":"Column text",
-  "txt_success":"Success",
-  "txt_slug":"Slug"
+  "txt_column_text": "Column text",
+  "txt_success": "Success",
+  "txt_slug": "Slug",
+  "txt_error_word_text_required": "Text is required",
+  "txt_search":"Search"
 }

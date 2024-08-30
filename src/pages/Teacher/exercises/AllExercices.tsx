@@ -15,6 +15,9 @@ import {
   Modal,
   Snackbar,
   Alert,
+  Pagination,
+  InputBase,
+  IconButton,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -41,6 +44,7 @@ import { useNavigate } from "react-router-dom";
 import { validateExerciceInput } from "@/zod/exercice";
 import { z } from "zod";
 import { Exercice } from "@/interfaces/Exercice";
+import { GoSearch } from "react-icons/go";
 
 // // Define the types for your data
 // interface Option {
@@ -72,6 +76,10 @@ const AllExercises: React.FC = () => {
   const { t } = useTranslation();
   // exercices variable
   const [exercices, setExercices] = useState<Exercice[]>([]);
+  //filtered subjects
+  const [filteredExercices, setFilteredExercices] = useState<Exercice[]>([]);
+  //filter key word
+  const [searchQuery, setSearchQuery] = useState<string>("");
   // variable responsible for the initial loading animation
   const [loading, setLoading] = useState<boolean>(true);
   // variable responsible for the update animation
@@ -92,6 +100,26 @@ const AllExercises: React.FC = () => {
   //variable for snack bar message
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const navigate = useNavigate();
+  // Pagination state
+  const itemsPerPage = 10; // You can adjust this value
+  const [page, setPage] = useState(1);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(itemsPerPage);
+  const displayedExercices = filteredExercices.slice(startIndex, endIndex);
+
+  // Handle page change
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+    setStartIndex((value - 1) * itemsPerPage);
+    setEndIndex(value * itemsPerPage);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   //snack bar opening
   const handleSnackbarOpen = (message: string) => {
     setSnackbarMessage(message);
@@ -144,6 +172,7 @@ const AllExercises: React.FC = () => {
       const data: Exercice[] = result.data;
       if (data) {
         setExercices(data);
+        setFilteredExercices(data);
       } else {
         console.error("No exercices found");
         setExercices([]);
@@ -354,7 +383,19 @@ const AllExercises: React.FC = () => {
   const handleCloseModalEdit = async () => {
     setOpenModalEdit(false);
   };
-
+  //to filter the exercices
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    const filtered = exercices.filter((exercice) =>
+      [exercice.typeQuestion, exercice.description, exercice.cour!.name].some(
+        (attr) => attr?.toLowerCase().includes(query.toLowerCase())
+      )
+    );
+    setFilteredExercices(filtered);
+    setStartIndex(0);
+    setEndIndex(itemsPerPage);
+    setPage(1); // Reset to first page when filtering
+  };
   useEffect(() => {
     handleGetExercices();
   }, []);
@@ -364,8 +405,28 @@ const AllExercises: React.FC = () => {
       <Box
         sx={{ marginTop: "40px", width: "100%" }}
         display={"flex"}
-        justifyContent={"end"}
+        justifyContent={"space-between"}
       >
+        <Paper
+          component="form"
+          sx={{
+            p: "2px 4px",
+            display: "flex",
+            alignItems: "center",
+            width: 250,
+          }}
+        >
+          <InputBase
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            sx={{ ml: 1, flex: 1 }}
+            placeholder={t("txt_search")}
+            inputProps={{ "aria-label": t("txt_search") }}
+          />
+          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+            <GoSearch />
+          </IconButton>
+        </Paper>
         <Button
           variant="contained"
           sx={{ marginRight: "10px" }}
@@ -423,7 +484,7 @@ const AllExercises: React.FC = () => {
                       </TableCell>
                     </TableRow>
                   ))
-                : exercices.map((exercice) => (
+                : displayedExercices.map((exercice) => (
                     <TableRow key={exercice.id}>
                       <TableCell>{exercice.typeQuestion}</TableCell>
                       <TableCell>{exercice.description}</TableCell>
@@ -460,6 +521,19 @@ const AllExercises: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <Pagination
+          count={Math.ceil(filteredExercices.length / itemsPerPage)}
+          page={page}
+          onChange={handlePageChange}
+          color="primary"
+          sx={{
+            width: "100%",
+            paddingTop: "40px",
+            paddingBottom: "40px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        />
         <Dialog
           open={openAlertDelete}
           onClose={handleClose}
