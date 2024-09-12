@@ -15,6 +15,7 @@ export interface AccessToken {
     phone?: string;
     role?: string;
     teacherId?: string;
+    adminId?: string;
   };
   role?: string;
   aal?: string;

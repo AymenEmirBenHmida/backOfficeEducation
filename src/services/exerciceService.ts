@@ -22,6 +22,18 @@ export const getAllExercicesService = async () => {
     throw error;
   }
 };
+//get all pending exercices
+export const getAllPendingExercicesService = async (user: any) => {
+  try {
+    const response = await axios.post("/api/admin/exercice/getPending", {
+      user: user,
+    });
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 //delete an exercice
 export const deleteExerciceService = async (id: string) => {
   try {
@@ -51,6 +63,37 @@ export const updateExerciceService = async ({
   console.log("update exercice ", formData);
   try {
     const response = await axios.put(`/api/exercice/update?id=${id}`, formData);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+//approve an exercice
+export const approveExerciceService = async ({ id }: { id: string }) => {
+  console.log("approve exercice ", id);
+  try {
+    const response = await axios.post(`/api/admin/exercice/approve`, {
+      id,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+//refuse an exercice
+export const refuseExerciceService = async ({
+  id,
+  comment,
+}: {
+  id: string;
+  comment: string;
+}) => {
+  console.log("refuse exercice ", id);
+  try {
+    const response = await axios.post(`/api/admin/exercice/refuse`, {
+      id,
+      comment,
+    });
     return response;
   } catch (error) {
     throw error;

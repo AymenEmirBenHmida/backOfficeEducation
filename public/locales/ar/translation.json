@@ -150,5 +150,10 @@
   "txt_success": "نجاح",
   "txt_slug": "Slug",
   "txt_error_word_text_required": "النص مطلوب",
-  "txt_search": "بحث"
+  "txt_search": "بحث",
+  "txt_chapter": "فصل",
+  "txt_refusal_comment": "تعليق الرفض",
+  "txt_approve": "الموافقة",
+  "txt_refuse": "الرفض",
+  "txt_validate_exercices": "التأكد من صحة التمارين"
 }

@@ -17,8 +17,9 @@ import AllChapters from "./pages/Teacher/chapters/ChaptersPage";
 import { useTranslation } from "react-i18next";
 import { useMemo } from "react";
 import { createTheme, GlobalStyles, ThemeProvider } from "@mui/material";
-import AllSubjects from "./pages/Teacher/subjects/SubjectsPage";
-import AllTrimesters from "./pages/Teacher/trimesters/TrimestersPage";
+import AllSubjects from "./pages/Admin/subjects/SubjectsPage";
+import AllTrimesters from "./pages/Admin/trimesters/TrimestersPage";
+import AllPendingExercises from "./pages/Admin/exercices/AllPendingExercices";
 
 const routes: RouteConfig[] = [
   { path: "/signup", component: <SignupPage /> },
@@ -40,7 +41,7 @@ const routes: RouteConfig[] = [
     requiredRoles: ["Teacher"],
   },
   {
-    path: "/teacher/subjects",
+    path: "/admin/subjects",
     component: <AllSubjects />,
     requiredRoles: ["Admin"],
   },
@@ -50,8 +51,13 @@ const routes: RouteConfig[] = [
     requiredRoles: ["Teacher"],
   },
   {
-    path: "/teacher/trimesters",
+    path: "/admin/trimesters",
     component: <AllTrimesters />,
+    requiredRoles: ["Admin"],
+  },
+  {
+    path: "/admin/validate-exercices",
+    component: <AllPendingExercises />,
     requiredRoles: ["Admin"],
   },
 ];

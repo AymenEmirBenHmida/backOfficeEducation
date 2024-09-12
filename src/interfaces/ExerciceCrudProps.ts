@@ -15,9 +15,17 @@ export interface ExerciceUpdateProps {
     selectedExerciceId: string,
     cleanFormData: (formData: any) => void
   ) => void;
+  handleApproval?: (
+    formData: any,
+    selectedExerciceId: string,
+    cleanFormData: (formData: any) => void
+  ) => void;
+  handleRefusal?: (comment: string, selectedExerciceId: string) => void;
   selectedExerciceId: string;
   exerciceData?: any;
   errors?: any;
   updateLoading?: boolean;
+  refusalLoading?: boolean;
   setErrors: Dispatch<any>;
+  isApproval?: boolean;
 }

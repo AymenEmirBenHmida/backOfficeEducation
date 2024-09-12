@@ -27,9 +27,15 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
   setErrors,
   updateLoading,
   selectedExerciceId,
+  handleApproval,
+  isApproval,
   errors,
+  handleRefusal,
+  refusalLoading,
 }) => {
   const { t } = useTranslation();
+  //refusal comment
+  const [refusalComment, setRefusalComment] = useState("");
   //lessons variable
   const [lessons, setLessons] = useState<LessonInterface[]>([]);
   //initial loading variable
@@ -166,6 +172,7 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
               value={formData.courId}
               error={!!errors[`courId`]}
               label={t("txt_lesson")}
+              disabled={isApproval}
               onChange={(e) => {
                 console.log("lesson id", e.target.value);
                 handleFormChange("courId", e.target.value);
@@ -187,6 +194,7 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
           <FormControl fullWidth className="!mt-[15px]">
             <TextField
               error={!!errors[`description`]}
+              disabled={isApproval}
               helperText={errors[`description`]}
               label={t("txt_description")}
               value={formData.description}
@@ -198,6 +206,7 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
             required
             error={!!errors["content.text"]}
             helperText={errors["content.text"]}
+            disabled={isApproval}
             label={t("txt_text")}
             value={formData.content.text || ""}
             onChange={(e) => handleContentChange("text", e.target.value)}
@@ -209,6 +218,7 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
               <TextField
                 label={`${t("txt_text")} ${index + 1}`}
                 value={option.text}
+                disabled={isApproval}
                 error={!!errors[`content.options.${index}.text`]}
                 helperText={errors[`content.options.${index}.text`]}
                 required
@@ -222,6 +232,7 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
                 label={`${t("text_image")} ${index + 1}`}
                 value={option.image}
                 required
+                disabled={isApproval}
                 error={!!errors[`content.options.${index}.image`]}
                 helperText={errors[`content.options.${index}.image`]}
                 onChange={(e) =>
@@ -234,6 +245,7 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
                 label={`${t("txt_order")} ${index + 1}`}
                 value={option.order}
                 required
+                disabled={isApproval}
                 error={!!errors[`content.options.${index}.order`]}
                 helperText={errors[`content.options.${index}.order`]}
                 type="number"
@@ -261,6 +273,7 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
             className="!mt-[15px]"
             control={
               <Checkbox
+                disabled={isApproval}
                 value={formData.isLocked}
                 checked={formData.isLocked}
                 onChange={(e) => handleFormChange("isLocked", e.target.checked)}
@@ -268,23 +281,77 @@ const DragDropWordsImages: React.FC<ExerciceUpdateProps> = ({
             }
             label={t("txt_locked")}
           />
-          <Button onClick={addOption} className="!mt-[15px]">
-            {t("txt_add")}
-          </Button>
-          <Button
-            className="!mt-[15px]"
-            variant="contained"
-            color="primary"
-            onClick={async () => {
-              await handleSubmit(formData, selectedExerciceId, cleanFormData);
-            }}
-          >
-            {updateLoading ? (
-              <CircularProgress sx={{ color: "white" }} size={30} />
-            ) : (
-              t("txt_submit")
-            )}
-          </Button>
+          {isApproval && (
+            <TextField
+              className="!mr-[5px]"
+              label={t("txt_refusal_comment")}
+              value={refusalComment}
+              onChange={(e) => setRefusalComment(e.target.value)}
+              fullWidth
+            />
+          )}
+          {isApproval ? (
+            <>
+              <Button
+                className="!mt-[15px] !mr-[5px]"
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  console.log(formData);
+                  await handleApproval!(
+                    formData,
+                    selectedExerciceId,
+                    cleanFormData
+                  );
+                }}
+              >
+                {updateLoading ? (
+                  <CircularProgress sx={{ color: "white" }} size={30} />
+                ) : (
+                  t("txt_approve")
+                )}
+              </Button>
+              <Button
+                className="!mt-[15px]"
+                variant="contained"
+                color="error"
+                onClick={async () => {
+                  await handleRefusal!(refusalComment, selectedExerciceId);
+                }}
+              >
+                {refusalLoading ? (
+                  <CircularProgress sx={{ color: "white" }} size={30} />
+                ) : (
+                  t("txt_refuse")
+                )}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={addOption} className="!mt-[15px]">
+                {t("txt_add")}
+              </Button>
+              <Button
+                className="!mt-[15px]"
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  console.log(formData);
+                  await handleSubmit(
+                    formData,
+                    selectedExerciceId,
+                    cleanFormData
+                  );
+                }}
+              >
+                {updateLoading ? (
+                  <CircularProgress sx={{ color: "white" }} size={30} />
+                ) : (
+                  t("txt_submit")
+                )}{" "}
+              </Button>
+            </>
+          )}
         </>
       )}
     </>

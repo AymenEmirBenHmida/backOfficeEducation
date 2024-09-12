@@ -151,5 +151,9 @@
   "txt_slug": "Slug",
   "txt_error_word_text_required": "Text is required",
   "txt_search": "Search",
-  "txt_chapter": "chapter"
+  "txt_chapter": "chapter",
+  "txt_refusal_comment": "Refusal Comment",
+  "txt_approve": "Approve",
+  "txt_refuse": "Refuse",
+  "txt_validate_exercices": "Validate Exercices"
 }

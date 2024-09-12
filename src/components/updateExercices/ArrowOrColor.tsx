@@ -29,9 +29,15 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
   setErrors,
   updateLoading,
   selectedExerciceId,
+  handleApproval,
+  isApproval,
   errors,
+  handleRefusal,
+  refusalLoading,
 }) => {
   const { t } = useTranslation();
+  //refusal comment
+  const [refusalComment, setRefusalComment] = useState("");
   //lessons variable
   const [lessons, setLessons] = useState<LessonInterface[]>([]);
   //initial loading variable
@@ -167,6 +173,7 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
           <FormControl required fullWidth className="!mt-[15px]">
             <InputLabel>{t("txt_lesson")}</InputLabel>
             <Select
+              disabled={isApproval}
               value={formData.courId}
               error={!!errors[`courId`]}
               label={t("txt_lesson")}
@@ -190,6 +197,7 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
           </FormControl>
           <FormControl fullWidth className="!mt-[15px]">
             <TextField
+              disabled={isApproval}
               error={!!errors[`description`]}
               helperText={errors[`description`]}
               label={t("txt_description")}
@@ -200,6 +208,7 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
           </FormControl>
           <TextField
             required
+            disabled={isApproval}
             error={!!errors[`content.text`]}
             helperText={errors[`content.text`]}
             label={t("txt_text")}
@@ -216,6 +225,7 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
               flexDirection={"row"}
             >
               <TextField
+                disabled={isApproval}
                 className="!mr-[5px]"
                 label={`1.${t("txt_text")} ${index + 1}`}
                 value={tuple.text1}
@@ -229,6 +239,7 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
               />
               <TextField
                 className="!mr-[5px]"
+                disabled={isApproval}
                 label={`1.${t("txt_order")} ${index + 1}`}
                 value={tuple.order1}
                 required
@@ -246,6 +257,7 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
               />
               <TextField
                 className="!mr-[5px]"
+                disabled={isApproval}
                 label={`2.${t("txt_text")} ${index + 1}`}
                 value={tuple.text2}
                 required
@@ -258,6 +270,7 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
               />
               <TextField
                 className="!mr-[5px]"
+                disabled={isApproval}
                 label={`2.${t("txt_order")} ${index + 1}`}
                 value={tuple.order2}
                 required
@@ -283,30 +296,84 @@ const ArrowOrColor: React.FC<ExerciceUpdateProps> = ({
             control={
               <Checkbox
                 value={formData.isLocked}
+                disabled={isApproval}
                 checked={formData.isLocked}
                 onChange={(e) => handleFormChange("isLocked", e.target.checked)}
               />
             }
             label={t("txt_add")}
           />
-          <Button onClick={addTuple} className="!mt-[15px]">
-            {t("txt_add_tuple")}
-          </Button>
-          <Button
-            className="!mt-[15px]"
-            variant="contained"
-            color="primary"
-            onClick={async () => {
-              console.log(formData);
-              await handleSubmit(formData, selectedExerciceId, cleanFormData);
-            }}
-          >
-            {updateLoading ? (
-              <CircularProgress sx={{ color: "white" }} size={30} />
-            ) : (
-              t("txt_submit")
-            )}
-          </Button>
+          {isApproval && (
+            <TextField
+              className="!mr-[5px]"
+              label={t("txt_refusal_comment")}
+              value={refusalComment}
+              onChange={(e) => setRefusalComment(e.target.value)}
+              fullWidth
+            />
+          )}
+          {isApproval ? (
+            <>
+              <Button
+                className="!mt-[15px] !mr-[5px]"
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  console.log(formData);
+                  await handleApproval!(
+                    formData,
+                    selectedExerciceId,
+                    cleanFormData
+                  );
+                }}
+              >
+                {updateLoading ? (
+                  <CircularProgress sx={{ color: "white" }} size={30} />
+                ) : (
+                  t("txt_approve")
+                )}
+              </Button>
+              <Button
+                className="!mt-[15px]"
+                variant="contained"
+                color="error"
+                onClick={async () => {
+                  await handleRefusal!(refusalComment, selectedExerciceId);
+                }}
+              >
+                {refusalLoading ? (
+                  <CircularProgress sx={{ color: "white" }} size={30} />
+                ) : (
+                  t("txt_refuse")
+                )}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={addTuple} className="!mt-[15px]">
+                {t("txt_add_tuple")}
+              </Button>
+              <Button
+                className="!mt-[15px]"
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  console.log(formData);
+                  await handleSubmit(
+                    formData,
+                    selectedExerciceId,
+                    cleanFormData
+                  );
+                }}
+              >
+                {updateLoading ? (
+                  <CircularProgress sx={{ color: "white" }} size={30} />
+                ) : (
+                  t("txt_submit")
+                )}{" "}
+              </Button>
+            </>
+          )}
         </>
       )}
     </>

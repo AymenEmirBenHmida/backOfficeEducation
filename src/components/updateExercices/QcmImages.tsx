@@ -30,9 +30,15 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
   updateLoading,
   selectedExerciceId,
   errors,
+  isApproval,
+  handleApproval,
+  handleRefusal,
+  refusalLoading,
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  //refusal comment
+  const [refusalComment, setRefusalComment] = useState("");
   //lessons variable
   const [lessons, setLessons] = useState<LessonInterface[]>([]);
   //initial loading variable
@@ -140,6 +146,11 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
       console.error("Failed to fetch lessons");
     }
   };
+  // A generic input wrapper that applies the `disabled` property dynamically
+  const withDisable =
+    (Component: any) =>
+    ({ isApproval, ...props }: any) =>
+      <Component {...props} disabled={isApproval} />;
   useEffect(() => {
     handleGetExercice();
     getLessons();
@@ -166,6 +177,7 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
           <FormControl required fullWidth className="!mt-[15px]">
             <InputLabel>{t("txt_lesson")}</InputLabel>
             <Select
+              disabled={isApproval}
               value={formData.courId}
               error={!!errors[`courId`]}
               label={t("txt_lesson")}
@@ -189,6 +201,7 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
           </FormControl>
           <FormControl fullWidth className="!mt-[15px]">
             <TextField
+              disabled={isApproval}
               error={!!errors[`description`]}
               helperText={errors[`description`]}
               label={t("txt_description")}
@@ -198,6 +211,7 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
             />
           </FormControl>
           <TextField
+            disabled={isApproval}
             label={t("txt_text")}
             value={formData.content.text || ""}
             required
@@ -215,6 +229,7 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
               flexDirection={"row"}
             >
               <TextField
+                disabled={isApproval}
                 required
                 error={!!errors[`content.options.${index}.image`]}
                 helperText={errors[`content.options.${index}.image`]}
@@ -230,6 +245,7 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
                 label={t("txt_is_correct")}
                 control={
                   <Checkbox
+                    disabled={isApproval}
                     checked={option.isCorrect}
                     aria-label={"is correct"}
                     onChange={(e) =>
@@ -252,6 +268,7 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
             className="!mt-[15px]"
             control={
               <Checkbox
+                disabled={isApproval}
                 value={formData.isLocked}
                 checked={formData.isLocked}
                 onChange={(e) => handleFormChange("isLocked", e.target.checked)}
@@ -259,24 +276,78 @@ const QcmImages: React.FC<ExerciceUpdateProps> = ({
             }
             label={t("txt_locked")}
           />
-          <Button onClick={addOption} className="!mt-[15px]">
-            {t("txt_add")}
-          </Button>
-          <Button
-            className="!mt-[15px]"
-            variant="contained"
-            color="primary"
-            onClick={async () => {
-              console.log(formData);
-              await handleSubmit(formData, selectedExerciceId, cleanFormData);
-            }}
-          >
-            {updateLoading ? (
-              <CircularProgress sx={{ color: "white" }} size={30} />
-            ) : (
-              t("txt_submit")
-            )}
-          </Button>
+          {isApproval && (
+            <TextField
+              className="!mr-[5px]"
+              label={t("txt_refusal_comment")}
+              value={refusalComment}
+              onChange={(e) => setRefusalComment(e.target.value)}
+              fullWidth
+            />
+          )}
+
+          {isApproval ? (
+            <>
+              <Button
+                className="!mt-[15px] !mr-[5px]"
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  console.log(formData);
+                  await handleApproval!(
+                    formData,
+                    selectedExerciceId,
+                    cleanFormData
+                  );
+                }}
+              >
+                {updateLoading ? (
+                  <CircularProgress sx={{ color: "white" }} size={30} />
+                ) : (
+                  t("txt_approve")
+                )}
+              </Button>
+              <Button
+                className="!mt-[15px]"
+                variant="contained"
+                color="error"
+                onClick={async () => {
+                  await handleRefusal!(refusalComment, selectedExerciceId);
+                }}
+              >
+                {refusalLoading ? (
+                  <CircularProgress sx={{ color: "white" }} size={30} />
+                ) : (
+                  t("txt_refuse")
+                )}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={addOption} className="!mt-[15px]">
+                {t("txt_add")}
+              </Button>
+              <Button
+                className="!mt-[15px]"
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  console.log(formData);
+                  await handleSubmit(
+                    formData,
+                    selectedExerciceId,
+                    cleanFormData
+                  );
+                }}
+              >
+                {updateLoading ? (
+                  <CircularProgress sx={{ color: "white" }} size={30} />
+                ) : (
+                  t("txt_submit")
+                )}{" "}
+              </Button>
+            </>
+          )}
         </>
       )}
     </>

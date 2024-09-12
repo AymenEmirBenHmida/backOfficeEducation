@@ -63,64 +63,77 @@ const SideDrawer: React.FC = () => {
         >
           {t("txt_profile")}
         </Button> */}
+        {userRole === "Teacher" && (
+          <>
+            <Button
+              className="tab"
+              aria-label="Home"
+              startIcon={<FaBook />}
+              onClick={() => {
+                navigate("/teacher/exercises");
+              }}
+            >
+              {t("txt_manage_exercises")}
+            </Button>
 
-        <Button
-          className="tab"
-          aria-label="Home"
-          startIcon={<FaBook />}
-          onClick={() => {
-            navigate("/teacher/exercises");
-          }}
-        >
-          {t("txt_manage_exercises")}
-        </Button>
-
-        <Button
-          className="tab"
-          aria-label="teachers"
-          startIcon={<IoDocumentText />}
-          onClick={() => {
-            navigate("/teacher/lessons");
-          }}
-        >
-          {t("txt_manage_lessons")}
-        </Button>
-        {userRole === "Admin" && (
-          <Button
-            className="tab"
-            aria-label="teachers"
-            startIcon={<GiBookCover />}
-            onClick={() => {
-              navigate("/teacher/subjects");
-            }}
-          >
-            {t("txt_manage_subjects")}
-          </Button>
+            <Button
+              className="tab"
+              aria-label="teachers"
+              startIcon={<IoDocumentText />}
+              onClick={() => {
+                navigate("/teacher/lessons");
+              }}
+            >
+              {t("txt_manage_lessons")}
+            </Button>
+            <Button
+              className="tab"
+              aria-label="absence"
+              startIcon={<MdMenuBook />}
+              onClick={() => {
+                navigate("/teacher/chapters");
+              }}
+            >
+              {t("txt_manage_chapters")}
+            </Button>
+          </>
         )}
-        <Button
-          className="tab"
-          aria-label="absence"
-          startIcon={<MdMenuBook />}
-          onClick={() => {
-            navigate("/teacher/chapters");
-          }}
-        >
-          {t("txt_manage_chapters")}
-        </Button>
         {userRole === "Admin" && (
-          <Button
-            //variant="outlined"
-            className="tab"
-            aria-label="matieres"
-            startIcon={<GrScorecard />}
-            onClick={() => {
-              navigate("/teacher/trimesters");
-            }}
-          >
-            {t("txt_manage_trimesters")}
-          </Button>
+          <>
+            <Button
+              className="tab"
+              aria-label="teachers"
+              startIcon={<GiBookCover />}
+              onClick={() => {
+                navigate("/admin/validate-exercices");
+              }}
+            >
+              {t("txt_validate_exercices")}
+            </Button>
+            <Button
+              className="tab"
+              aria-label="teachers"
+              startIcon={<GiBookCover />}
+              onClick={() => {
+                navigate("/admin/subjects");
+              }}
+            >
+              {t("txt_manage_subjects")}
+            </Button>
+            <Button
+              //variant="outlined"
+              className="tab"
+              aria-label="matieres"
+              startIcon={<GrScorecard />}
+              onClick={() => {
+                navigate("/admin/trimesters");
+              }}
+            >
+              {t("txt_manage_trimesters")}
+            </Button>
+          </>
         )}
-        <div className="w-full mt-[15px]">
+        <div className="w-full mt-auto" style={{ marginTop: "40%" }}>
           <div className="flex justify-center items-center">
             <Button
               variant="contained"

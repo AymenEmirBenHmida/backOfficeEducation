@@ -151,5 +151,10 @@
   "txt_success": "Succès",
   "txt_slug": "Slug",
   "txt_error_word_text_required": "Le texte est requis",
-  "txt_search": "Recherche"
+  "txt_search": "Recherche",
+  "txt_chapter": "chapitre",
+  "txt_refusal_comment": "Commentaire de refus",
+  "txt_approve": "Approuver",
+  "txt_refuse": "Refuser",
+  "txt_validate_exercices": "Valider les exercices"
 }

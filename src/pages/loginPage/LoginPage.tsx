@@ -79,6 +79,7 @@ const LogingPage: React.FC = ({}) => {
   };
   useEffect(() => {
     if (userRole === "Teacher") navigate("/teacher/exercises");
+    if (userRole === "Admin") navigate("/admin/trimesters");
   }, [userRole]);
 
   return (

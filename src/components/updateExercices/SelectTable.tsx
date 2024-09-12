@@ -29,7 +29,13 @@ const SelectTable: React.FC<ExerciceUpdateProps> = ({
   handleSubmit,
   setErrors,
   errors,
+  handleApproval,
+  isApproval,
+  handleRefusal,
+  refusalLoading,
 }) => {
+  //refusal comment
+  const [refusalComment, setRefusalComment] = useState("");
   //variabl for the lessons gotten
   const [lessons, setLessons] = useState<LessonInterface[]>([]);
   //responsible for the initial loading animation
@@ -221,6 +227,7 @@ const SelectTable: React.FC<ExerciceUpdateProps> = ({
             <InputLabel>{t("txt_lesson")}</InputLabel>
             <Select
               value={formData.courId}
+              disabled={isApproval}
               error={!!errors[`courId`]}
               label={t("txt_lesson")}
               onChange={(e) => {
@@ -243,6 +250,7 @@ const SelectTable: React.FC<ExerciceUpdateProps> = ({
           </FormControl>
           <FormControl fullWidth className="!mt-[15px]">
             <TextField
+              disabled={isApproval}
               error={!!errors[`description`]}
               helperText={errors[`description`]}
               label={t("txt_description")}
@@ -257,6 +265,7 @@ const SelectTable: React.FC<ExerciceUpdateProps> = ({
                 className="!mt-[5px] !mb-[5px]"
                 label={`${t("txt_text")} ${indexColumn + 1}`}
                 required
+                disabled={isApproval}
                 error={!!errors[`content.columns.${indexColumn}.text`]}
                 helperText={errors[`content.columns.${indexColumn}.text`]}
                 value={column.text}
@@ -270,6 +279,7 @@ const SelectTable: React.FC<ExerciceUpdateProps> = ({
                 label={`${t("txt_background")} ${indexColumn + 1}`}
                 value={column.background}
                 required
+                disabled={isApproval}
                 error={!!errors[`content.columns.${indexColumn}.background`]}
                 helperText={errors[`content.columns.${indexColumn}.background`]}
                 onChange={(e) =>
@@ -288,6 +298,7 @@ const SelectTable: React.FC<ExerciceUpdateProps> = ({
                     className="!mr-[5px]"
                     label={`${t("txt_image")} ${index + 1}`}
                     value={option.image}
+                    disabled={isApproval}
                     required
                     error={
                       !!errors[
@@ -314,6 +325,7 @@ const SelectTable: React.FC<ExerciceUpdateProps> = ({
                     control={
                       <Checkbox
                         checked={option.isCorrect}
+                        disabled={isApproval}
                         onChange={(e) =>
                           handleOptionChange(
                             indexColumn,
@@ -326,6 +338,7 @@ const SelectTable: React.FC<ExerciceUpdateProps> = ({
                     }
                   />
                   <IconButton
+                    disabled={isApproval}
                     onClick={() => removeOptionColumn(indexColumn, index)}
                   >
                     <CiCircleRemove />
@@ -347,6 +360,7 @@ const SelectTable: React.FC<ExerciceUpdateProps> = ({
                 </Button>
                 <Button
                   className="!flex !justify-center !align-center"
+                  disabled={isApproval}
                   onClick={() => removeColumn(indexColumn)}
                 >
                   {t("txt_remove")}
@@ -364,6 +378,7 @@ const SelectTable: React.FC<ExerciceUpdateProps> = ({
               className="!mt-[15px]"
               control={
                 <Checkbox
+                  disabled={isApproval}
                   value={formData.isLocked}
                   checked={formData.isLocked}
                   onChange={(e) =>
@@ -373,24 +388,77 @@ const SelectTable: React.FC<ExerciceUpdateProps> = ({
               }
               label={t("txt_locked")}
             />
-            <Button onClick={addColumn} className="!mt-[15px]">
-              {t("txt_add")}
-            </Button>
-            <Button
-              className="!mt-[15px]"
-              variant="contained"
-              color="primary"
-              onClick={async () => {
-                console.log(formData);
-                await handleSubmit(formData, selectedExerciceId, cleanFormData);
-              }}
-            >
-              {updateLoading ? (
-                <CircularProgress sx={{ color: "white" }} size={30} />
-              ) : (
-                t("txt_submit")
-              )}
-            </Button>
+            {isApproval && (
+              <TextField
+                className="!mr-[5px]"
+                label={t("txt_refusal_comment")}
+                value={refusalComment}
+                onChange={(e) => setRefusalComment(e.target.value)}
+                fullWidth
+              />
+            )}
+            {isApproval ? (
+              <>
+                <Button
+                  className="!mt-[15px] !mr-[5px]"
+                  variant="contained"
+                  color="primary"
+                  onClick={async () => {
+                    console.log(formData);
+                    await handleApproval!(
+                      formData,
+                      selectedExerciceId,
+                      cleanFormData
+                    );
+                  }}
+                >
+                  {updateLoading ? (
+                    <CircularProgress sx={{ color: "white" }} size={30} />
+                  ) : (
+                    t("txt_approve")
+                  )}
+                </Button>
+                <Button
+                  className="!mt-[15px]"
+                  variant="contained"
+                  color="error"
+                  onClick={async () => {
+                    await handleRefusal!(refusalComment, selectedExerciceId);
+                  }}
+                >
+                  {refusalLoading ? (
+                    <CircularProgress sx={{ color: "white" }} size={30} />
+                  ) : (
+                    t("txt_refuse")
+                  )}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button onClick={addColumn} className="!mt-[15px]">
+                  {t("txt_add")}
+                </Button>
+                <Button
+                  className="!mt-[15px]"
+                  variant="contained"
+                  color="primary"
+                  onClick={async () => {
+                    console.log(formData);
+                    await handleSubmit(
+                      formData,
+                      selectedExerciceId,
+                      cleanFormData
+                    );
+                  }}
+                >
+                  {updateLoading ? (
+                    <CircularProgress sx={{ color: "white" }} size={30} />
+                  ) : (
+                    t("txt_submit")
+                  )}{" "}
+                </Button>
+              </>
+            )}
           </Box>
         </>
       )}

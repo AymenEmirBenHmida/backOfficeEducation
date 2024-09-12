@@ -388,8 +388,14 @@ const decryptRole = (): string => {
     if (accessToken !== null) {
       const accessTokenObject: AccessToken = jwtDecode(accessToken);
 
-      const decrypted = accessTokenObject.user_metadata!.role;
-      return decrypted!;
+      const decrypted = accessTokenObject.user_metadata!;
+      var role = "guest";
+      if (decrypted.teacherId) {
+        role = "Teacher";
+      } else if (decrypted.adminId) {
+        role = "Admin";
+      }
+      return role!;
     }
   } catch (error) {
     console.error(error);
@@ -403,7 +409,6 @@ const adminState = createSlice({
   initialState: {
     user: null,
     role: decryptRole() || "guest", // Get encrypted role from localStorage
-
     chapitreId: "",
     totalHours: null,
     totalPercentage: null,
